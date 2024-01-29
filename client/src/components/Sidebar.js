@@ -9,7 +9,7 @@ const Sidebar = ({ children }) => {
 
   const menuItem = [
     { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
-    { name: 'Oculars', icon: FaEye, link: '', submenuNames: ['Manage Oculars', 'Set Ocular'], submenuLinks: ['/viewoculars', '/home']},
+    { name: 'Oculars', icon: FaEye, link: '', submenuNames: ['Manage Oculars', 'Set Ocular'], submenuLinks: ['/viewoculars', '/setocular']},
     { name: 'Quotations', icon: FaScroll, link: '', submenuNames: ['Manage Quotations', 'Generate Quotation'], submenuLinks: ['/home','/home'] },
     { name: 'Sales', icon: FaBriefcase, link: '/home', submenuNames: [], submenuLinks: []},
     { name: 'Clients', icon: FaMale, link: '/home', submenuNames: [], submenuLinks: [] },
@@ -19,7 +19,7 @@ const Sidebar = ({ children }) => {
   const toggleSubMenu = (index) => setExpandedMenuIndex(expandedMenuIndex === index ? null : index);
 
   return (
-    <div style={{ display: 'flex', height: '95vh' }}>
+    <div style={{ display: 'flex', height: '100vh' }}>
       <div
         style={{
           width: isOpen ? '260px' : '80px',
