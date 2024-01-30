@@ -19,7 +19,7 @@ const Sidebar = ({ children }) => {
   const toggleSubMenu = (index) => setExpandedMenuIndex(expandedMenuIndex === index ? null : index);
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
+    <div style={{ display: 'flex'}}>
       <div
         style={{
           width: isOpen ? '260px' : '80px',
