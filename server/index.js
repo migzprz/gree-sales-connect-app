@@ -6,6 +6,7 @@ const mysql = require('mysql2/promise')
 
 // api route imports
 const Oculars = require('./routes/oculars')
+const Common = require('./routes/common')
 
 app.use(cors({
     origin: 'http://localhost:3000',
@@ -40,7 +41,7 @@ const query = async function query(query, data) {
     let connection;
     try {
         connection = await pool.getConnection()
-        const [rows] = await connection.execute(query, [data])
+        const [rows, fields] = await connection.execute(query, data)
         return rows
     } catch (error) {
         console.error('Error: ', error)
@@ -58,12 +59,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // log tracker - middleware
 app.use((req, res, next) => {
-    console.log(req.path, res.method);
+    console.log(req.path, req.method);
     next();
 });
 
 // API
 app.use('/api', Oculars(query));
+app.use('/api', Common(query));
 
 app.listen(4000, () => {
     console.log("Server is RUNNING ON PORT 4000");
