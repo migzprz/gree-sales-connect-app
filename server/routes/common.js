@@ -31,7 +31,15 @@ module.exports = (query) => {
     })
 
     router.get('/getCompanies', async (req, res) => {
-
+        try {
+            const data = await query('SELECT * FROM md_companies', [])
+            console.log(data)
+        
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
     })
 
     /**
