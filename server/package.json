@@ -12,7 +12,10 @@
   "keywords": [],
   "description": "",
   "dependencies": {
-    "express": "^4.18.2"
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "mysql2": "^3.9.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
