@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.3",
+    "react-scripts": "^5.0.1"
+  },
+  "scripts": {
+    "start": "concurrently \"cd server && npm run dev\" \"cd client && npm run start\""
+  }
+}

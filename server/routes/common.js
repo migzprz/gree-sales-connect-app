@@ -66,5 +66,20 @@ module.exports = (query) => {
             throw error
         }
     })
+
+    /**
+     * Returns list of stored locations for drop down use
+     */
+    router.get('/getStoredLocations', async (req, res) => {
+        try {
+            const data = await query('SELECT * FROM md_locations', [])
+            console.log(data)
+        
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
     return router;
 }
