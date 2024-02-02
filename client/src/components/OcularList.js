@@ -1,10 +1,30 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
+import { useState, useEffect } from 'react'; 
 import { FaEllipsisH, FaFilter, FaSort, FaSearch} from 'react-icons/fa';
 import { Row, Col, Card, CardBody, Table } from 'react-bootstrap';
 import '../index.css';
+import axios from 'axios'
 
 const OcularList = () => {
+
+    const [ocularData, setOcularData] = useState([])
+
+    useEffect(() => {
+        axios.get('http://localhost:4000/api/getOculars/')
+        .then((response) => {
+            try {
+                setOcularData(response.data)
+            } catch (error) {
+                console.error('Error fetching data: ', error)
+            }
+        })
+    }, [])
+
+    useEffect(() => {
+        console.log(ocularData)
+    },[ocularData])
+
 
     const ocularList = [
         {
