@@ -5,6 +5,7 @@ import ViewOculars from './pages/ViewOculars';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import SetOcular from './pages/SetOcular';
+import GenerateReport from './pages/GenerateReport';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
                   <Route path="/home" element={<Home/>}/>
                   <Route path="/viewoculars" element={<ViewOculars/>}/> 
                   <Route path="/setocular" element={<SetOcular/>}/> 
+                  <Route path="/report" element={<GenerateReport/>}/> 
               </Routes>
           </BrowserRouter>
     </>
