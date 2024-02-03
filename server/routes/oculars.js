@@ -25,13 +25,21 @@ module.exports = (query) => {
      */
     router.get('/getOculars', async (req, res) => {
         try {
-            const data = await query(`SELECT ocular_date, CONCAT(l.last_name, ", ", l.first_name, " ", l.middle_name) as user_name,
-                                      CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name, t.email, t.contact_number
-                                      FROM greesalesconnect.td_oculars o
-                                      JOIN md_login l ON o.login_id = l.login_id
-                                      JOIN md_technicians t ON o.technician_id = t.technician_id 
-                                      WHERE quotation_id IS NULL
-                                      ORDER BY ocular_date ASC;`, [])
+            const data = await query(`SELECT ocular_date, 
+                                        CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name, t.email, t.contact_number, c.company_name, 
+                                        CONCAT(cl.last_name, ", ", cl.first_name, " ", cl.middle_name) as client_name,
+                                        CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address
+                                        FROM greesalesconnect.td_oculars o
+                                        JOIN md_login l ON o.login_id = l.login_id
+                                        JOIN md_technicians t ON o.technician_id = t.technician_id
+                                        JOIN td_quotations q ON o.quotation_id = q.quotation_id
+                                        JOIN md_companies c ON q.company_id = c.company_id
+                                        JOIN md_clients cl ON q.client_id = cl.client_id
+                                        JOIN md_locations loc ON q.location_id = loc.location_id
+                                        JOIN md_provinces p ON loc.addr_province_id = p.province_id
+                                        JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
+                                        JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
+                                        ORDER BY ocular_date ASC;`, [])
             console.log(data)
             res.send(data)
         } catch (error) {
@@ -52,6 +60,9 @@ module.exports = (query) => {
      */
     router.post('/postOcular', async (req, res) => {
 
+        const region_id = req.body.region_id
+        const location_id = req.body.location_id
+
         const values = [
             req.body.ocular_date,
             req.body.login_id,
@@ -59,7 +70,7 @@ module.exports = (query) => {
         ]
 
         const loc_values = [
-            req.body.region_id,
+            region_id,
             req.body.province_id,
             req.body.municipality_id,
             req.body.barangay_id,
@@ -68,22 +79,57 @@ module.exports = (query) => {
             req.body.zipcode
         ]
 
-        const ocu_values = [
+        const quo_values = [
             req.body.client_id, 
             req.body.company_id
         ]
 
-        console.log(values)
 
         try {
-            const data = await query('INSERT INTO td_oculars (ocular_date, date_created, login_id, technician_id) VALUES (?, NOW(), ?, ?)', values)
-            const loc_data = await query('INSERT INTO md_locations (addr_region_id, addr_province_id, addr_municipality_id, addr_barangay_id, addr_street_name, addr_bldg_no, zipcode) VALUES (?, ?, ?, ?, ?, ?, ?, )', loc_values)
+            
+            const quotations_query = 'INSERT INTO td_quotations (client_id, company_id, location_id, login_id, date_created ) VALUES (?, ?, ?, ?, NOW())'
+            let quo_data, val
+            
+            if (region_id !== null) {
+                const loc_query_partial = 'INSERT INTO md_locations (addr_region_id, addr_province_id, addr_municipality_id, addr_barangay_id, addr_street_name, addr_bldg_no, zipcode'
+                const with_name = ', location_name) VALUES (?, ?, ?, ?, ?, ?, ?, ? )'
+                const wo_name = ') VALUES (?, ?, ?, ?, ?, ?, ?)'
 
-            console.log(loc_data.insertId)
 
-            const ocu_data = await query('INSERT INTO md_oculars (client_id, company_id, location_id) VALUES (?, ?, ?)', [...ocu_values, loc_data.insertId])
+                if (req.body.location_name === null) {
+                    location_query = loc_query_partial + wo_name
+                    val = loc_values
+                } else {
+                    location_query = loc_query_partial + with_name
+                    val = [...loc_values, req.body.location_name]
+                }
+                // TESTING
+                console.log('location data: ', location_query, val)
+                const loc_data = await query(location_query, val)
+                console.log(loc_data)
 
-            console.log(data)
+                // TESTING
+                console.log('new location_id: ', loc_data.insertId)
+
+
+                console.log(quotations_query, [...quo_values, loc_data.insertId, req.body.login_id])
+                quo_data = await query(quotations_query, [...quo_values, loc_data.insertId, req.body.login_id])
+                console.log(quo_data)
+            } else {
+
+                console.log(quotations_query, [...quo_values, location_id, req.body.login_id])
+                quo_data = await query(quotations_query, [...quo_values, location_id, req.body.login_id])
+                console.log(quo_data)
+            }
+            
+            // TESTING
+            console.log('data for oculars: ', values, quo_data.insertId)
+
+            const data = await query('INSERT INTO td_oculars (ocular_date, login_id, technician_id, quotation_id, date_created) VALUES (?, ?, ?, ?, NOW())', [...values, quo_data.insertId])
+
+            // TESTING
+            console.log('LOGGING POST DATA: ', data)
+
             res.status(200).json({message: 'Success... New ocular added to database'})
         } catch (error) {
             console.error('Error: ', error)
