@@ -90,12 +90,12 @@ module.exports = (query) => {
             const quotations_query = 'INSERT INTO td_quotations (client_id, company_id, location_id, login_id, date_created ) VALUES (?, ?, ?, ?, NOW())'
             let quo_data, val
             
-            if (region_id !== null) {
+            if (region_id !== null) { // new location 
                 const loc_query_partial = 'INSERT INTO md_locations (addr_region_id, addr_province_id, addr_municipality_id, addr_barangay_id, addr_street_name, addr_bldg_no, zipcode'
                 const with_name = ', location_name) VALUES (?, ?, ?, ?, ?, ?, ?, ? )'
                 const wo_name = ') VALUES (?, ?, ?, ?, ?, ?, ?)'
 
-
+                // change function parameter for location query depending on the presence of a location name
                 if (req.body.location_name === null) {
                     location_query = loc_query_partial + wo_name
                     val = loc_values
@@ -103,32 +103,25 @@ module.exports = (query) => {
                     location_query = loc_query_partial + with_name
                     val = [...loc_values, req.body.location_name]
                 }
-                // TESTING
-                console.log('location data: ', location_query, val)
+                // POSTING new location record
                 const loc_data = await query(location_query, val)
-                console.log(loc_data)
-
-                // TESTING
+                console.log('new location record: ', loc_data)
                 console.log('new location_id: ', loc_data.insertId)
 
-
-                console.log(quotations_query, [...quo_values, loc_data.insertId, req.body.login_id])
+                // POSTING new quotation query record
                 quo_data = await query(quotations_query, [...quo_values, loc_data.insertId, req.body.login_id])
                 console.log(quo_data)
-            } else {
 
-                console.log(quotations_query, [...quo_values, location_id, req.body.login_id])
+            } else { // location already recorded in the db
+
+                // POSTING new quotation query record
                 quo_data = await query(quotations_query, [...quo_values, location_id, req.body.login_id])
-                console.log(quo_data)
+                console.log('new quotation record: ', quo_data)
             }
-            
-            // TESTING
-            console.log('data for oculars: ', values, quo_data.insertId)
 
+            // POSTING new ocular record
             const data = await query('INSERT INTO td_oculars (ocular_date, login_id, technician_id, quotation_id, date_created) VALUES (?, ?, ?, ?, NOW())', [...values, quo_data.insertId])
-
-            // TESTING
-            console.log('LOGGING POST DATA: ', data)
+            console.log('new ocular record: ', data)
 
             res.status(200).json({message: 'Success... New ocular added to database'})
         } catch (error) {
