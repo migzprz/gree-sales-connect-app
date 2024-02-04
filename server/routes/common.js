@@ -72,7 +72,11 @@ module.exports = (query) => {
      */
     router.get('/getStoredLocations', async (req, res) => {
         try {
-            const data = await query('SELECT * FROM md_locations', [])
+            const data = await query(`SELECT location_id, CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address 
+                                        FROM md_locations loc
+                                        JOIN md_provinces p ON loc.addr_province_id = p.province_id
+                                        JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
+                                        JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id`, [])
             console.log(data)
         
             res.send(data)
