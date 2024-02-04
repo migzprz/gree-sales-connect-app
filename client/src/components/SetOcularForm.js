@@ -50,7 +50,7 @@ const SetOcularForm = () => {
                     <h5
                         style={{
                             textDecoration: activeOption === 'returningClient' ? 'underline' : 'none',
-                            color: activeOption === 'existingClient' ? '#014c91' : '#6c757d',
+                            color: activeOption === 'returningClient' ? '#014c91' : '#6c757d',
                             cursor: 'pointer'
                         }}
                         onClick={() => handleOptionClick('returningClient')}

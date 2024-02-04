@@ -10,7 +10,7 @@ const Sidebar = ({ children }) => {
   const menuItem = [
     { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
     { name: 'Oculars', icon: FaEye, link: '', submenuNames: ['Manage Oculars', 'Set Ocular'], submenuLinks: ['/viewoculars', '/setocular']},
-    { name: 'Quotations', icon: FaScroll, link: '', submenuNames: ['Manage Quotations', 'Generate Quotation'], submenuLinks: ['/home','/home'] },
+    { name: 'Quotations', icon: FaScroll, link: '', submenuNames: ['Manage Quotations', 'Generate Quotation'], submenuLinks: ['/home','/generatequotation'] },
     { name: 'Sales', icon: FaBriefcase, link: '/home', submenuNames: [], submenuLinks: []},
     { name: 'Clients', icon: FaMale, link: '/home', submenuNames: [], submenuLinks: [] },
     { name: 'Reports', icon: FaChartLine, link: '/report', submenuNames: [], submenuLinks: [] },
