@@ -2,28 +2,49 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { useState, useEffect } from 'react'; 
 import { FaEllipsisH, FaFilter, FaSort, FaSearch} from 'react-icons/fa';
-import { Row, Col, Card, CardBody, Table } from 'react-bootstrap';
+import { Row, Col, Card, CardBody, Table, Dropdown } from 'react-bootstrap';
 import '../index.css';
-import axios from 'axios'
+import EditOcularModal from './EditOcularModal';
+//import axios from 'axios'
 
 const OcularList = () => {
 
     const [ocularData, setOcularData] = useState([])
 
-    useEffect(() => {
-        axios.get('http://localhost:4000/api/getOculars/')
-        .then((response) => {
-            try {
-                setOcularData(response.data)
-            } catch (error) {
-                console.error('Error fetching data: ', error)
-            }
-        })
-    }, [])
+    // useEffect(() => {
+    //     axios.get('http://localhost:4000/api/getOculars/')
+    //     .then((response) => {
+    //         try {
+    //             setOcularData(response.data)
+    //         } catch (error) {
+    //             console.error('Error fetching data: ', error)
+    //         }
+    //     })
+    // }, [])
 
-    useEffect(() => {
-        console.log(ocularData)
-    },[ocularData])
+    // useEffect(() => {
+    //     console.log(ocularData)
+    // },[ocularData])
+
+    const [activeDropdown, setActiveDropdown] = useState(null);
+
+    const handleEllipsisClick = (index) => {
+        setActiveDropdown(index === activeDropdown ? null : index);
+      };
+
+      const renderDropdown = (index) => {
+        if (index === activeDropdown) {
+          return (
+            <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
+              <Dropdown.Item>Generate Quotation</Dropdown.Item>
+              <EditOcularModal/>
+              <Dropdown.Item>Delete Ocular</Dropdown.Item>
+            </Dropdown.Menu>
+          );
+        }
+        return null;
+      };
+      
 
 
     const ocularList = [
@@ -31,6 +52,9 @@ const OcularList = () => {
             id: 1,
             client: 'Client 1',
             company: 'Company 1',
+            location: '41B K1st St. Kamuning Quezon City NCR 1103',
+            contactNumber: '0165189598',
+            emailAddress: 'miguel_josh_perez@dlsu.edu.ph',
             date: '2024-01-15',
             time: '10:00 AM',
             technician: 'Technician 1',
@@ -40,6 +64,9 @@ const OcularList = () => {
             id: 2,
             client: 'Client 2',
             company: 'Company 2',
+            location: '41B K1st St. Kamuning Quezon City NCR 1103',
+            contactNumber: '0165189598',
+            emailAddress: 'miguel_josh_perez@dlsu.edu.ph',
             date: '2024-01-16',
             time: '2:30 PM',
             technician: 'Technician 2',
@@ -49,6 +76,9 @@ const OcularList = () => {
             id: 1,
             client: 'Client 1',
             company: 'Company 1',
+            location: '41B K1st St. Kamuning Quezon City NCR 1103',
+            contactNumber: '0165189598',
+            emailAddress: 'miguel_josh_perez@dlsu.edu.ph',
             date: '2024-01-15',
             time: '10:00 AM',
             technician: 'Technician 1',
@@ -58,6 +88,9 @@ const OcularList = () => {
             id: 2,
             client: 'Client 2',
             company: 'Company 2',
+            location: '41B K1st St. Kamuning Quezon City NCR 1103',
+            contactNumber: '0165189598',
+            emailAddress: 'miguel_josh_perez@dlsu.edu.ph',
             date: '2024-01-16',
             time: '2:30 PM',
             technician: 'Technician 2',
@@ -67,6 +100,9 @@ const OcularList = () => {
             id: 1,
             client: 'Client 1',
             company: 'Company 1',
+            location: '41B K1st St. Kamuning Quezon City NCR 1103',
+            contactNumber: '0165189598',
+            emailAddress: 'miguel_josh_perez@dlsu.edu.ph',
             date: '2024-01-15',
             time: '10:00 AM',
             technician: 'Technician 1',
@@ -76,6 +112,9 @@ const OcularList = () => {
             id: 2,
             client: 'Client 2',
             company: 'Company 2',
+            location: '41B K1st St. Kamuning Quezon City NCR 1103',
+            contactNumber: '0165189598',
+            emailAddress: 'miguel_josh_perez@dlsu.edu.ph',
             date: '2024-01-16',
             time: '2:30 PM',
             technician: 'Technician 2',
@@ -151,6 +190,8 @@ const OcularList = () => {
                             <tr>
                                 <th style={{color: '#014c91'}}>Client</th>
                                 <th style={{color: '#014c91'}}>Company</th>
+                                <th style={{color: '#014c91'}}>Contact Number</th>
+                                <th style={{color: '#014c91'}}>Ocular Location</th>
                                 <th style={{color: '#014c91'}}>Date of Ocular</th>
                                 <th style={{color: '#014c91'}}>Time of Ocular</th>
                                 <th style={{color: '#014c91'}}>Assigned Technician</th>
@@ -163,10 +204,22 @@ const OcularList = () => {
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                         <td style={{color: '#014c91'}}>{ocular.client}</td>
                                         <td style={{color: '#014c91'}}>{ocular.company}</td>
+                                        <td style={{color: '#014c91'}}>{ocular.contactNumber}</td>
+                                        <td style={{color: '#014c91'}}>{ocular.location}</td>
                                         <td style={{color: '#014c91'}}>{ocular.date}</td>
                                         <td style={{color: '#014c91'}}>{ocular.time}</td>
                                         <td style={{color: '#014c91'}}>{ocular.technician}</td>
-                                        <td style={{color: '#014c91'}}>{React.createElement(FaEllipsisH, { size: 20 })}</td>
+                                        <td style={{ color: '#014c91' }}>
+                                        <div style={{ position: 'relative' }}>
+                        <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
+                          <FaEllipsisH size={20} />
+                        </div>
+                        <Dropdown show={index === activeDropdown} align="start">
+              
+                          {renderDropdown(index)}
+                        </Dropdown>
+                      </div>
+                                        </td>
                                     </tr>
                                 </React.Fragment>
                             ))}

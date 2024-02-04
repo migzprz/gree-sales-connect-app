@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
+import { FaDownload, FaEye } from 'react-icons/fa';
 import { Row, Col, Form, CardBody } from 'react-bootstrap';
 import '../index.css';
 import PreviewReport from './PreviewReport';
@@ -11,14 +11,15 @@ const ReportOptions = () => {
     const [preview, setPreview] = useState(false);
 
     const handleSubmit = (event) => {
+    event.preventDefault();
       const form = event.currentTarget;
       if (form.checkValidity() === false) {
-        event.preventDefault();
         event.stopPropagation();
+      } else {
+        setPreview(true);
       }
   
       setValidated(true);
-      setPreview(true)
     };
 
     return (
@@ -76,13 +77,13 @@ const ReportOptions = () => {
                 <Row className="mt-5">
                     <Col lg="3">
                         <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
-                            Download Report
+                        {React.createElement(FaDownload, { size: 18, style: { marginRight: '5px' } })}  Download
                         </button>
                     </Col>
 
                     <Col lg="3">
                         <button className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}}>
-                            Preview Report
+                        {React.createElement(FaEye, { size: 18, style: { marginRight: '5px' } })}  Preview
                         </button>
                     </Col>
                 </Row>

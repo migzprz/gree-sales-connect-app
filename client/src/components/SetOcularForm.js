@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
+import { FaCalendarDay} from 'react-icons/fa';
 import { Row, Col, Form, CardBody } from 'react-bootstrap';
 import '../index.css';
 import ExistingClientModal from './ExistingClientModal';
@@ -251,7 +251,7 @@ const SetOcularForm = () => {
         <Row className="mt-5">
             <Col lg="3">
                 <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
-                    Schedule New Ocular
+                {React.createElement(FaCalendarDay, { size: 18, style: { marginRight: '5px' } })}   Schedule New Ocular
                  </button>
             </Col>
         </Row>
