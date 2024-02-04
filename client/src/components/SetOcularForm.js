@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { FaCalendarDay} from 'react-icons/fa';
 import { Row, Col, Form, CardBody } from 'react-bootstrap';
 import '../index.css';
-import ExistingClientModal from './ExistingClientModal';
+import ReturningClientModal from './ReturningClientModal';
 
 const SetOcularForm = () => {
 
@@ -39,7 +39,7 @@ const SetOcularForm = () => {
                     <h5
                         style={{
                             textDecoration: activeOption === 'newClient' ? 'underline' : 'none',
-                            color: activeOption === 'newClient' ? '#014c91' : 'lightgrey',
+                            color: activeOption === 'newClient' ? '#014c91' : '#6c757d',
                             cursor: 'pointer',
                             marginRight: '20px'
                         }}
@@ -49,17 +49,17 @@ const SetOcularForm = () => {
                     </h5>
                     <h5
                         style={{
-                            textDecoration: activeOption === 'existingClient' ? 'underline' : 'none',
-                            color: activeOption === 'existingClient' ? '#014c91' : 'lightgrey',
+                            textDecoration: activeOption === 'returningClient' ? 'underline' : 'none',
+                            color: activeOption === 'existingClient' ? '#014c91' : '#6c757d',
                             cursor: 'pointer'
                         }}
-                        onClick={() => handleOptionClick('existingClient')}
+                        onClick={() => handleOptionClick('returningClient')}
                     >
-                        Existing Client
+                        Returning Client
                     </h5>
                 </div>
 
-                {!isNew && <ExistingClientModal />}
+                {!isNew && <ReturningClientModal />}
 
         {/*Forms*/ }
         <Form noValidate validated={validated} onSubmit={handleSubmit}>

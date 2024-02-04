@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Row, Col, Button, Modal, Form, FormControl, Table } from 'react-bootstrap';
 import { FaSearch} from 'react-icons/fa';
-const ExistingClientModal = () => {
+const ReturningClientModal = () => {
     const [showModal, setShowModal] = useState(false);
 
     const handleShowModal = () => {
@@ -25,13 +25,13 @@ const ExistingClientModal = () => {
         <Row className="mt-5">
             <Col lg="3">
                 <button className="btn w-100" onClick={handleShowModal} style={{color: "white", backgroundColor: "#014c91"}}>
-                {React.createElement(FaSearch, { size: 18, style: { marginRight: '5px' } })} Search for an Existing Client
+                {React.createElement(FaSearch, { size: 18, style: { marginRight: '5px' } })} Search for a Returning Client
                  </button>
             </Col>
         </Row>
             <Modal show={showModal} onHide={handleCloseModal} size="lg">
                 <Modal.Header style={{color: "white", backgroundColor: "#014c91"}}>
-                    <Modal.Title>Existing Clients</Modal.Title>
+                    <Modal.Title>Select a Returning Client</Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{backgroundColor: "#E5EDF4"}}>
                 <Row>
@@ -73,13 +73,13 @@ const ExistingClientModal = () => {
                     </Table>
                 </Modal.Body>
                 <Modal.Footer style={{backgroundColor: "#E5EDF4"}}>
-                    <Button variant="danger" onClick={handleCloseModal}>
-                        Close
-                    </Button>
+                <button className="btn" onClick={handleCloseModal} style={{color: "white", backgroundColor: "#6c757d"}}>
+                            Cancel
+                            </button>
                 </Modal.Footer>
             </Modal>
         </div>
     );
 };
 
-export default ExistingClientModal;
+export default ReturningClientModal;
