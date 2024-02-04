@@ -5,6 +5,7 @@ import { FaEllipsisH, FaFilter, FaSort, FaSearch} from 'react-icons/fa';
 import { Row, Col, Card, CardBody, Table, Dropdown } from 'react-bootstrap';
 import '../index.css';
 import EditOcularModal from './EditOcularModal';
+import CancelOcularModal from './CancelOcularModal';
 //import axios from 'axios'
 
 const OcularList = () => {
@@ -38,7 +39,7 @@ const OcularList = () => {
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
               <Dropdown.Item>Generate Quotation</Dropdown.Item>
               <EditOcularModal/>
-              <Dropdown.Item>Delete Ocular</Dropdown.Item>
+              <CancelOcularModal/>
             </Dropdown.Menu>
           );
         }
