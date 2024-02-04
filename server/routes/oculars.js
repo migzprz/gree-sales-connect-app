@@ -26,8 +26,8 @@ module.exports = (query) => {
     router.get('/getOculars', async (req, res) => {
         try {
             const data = await query(`SELECT ocular_date, 
-                                        CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name, t.email, t.contact_number, c.company_name, 
-                                        CONCAT(cl.last_name, ", ", cl.first_name, " ", cl.middle_name) as client_name,
+                                        CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name, c.company_name, 
+                                        CONCAT(cl.last_name, ", ", cl.first_name, " ", cl.middle_name) as client_name, cl.contact_number as client_number,
                                         CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address
                                         FROM greesalesconnect.td_oculars o
                                         JOIN md_login l ON o.login_id = l.login_id
