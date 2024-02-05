@@ -6,26 +6,27 @@ import { Row, Col, Card, CardBody, Table, Dropdown } from 'react-bootstrap';
 import '../index.css';
 import EditOcularModal from './EditOcularModal';
 import CancelOcularModal from './CancelOcularModal';
-//import axios from 'axios'
+import axios from 'axios'
 
 const OcularList = () => {
 
     const [ocularData, setOcularData] = useState([])
 
-    // useEffect(() => {
-    //     axios.get('http://localhost:4000/api/getOculars/')
-    //     .then((response) => {
-    //         try {
-    //             setOcularData(response.data)
-    //         } catch (error) {
-    //             console.error('Error fetching data: ', error)
-    //         }
-    //     })
-    // }, [])
-
-    // useEffect(() => {
-    //     console.log(ocularData)
-    // },[ocularData])
+    // fetch and mount ocular data to useState
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/api/getOculars/')
+                setOcularData(response.data)
+            } catch (error) {
+                console.error('Error fetching data: ', error)
+            }
+        }
+        fetchData()
+    },[])
+    useEffect(() => {
+        console.log(ocularData)
+    },[ocularData])
 
     const [activeDropdown, setActiveDropdown] = useState(null);
 
@@ -200,26 +201,26 @@ const OcularList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {ocularList.map((ocular, index) => (
+                            {ocularData.map((ocular, index) => (
                                 <React.Fragment key={ocular.id}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                        <td style={{color: '#014c91'}}>{ocular.client}</td>
-                                        <td style={{color: '#014c91'}}>{ocular.company}</td>
-                                        <td style={{color: '#014c91'}}>{ocular.contactNumber}</td>
-                                        <td style={{color: '#014c91'}}>{ocular.location}</td>
-                                        <td style={{color: '#014c91'}}>{ocular.date}</td>
-                                        <td style={{color: '#014c91'}}>{ocular.time}</td>
-                                        <td style={{color: '#014c91'}}>{ocular.technician}</td>
+                                        <td style={{color: '#014c91'}}>{ocular.client_name}</td>
+                                        <td style={{color: '#014c91'}}>{ocular.company_name}</td>
+                                        <td style={{color: '#014c91'}}>{ocular.client_number}</td>
+                                        <td style={{color: '#014c91'}}>{ocular.site_address}</td>
+                                        <td style={{color: '#014c91'}}>{new Date(ocular.ocular_date).toLocaleDateString()}</td>
+                                        <td style={{color: '#014c91'}}>{new Date(ocular.ocular_date).toLocaleTimeString()}</td>
+                                        <td style={{color: '#014c91'}}>{ocular.technician_name}</td>
                                         <td style={{ color: '#014c91' }}>
                                         <div style={{ position: 'relative' }}>
-                        <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
-                          <FaEllipsisH size={20} />
-                        </div>
-                        <Dropdown show={index === activeDropdown} align="start">
-              
-                          {renderDropdown(index)}
-                        </Dropdown>
-                      </div>
+                            <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
+                            <FaEllipsisH size={20} />
+                            </div>
+                            <Dropdown show={index === activeDropdown} align="start">
+                
+                            {renderDropdown(index)}
+                            </Dropdown>
+                            </div>
                                         </td>
                                     </tr>
                                 </React.Fragment>

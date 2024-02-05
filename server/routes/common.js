@@ -42,6 +42,18 @@ module.exports = (query) => {
         }
     })
 
+    router.get('/getClients', async (req, res) => {
+        try {
+            const data = await query('SELECT * FROM md_clients', [])
+            console.log(data)
+        
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
     /**
      *  Returns the list of regions, provinces, municipalities and barangays
      */
@@ -72,8 +84,10 @@ module.exports = (query) => {
      */
     router.get('/getStoredLocations', async (req, res) => {
         try {
-            const data = await query(`SELECT location_id, CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address 
+            const data = await query(`SELECT location_id, CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address,
+                                      p.province_id, m.municipality_id, b.barangay_id,  r.region_id
                                         FROM md_locations loc
+                                        JOIN md_regions r ON loc.addr_region_id = r.region_id
                                         JOIN md_provinces p ON loc.addr_province_id = p.province_id
                                         JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
                                         JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id`, [])

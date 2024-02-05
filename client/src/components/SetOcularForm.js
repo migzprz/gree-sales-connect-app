@@ -1,15 +1,52 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaCalendarDay} from 'react-icons/fa';
 import { Row, Col, Form, CardBody } from 'react-bootstrap';
 import '../index.css';
 import ReturningClientModal from './ReturningClientModal';
+import axios from 'axios';
 
 const SetOcularForm = () => {
+    const [location, setLocation] = useState({})
+    const [clients, setClients] = useState({})
+    const [storedLocations, setStoredLocations] = useState({})
+    const [companies, setCompanies] = useState({})
 
     const [isNew, setIsNew] = useState(true);
 
     const [activeOption, setActiveOption] = useState('newClient');
+
+    // fetch location data and stored client and location data for quick fillup feature
+    const fetchData = async () => {
+        try {
+            const locFormsResponse = await axios.get('http://localhost:4000/api/getLocationsForAddressInForms/')
+            const locStoredResponse = await axios.get('http://localhost:4000/api/getStoredLocations/')
+            const clientResponse = await axios.get('http://localhost:4000/api/getClients/')
+            const companyResponse = await axios.get('http://localhost:4000/api/getCompanies/')
+            setLocation(locFormsResponse.data)
+            setStoredLocations(locStoredResponse.data)
+            setClients(clientResponse.data)
+            setCompanies(companyResponse.data)
+        } catch (error) {
+            console.error('Error fetching data: ', error)
+        }
+    }
+    useEffect(() => {
+        fetchData()
+    },[])
+    useEffect(() => {
+        console.log(location)
+    },[location])
+    useEffect(() => {
+        console.log(storedLocations)
+    },[storedLocations])
+    useEffect(() => {
+        console.log(clients)
+    },[clients])
+    useEffect(() => {
+        console.log(companies)
+    },[companies])
+
 
     const handleOptionClick = (option) => {
         setActiveOption(option);
