@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import SetOcular from './pages/SetOcular';
 import GenerateReport from './pages/GenerateReport';
 import GenerateQuotation from './pages/GenerateQuotation';
+import ViewQuotations from './pages/ViewQuotations';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
                   <Route path="/setocular" element={<SetOcular/>}/> 
                   <Route path="/report" element={<GenerateReport/>}/> 
                   <Route path="/generatequotation" element={<GenerateQuotation/>}/> 
+                  <Route path="/viewquotations" element={<ViewQuotations/>}/> 
               </Routes>
           </BrowserRouter>
     </>
