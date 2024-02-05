@@ -62,7 +62,7 @@ const Sidebar = ({ children }) => {
                 {item.submenuNames.length > 0 ? (
                   <div
                     style={{
-                      marginTop: '30px',
+                      marginTop: '20px',
                       cursor: isOpen ? 'pointer' : 'default',
                     }}
                     onClick={() => {
@@ -79,7 +79,7 @@ const Sidebar = ({ children }) => {
                 ) : (
                   <div
                     style={{
-                      marginTop: '30px',
+                      marginTop: '20px',
                       cursor: isOpen ? 'pointer' : 'default',
                     }}
                   >
@@ -91,12 +91,12 @@ const Sidebar = ({ children }) => {
 
 
                 {/* Item Name*/}
-                <div style={{ display: isOpen ? 'block' : 'none', marginLeft: '10px', marginTop: '40px', fontSize: '20px', fontWeight: 'bold'   }}>{item.name}</div>
+                <div style={{ display: isOpen ? 'block' : 'none', marginLeft: '10px', marginTop: '20px', fontSize: '20px', fontWeight: 'bold'   }}>{item.name}</div>
                 
                 {/* Toggle Chevron Functionality */}
                 {isOpen && item.submenuNames && item.submenuNames.length > 0 && (
                   <div
-                    style={{ marginLeft: 'auto', marginTop: '40px', cursor: 'pointer' }}
+                    style={{ marginLeft: 'auto', marginTop: '20px', cursor: 'pointer' }}
                     onClick={() => toggleSubMenu(index)}
                   >
                     {React.createElement(expandedMenuIndex === index ? FaChevronDown : FaChevronRight, { size: 20 })}
@@ -108,7 +108,7 @@ const Sidebar = ({ children }) => {
 
           {/* Display submenu items */}
             {item.submenuNames && isOpen && expandedMenuIndex === index && (
-              <div style={{ marginLeft: '50px', marginTop: '15px', fontSize: '18px' }}>
+              <div style={{ marginLeft: '50px', marginTop: '12px', fontSize: '18px' }}>
                 {item.submenuNames.map((submenuItem, submenuIndex) => (
                   <Link style={{textDecoration: 'none', color:'#014c91'}} to={menuItem[index].submenuLinks[submenuIndex]}>
                       <div style={{ marginTop: '15px'}} key={submenuIndex}>{submenuItem}</div>
