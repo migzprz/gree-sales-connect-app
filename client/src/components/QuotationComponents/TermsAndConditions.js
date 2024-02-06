@@ -29,13 +29,14 @@ const TermsAndConditions = () => {
                 <Col lg="12">
                     <Form.Group controlId="inclusions">
                         <Form.Label>A. Inclusions</Form.Label>
-                        <Form.Control type="text" required/>
+                        <Form.Control as="textarea" required />
                         <Form.Control.Feedback type="invalid">
                             Please provide text.
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Col>
             </Row>
+
             <Row className="mt-3">
                 <Col lg="12">
                     <Form.Group controlId="equipment">
@@ -47,6 +48,7 @@ const TermsAndConditions = () => {
                     </Form.Group>
                 </Col>
             </Row>
+
             <Row className="mt-3">
                 <Col lg="12">
                     <Form.Group controlId="installation">
@@ -58,6 +60,7 @@ const TermsAndConditions = () => {
                     </Form.Group>
                 </Col>
             </Row>
+            
             <Row className="mt-3">
                 <Col lg="12">
                     <Form.Group controlId="works">
@@ -83,12 +86,12 @@ const TermsAndConditions = () => {
 
 
             <Row className="mt-5">
-            <Col lg="3">
-                <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
-                {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })}   Save Terms & Conditions
-                 </button>
-            </Col>
-        </Row>
+                <Col lg="3">
+                    <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
+                    {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })}   Save Terms & Conditions
+                    </button>
+                </Col>
+            </Row>
 
         </Form>
 

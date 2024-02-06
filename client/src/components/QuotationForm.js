@@ -8,7 +8,7 @@ import ClientSelection from './QuotationComponents/ClientSelection';
 import TermsAndConditions from './QuotationComponents/TermsAndConditions';
 
 const QuotationForm = () => {
-  const [hasItems, setHasItems] = useState(false);
+  const [hasItems, setHasItems] = useState(true);
   const [validated, setValidated] = useState(false);
 
   const handleSubmit = (event) => {
@@ -21,12 +21,18 @@ const QuotationForm = () => {
     setValidated(true);
   };
 
+  const [selectionType, setSelectionType] = useState('offer'); // Default to offer selection
+
+  const handleOfferSubmission = () => {
+    setSelectionType('client');
+  };
+
 // Sample data for different products and services
 const offerList = [
     {
-      name: 'Product 1',
-      code: 'ABC-12334',
-      price: 'Php 65,000.00',
+      name: '1.5HP Split Type Inverter',
+      code: 'GW12-6DR',
+      price: 'Php 36,999.00',
       type: 'Split-type',
     },
     {
@@ -47,7 +53,6 @@ const offerList = [
       price: 'Php 5,000.00',
       type: 'Parts',
     },
-    // Add more products or services as needed
     {
       name: 'Product 3',
       code: 'GHI-54321',
@@ -151,13 +156,10 @@ const offerList = [
     <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91' }}>
       <h1>Generate a New Quotation</h1>
 
-      {/* <OfferSelection offerList={offerList}/> */}
-      {/* <ClientSelection/> */}
-      <TermsAndConditions/>
+      {selectionType === 'offer' && <OfferSelection offerList={offerList} onOfferSubmission={handleOfferSubmission}/>}
+      {selectionType === 'client' && <ClientSelection/>}
+      {selectionType === 'terms' && <TermsAndConditions/>}
 
-
-
-    
     </div>
   );
 };

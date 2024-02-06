@@ -119,7 +119,7 @@ const SetOcularForm = () => {
                     </Form.Control.Feedback>
                 </Form.Group>
             </Col>
-            <Col lg="5">
+            <Col className="ms-5" lg="4">
                  <Form.Group controlId="companyName">
                     <Form.Label>Company Name</Form.Label>
                     <Form.Control type="text" disabled={!isNew}  placeholder="optional"/>
@@ -149,9 +149,9 @@ const SetOcularForm = () => {
                     </Form.Control.Feedback>
                 </Form.Group>
             </Col>
-            <Col lg="5">
+            <Col className="ms-5"  lg="4">
                  <Form.Group controlId="tin">
-                    <Form.Label>TIN ID</Form.Label>
+                    <Form.Label>Company TIN ID</Form.Label>
                     <Form.Control type="text" pattern="[0-9]*" disabled={!isNew} placeholder="optional"/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid TIN
@@ -292,7 +292,7 @@ const SetOcularForm = () => {
                  </button>
             </Col>
         </Row>
-    </Form>
+        </Form>
 
 
        

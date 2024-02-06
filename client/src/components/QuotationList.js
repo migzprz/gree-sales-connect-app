@@ -153,7 +153,7 @@ const QuotationList = () => {
                                         <td style={{color: '#014c91'}}>{quotation.company}</td>
                                         <td style={{color: '#014c91'}}>{quotation.contactNumber}</td>
                                         <td style={{color: '#014c91'}}>{quotation.dateGenerated}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.totalPrice}</td>
+                                        <td style={{color: '#014c91'}}>Php {quotation.totalPrice}</td>
                                         <td style={{color: '#014c91'}}>{quotation.status}</td>
                                         <td style={{ color: '#014c91' }}>
                                         <div style={{ position: 'relative' }}>
