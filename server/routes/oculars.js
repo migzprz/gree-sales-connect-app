@@ -86,8 +86,7 @@ module.exports = (query) => {
 
 
         try {
-            
-            const quotations_query = 'INSERT INTO td_quotations (client_id, company_id, location_id, login_id, date_created ) VALUES (?, ?, ?, ?, NOW())'
+            const quotations_query = 'INSERT INTO td_quotations (client_id, company_id, location_id, login_id, date_created ) VALUES (?, ?, ?, ?, NOW())' // TODO: Change, login_id and date_created should be indicators for a quotation that already has an ocular performed
             let quo_data, val
             
             if (region_id !== null) { // new location 
