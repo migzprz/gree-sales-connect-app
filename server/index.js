@@ -7,6 +7,7 @@ const mysql = require('mysql2/promise')
 // api route imports
 const Oculars = require('./routes/oculars')
 const Common = require('./routes/common')
+const Quotation = require('./routes/quotations')
 
 app.use(cors({
     origin: 'http://localhost:3000',
@@ -66,6 +67,7 @@ app.use((req, res, next) => {
 // API
 app.use('/api', Oculars(query));
 app.use('/api', Common(query));
+app.use('/api', Quotation(query));
 
 app.listen(4000, () => {
     console.log("Server is RUNNING ON PORT 4000");
