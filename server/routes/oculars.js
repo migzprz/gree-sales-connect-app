@@ -26,20 +26,20 @@ module.exports = (query) => {
     router.get('/getOculars', async (req, res) => {
         try {
             const data = await query(`SELECT ocular_date, 
-                                        CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name, c.company_name, 
-                                        CONCAT(cl.last_name, ", ", cl.first_name, " ", cl.middle_name) as client_name, cl.contact_number as client_number,
-                                        CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address
-                                        FROM greesalesconnect.td_oculars o
-                                        JOIN md_login l ON o.login_id = l.login_id
-                                        JOIN md_technicians t ON o.technician_id = t.technician_id
-                                        JOIN td_quotations q ON o.quotation_id = q.quotation_id
-                                        JOIN md_companies c ON q.company_id = c.company_id
-                                        JOIN md_clients cl ON q.client_id = cl.client_id
-                                        JOIN md_locations loc ON q.location_id = loc.location_id
-                                        JOIN md_provinces p ON loc.addr_province_id = p.province_id
-                                        JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
-                                        JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
-                                        ORDER BY ocular_date ASC;`, [])
+                                    CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name, c.company_name, 
+                                    CONCAT(cl.last_name, ", ", cl.first_name, " ", cl.middle_name) as client_name, cl.contact_number as client_number,
+                                    CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address
+                                    FROM greesalesconnect.td_oculars o
+                                    JOIN md_quotation_clients q ON o.ocular_id = q.ocular_id
+                                    JOIN md_login l ON o.login_id = l.login_id
+                                    JOIN md_technicians t ON o.technician_id = t.technician_id
+                                    JOIN md_companies c ON q.company_id = c.company_id
+                                    JOIN md_clients cl ON q.client_id = cl.client_id
+                                    JOIN md_locations loc ON q.location_id = loc.location_id
+                                    JOIN md_provinces p ON loc.addr_province_id = p.province_id
+                                    JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
+                                    JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
+                                    ORDER BY ocular_date ASC;`, [])
             console.log(data)
             res.send(data)
         } catch (error) {
@@ -60,74 +60,52 @@ module.exports = (query) => {
      */
     router.post('/postOcular', async (req, res) => {
 
-        const region_id = req.body.region_id
-        const location_id = req.body.location_id
+        const location_name = req.body.location_name || null
 
-        const values = [
+        const ocu_values = [
             req.body.ocular_date,
             req.body.login_id,
             req.body.technician_id
         ]
 
         const loc_values = [
-            region_id,
+            req.body.region_id,
             req.body.province_id,
             req.body.municipality_id,
             req.body.barangay_id,
             req.body.street_name,
             req.body.bldg_no,
-            req.body.zipcode
+            req.body.zipcode,
+            location_name
         ]
 
-        const quo_values = [
+        const quo_client_values = [
             req.body.client_id, 
             req.body.company_id
         ]
 
-
+        // new post ocular using `md_quotation_clients`
         try {
-            const quotations_query = 'INSERT INTO td_quotations (client_id, company_id, location_id, login_id, date_created ) VALUES (?, ?, ?, ?, NOW())' // TODO: Change, login_id and date_created should be indicators for a quotation that already has an ocular performed
-            let quo_data, val
+            // post new location record
+            const loc_query = 'INSERT INTO md_locations (addr_region_id, addr_province_id, addr_municipality_id, addr_barangay_id, addr_street_name, addr_bldg_no, zipcode, location_name) VALUES (?, ?, ?, ?, ?, ?, ?, ? )'
+            const loc_data = await query(loc_query, loc_values)
+
+            // post new ocular record
+            const ocu_query = 'INSERT INTO td_oculars (ocular_date, login_id, technician_id, date_created) VALUES (?, ?, ?, NOW())'
+            const ocu_data = await query(ocu_query, ocu_values)
+
+            // post new quotation client record
+            const quo_client_query = 'INSERT INTO md_quotation_client (client_id, company_id, ocular_id, location_id) VALUES (?, ?, ?, ?)'
+            const quo_client_data = await query(quo_client_query, [...quo_client_values, ocu_data.insertId, loc_data.insertId])
+
+            res.status(200).json({message: 'Success... New ocular added to the database'})
             
-            if (region_id !== null) { // new location 
-                const loc_query_partial = 'INSERT INTO md_locations (addr_region_id, addr_province_id, addr_municipality_id, addr_barangay_id, addr_street_name, addr_bldg_no, zipcode'
-                const with_name = ', location_name) VALUES (?, ?, ?, ?, ?, ?, ?, ? )'
-                const wo_name = ') VALUES (?, ?, ?, ?, ?, ?, ?)'
-
-                // change function parameter for location query depending on the presence of a location name
-                if (req.body.location_name === null) {
-                    location_query = loc_query_partial + wo_name
-                    val = loc_values
-                } else {
-                    location_query = loc_query_partial + with_name
-                    val = [...loc_values, req.body.location_name]
-                }
-                // POSTING new location record
-                const loc_data = await query(location_query, val)
-                console.log('new location record: ', loc_data)
-                console.log('new location_id: ', loc_data.insertId)
-
-                // POSTING new quotation query record
-                quo_data = await query(quotations_query, [...quo_values, loc_data.insertId, req.body.login_id])
-                console.log(quo_data)
-
-            } else { // location already recorded in the db
-
-                // POSTING new quotation query record
-                quo_data = await query(quotations_query, [...quo_values, location_id, req.body.login_id])
-                console.log('new quotation record: ', quo_data)
-            }
-
-            // POSTING new ocular record
-            const data = await query('INSERT INTO td_oculars (ocular_date, login_id, technician_id, quotation_id, date_created) VALUES (?, ?, ?, ?, NOW())', [...values, quo_data.insertId])
-            console.log('new ocular record: ', data)
-
-            res.status(200).json({message: 'Success... New ocular added to database'})
         } catch (error) {
             console.error('Error: ', error)
             res.status(400).json({message: `Error... Failed one or more database operations... ${error}`})
             throw error
         }
+
     })
 
 
