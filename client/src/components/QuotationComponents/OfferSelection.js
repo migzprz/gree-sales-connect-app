@@ -1,11 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState, useEffect } from 'react';
-import { FaFilter, FaSort, FaSearch, FaSave, FaEye, FaEyeSlash} from 'react-icons/fa';
+import { FaFilter, FaSort, FaSearch, FaSave, FaEye, FaEyeSlash, FaTrash} from 'react-icons/fa';
 import { Row, Col, Form, CardBody, Card, Table, InputGroup} from 'react-bootstrap';
 import '../../index.css';
 
 const OfferSelection = ({offerList, onOfferSubmission}) => {
-  const [hasItems, setHasItems] = useState(true);
+  const [hasItems, setHasItems] = useState(false);
   const [isFullView, setIsFullView] = useState(true);
   const [validated, setValidated] = useState(false);
 
@@ -32,13 +32,76 @@ const OfferSelection = ({offerList, onOfferSubmission}) => {
   };
 
 
-  const [itemList, setItemList] = useState([
-    {quantity:0, name:"1.5 HP Split Type Inverter", description:"XBY-1234", type: "window-type", price:60000, discPrice:45000},
-    {quantity:0, name:"Product A", description:"XBY-1234", type: "window-type", price:60000, discPrice:45000},
-    {quantity:0, name:"Product A", description:"XBY-1234", type: "window-type", price:60000, discPrice:45000},
-    {quantity:0, name:"Product A", description:"XBY-1234", type: "window-type", price:60000, discPrice:45000}
-]);
 
+
+const [itemList, setItemList] = useState([]);
+const [itemListTotals, setItemListTotals] = useState([]);
+
+const handleItemListChange = (event, index, property) => {
+    const { value } = event.target;
+
+    setItemList(prevItemList => {
+        const updatedItemList = [...prevItemList];
+        updatedItemList[index][property] = value;
+        return updatedItemList;
+    });
+};
+
+const handleRemoveFromItemList = (index) => {
+    setItemList(prevItemList => {
+        const updatedItemList = [...prevItemList];
+        updatedItemList.splice(index, 1); // Remove the item at the specified index
+        return updatedItemList;
+    });
+};
+
+console.log(itemList)
+
+const handleAddToItemList = (offer) => {
+    // Create a new object with the offer's properties and add additional fields
+    const newItem = {
+      ...offer,
+      quantity: 1,
+      discPrice: offer.price // Set discPrice to be the same as price initially
+    };
+    // Add the new item to the itemList
+    setItemList(prevItemList => [...prevItemList, newItem]);
+  };
+
+  // Function to calculate totals
+  const calculateTotals = () => {
+    let subtotal = 0;
+    let total = 0;
+    let totalDisc = 0;
+  
+    // Calculate subtotal and total
+    itemList.forEach(item => {
+      subtotal += parseFloat(item.price) * item.quantity;
+      total += parseFloat(item.discPrice) * item.quantity;
+    });
+  
+    // Calculate total discount
+    totalDisc = total - subtotal;
+  
+    // Update itemListTotals state
+    setItemListTotals({
+      subtotal: subtotal,
+      total: total,
+      totalDisc: totalDisc
+    });
+  };
+  
+  
+
+  // Calculate totals when itemList changes
+  useEffect(() => {
+    calculateTotals();
+  }, [itemList]);
+
+  const formatNumber = (number) => {
+    return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+  
 
   return (
         <>     
@@ -71,23 +134,23 @@ const OfferSelection = ({offerList, onOfferSubmission}) => {
             <Row>
 
                 {/* Initial View Display */}
-                {!hasItems ? (
+                {itemList.length == 0 ? (
                     <Col lg="12">
                         <Row>
-                            {offerList.map((offer, index) => (
+                        {offerList.map((offer, index) => (
                             <Col className="mt-3" lg="2" key={index}>
-                                <Card style={{ cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }}>
+                            <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
                                 <Card.Title>{offer.name}</Card.Title>
                                 <Card.Text>
-                                    {offer.code} <br />
-                                    {offer.price} <br />
-                                    {offer.type}
+                                {offer.code} <br />
+                                <strong>₱ {formatNumber(offer.price)}  </strong><br />
+                                {offer.type}
                                 </Card.Text>
-                                </Card>
+                            </Card>
                             </Col>
-                            ))}
+                        ))}
                         </Row>
-                    </Col>
+                  </Col>
                 ):(
                     
                 <>
@@ -110,31 +173,42 @@ const OfferSelection = ({offerList, onOfferSubmission}) => {
                                                     <th style={{color: '#014c91'}}>Unit Model</th>
                                                     <th style={{color: '#014c91'}}>SRP</th>
                                                     <th style={{color: '#014c91'}}>Discounted Price</th>
-                                                    <th style={{color: '#014c91'}}></th>
+                                                    <th style={{color: '#014c91', width: '5%'}}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                             {itemList.map((item, index) => (
-                                                <tr key={index} style={{ borderRadius: '20px', padding: '10px' }}>
+                                                    <tr key={index} style={{ borderRadius: '20px', padding: '10px' }}>
                                                     <td style={{ color: '#014c91' }}>
                                                         <Form.Group controlId={`qty-${index}`}>
-                                                            <Form.Control type="number" inputmode="numeric" min="1" required />
+                                                            <Form.Control   type="number" inputmode="numeric" min="1" required
+                                                                            value={item.quantity} onChange={(e) => handleItemListChange(e, index, 'quantity')} />
                                                         </Form.Group>
                                                     </td>
                                                     <td style={{ color: '#014c91' }}>{item.name}</td>
-                                                    <td style={{ color: '#014c91' }}>{item.description}</td>
+                                                    <td style={{ color: '#014c91' }}>{item.code}</td>
                                                     <td style={{ color: '#014c91' }}>
-                                                        ₱ {item.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                        ₱ {formatNumber(item.price)}
                                                     </td>
                                                     <td style={{ color: '#014c91' }}>
                                                         <Form.Group controlId={`discPrice-${index}`}>
                                                             <InputGroup>
                                                                 <InputGroup.Text> ₱ </InputGroup.Text>
-                                                                <Form.Control className="money" type="number" inputmode="numeric" min="0" required onWheel={(e) => e.target.blur()} />
+                                                                <Form.Control   className="money" type="number" inputmode="numeric" min="0" 
+                                                                                required onWheel={(e) => e.target.blur()} value={item.discPrice}
+                                                                                onChange={(e) => handleItemListChange(e, index, 'discPrice')} />
                                                             </InputGroup>
                                                         </Form.Group>
                                                     </td>
+                                                    <td style={{ color: '#014c91' }}>
+                                                        {React.createElement(FaTrash, { 
+                                                            size: 18, 
+                                                            style: { marginTop: '6px', cursor: 'pointer' }, 
+                                                            onClick: () => handleRemoveFromItemList(index) // Attach onClick event handler
+                                                        })}
+                                                    </td>
                                                 </tr>
+                                            
                                             ))}
 
                                             </tbody>
@@ -143,27 +217,28 @@ const OfferSelection = ({offerList, onOfferSubmission}) => {
                                         {/*Total*/}
                                         <div style={{ padding: '10px', borderRadius: '10px', marginTop: '20px', background: '#E5EDF4', color: '#014c91'  }}>
                                             <Row >
-                                                <Col lg="2">
+                                                <Col lg="3">
                                                     Subtotal
                                                 </Col>
                                                 <Col lg="3">
-                                                    Php 500,000 
+                                                    ₱ {formatNumber(itemListTotals.subtotal)}
                                                 </Col>
                                             </Row>
                                             <Row >
-                                                <Col lg="2">
+                                                <Col lg="3">
                                                     Total Discount
                                                 </Col>
                                                 <Col lg="3">
-                                                    (Php 20,000) 
+                                                (₱ {formatNumber(itemListTotals.totalDisc)})
+                                                    
                                                 </Col>
                                             </Row>
                                             <Row className="mt-2" >
-                                                <Col lg="2">
+                                                <Col lg="3">
                                                     <strong> Total </strong>
                                                 </Col>
                                                 <Col lg="3">
-                                                    <strong>Php 480,000 </strong>
+                                                    <strong>₱ {formatNumber(itemListTotals.total)} </strong>
                                                 </Col>
                                             </Row>
                                         </div>
@@ -247,11 +322,11 @@ const OfferSelection = ({offerList, onOfferSubmission}) => {
                         <Row>
                         {offerList.map((offer, index) => (
                             <Col className="mt-3" lg="4" key={index}>
-                            <Card style={{ cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }}>
+                            <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
                                 <Card.Title>{offer.name}</Card.Title>
                                 <Card.Text>
                                 {offer.code} <br />
-                                {offer.price} <br />
+                                <strong>₱ {formatNumber(offer.price)}  </strong><br />
                                 {offer.type}
                                 </Card.Text>
                             </Card>
