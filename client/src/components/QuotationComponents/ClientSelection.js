@@ -5,7 +5,7 @@ import { Row, Col, Form, CardBody, Card, Table } from 'react-bootstrap';
 import ReturningClientModal from '../ReturningClientModal';
 
 
-const ClientSelection = ({offerList}) => {
+const ClientSelection = ({onClientSubmission}) => {
     const [isNew, setIsNew] = useState(true);
 
     const [activeOption, setActiveOption] = useState('newClient');
@@ -22,7 +22,9 @@ const ClientSelection = ({offerList}) => {
       if (form.checkValidity() === false) {
         event.preventDefault();
         event.stopPropagation();
-      }
+      } else {
+        onClientSubmission()
+    }
   
       setValidated(true);
     };
@@ -112,21 +114,109 @@ const ClientSelection = ({offerList}) => {
                 <Col lg="5">
                     <Form.Group controlId="tin">
                         <Form.Label>TIN ID</Form.Label>
-                        <Form.Control type="text" pattern="[0-9]*" disabled={!isNew} placeholder="optional"/>
+                        <Form.Control type="text" pattern="[0-9]*" disabled={!isNew}/>
                         <Form.Control.Feedback type="invalid">
                             Please provide a valid TIN
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Col>
             </Row>
+            <Row className="mt-3">
+                <Col lg="4">
+                    <Form.Group controlId="unitNo">
+                        <Form.Label>Unit No.</Form.Label>
+                        <Form.Control type="text" />
+                        <Form.Control.Feedback type="invalid">
+                            Please provide a valid Unit No.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+                <Col lg="4">
+                    <Form.Group controlId="street">
+                        <Form.Label>Street</Form.Label>
+                        <Form.Control type="text" />
+                        <Form.Control.Feedback type="invalid">
+                            Please provide a valid Street Name.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+                <Col lg="3">
+                    <Form.Group controlId="barangay">
+                        <Form.Label>Barangay</Form.Label>
+                        <Form.Control as="select">
+                            <option value=""> Select </option>
+                            <option value="1"> One </option>
+                            <option value="2"> Two </option>
+                            <option value="3"> Three </option>
+                        </Form.Control>
+                        <Form.Control.Feedback type="invalid">
+                            Please choose a barangay.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+            </Row>
+
+            <Row className="mt-2">
+                <Col lg="3">
+                    <Form.Group controlId="city">
+                        <Form.Label>City</Form.Label>
+                        <Form.Control as="select">
+                            <option value=""> Select </option>
+                            <option value="1"> One </option>
+                            <option value="2"> Two </option>
+                            <option value="3"> Three </option>
+                        </Form.Control>
+                        <Form.Control.Feedback type="invalid">
+                            Please choose a city.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+                <Col lg="3">
+                    <Form.Group controlId="province">
+                        <Form.Label>Province</Form.Label>
+                        <Form.Control as="select">
+                            <option value=""> Select </option>
+                            <option value="1"> One </option>
+                            <option value="2"> Two </option>
+                            <option value="3"> Three </option>
+                        </Form.Control>
+                        <Form.Control.Feedback type="invalid">
+                            Please choose a province.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+                <Col lg="3">
+                    <Form.Group controlId="region">
+                        <Form.Label>Region</Form.Label>
+                        <Form.Control as="select">
+                            <option value=""> Select </option>
+                            <option value="1"> One </option>
+                            <option value="2"> Two </option>
+                            <option value="3"> Three </option>
+                        </Form.Control>
+                        <Form.Control.Feedback type="invalid">
+                            Please choose a region.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+                <Col lg="2">
+                    <Form.Group controlId="companyName">
+                        <Form.Label>ZIP Code</Form.Label>
+                        <Form.Control pattern="[0-9]{4}" type="text"/>
+                        <Form.Control.Feedback type="invalid">
+                            Please provide a valid ZIP Code.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+            </Row>
 
             <Row className="mt-5">
-            <Col lg="3">
-                <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
-                {React.createElement(FaCheck, { size: 18, style: { marginRight: '5px' } })}   Confirm Client
-                 </button>
-            </Col>
-        </Row>
+                <Col lg="3">
+                    <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
+                    {React.createElement(FaCheck, { size: 18, style: { marginRight: '5px' } })}   Confirm Client
+                    </button>
+                </Col>
+            </Row>
 
         </Form>
 

@@ -12,7 +12,7 @@ import ViewQuotations from './pages/ViewQuotations';
 function App() {
   return (
     <>
-    <BrowserRouter>
+          <BrowserRouter>
               <Routes>
                   <Route path="/" element={<Login/>} />
                   <Route path="/home" element={<Home/>}/>

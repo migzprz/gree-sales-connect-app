@@ -13,7 +13,7 @@ const Sidebar = ({ children }) => {
     { name: 'Quotations', icon: FaScroll, link: '', submenuNames: ['Manage Quotations', 'Generate Quotation'], submenuLinks: ['/viewquotations','/generatequotation'] },
     { name: 'Sales', icon: FaBriefcase, link: '/home', submenuNames: [], submenuLinks: []},
     { name: 'Clients', icon: FaMale, link: '/home', submenuNames: [], submenuLinks: [] },
-    { name: 'Reports', icon: FaChartLine, link: '/report', submenuNames: [], submenuLinks: [] },
+    { name: 'Reports', icon: FaChartLine, link: '/report', submenuNames: [], submenuLinks: [] }
   ];
 
   const [expandedMenuIndex, setExpandedMenuIndex] = useState(null);

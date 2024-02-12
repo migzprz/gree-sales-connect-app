@@ -27,6 +27,10 @@ const QuotationForm = () => {
     setSelectionType('client');
   };
 
+  const handleClientSubmission = () => {
+    setSelectionType('terms');
+  };
+
 // Sample data for different products and services
 const offerList = [
     {
@@ -157,7 +161,7 @@ const offerList = [
       <h1>Generate a New Quotation</h1>
 
       {selectionType === 'offer' && <OfferSelection offerList={offerList} onOfferSubmission={handleOfferSubmission}/>}
-      {selectionType === 'client' && <ClientSelection/>}
+      {selectionType === 'client' && <ClientSelection onClientSubmission={handleClientSubmission}/>}
       {selectionType === 'terms' && <TermsAndConditions/>}
 
     </div>
