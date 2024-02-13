@@ -25,17 +25,18 @@ module.exports = (query) => {
      */
     router.get('/getOculars', async (req, res) => {
         try {
-            const data = await query(`SELECT ocular_date, 
-                                    CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name, c.company_name, 
-                                    CONCAT(cl.last_name, ", ", cl.first_name, " ", cl.middle_name) as client_name, cl.contact_number as client_number,
+            const data = await query(`SELECT 	ocular_date, 
+                                    CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name,
+                                    CONCAT(cp.last_name, ", ", cp.first_name, " ", cp.middle_name) as client_name, cp.contact_number as client_number,
+                                    co.company_name,
                                     CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address
-                                    FROM greesalesconnect.td_oculars o
-                                    JOIN md_quotation_clients q ON o.ocular_id = q.ocular_id
-                                    JOIN md_login l ON o.login_id = l.login_id
+                                    FROM td_oculars o 
+                                    JOIN md_quotation_clients qc ON o.ocular_id = qc.ocular_id
                                     JOIN md_technicians t ON o.technician_id = t.technician_id
-                                    JOIN md_companies c ON q.company_id = c.company_id
-                                    JOIN md_clients cl ON q.client_id = cl.client_id
-                                    JOIN md_locations loc ON q.location_id = loc.location_id
+                                    JOIN md_clients cl ON qc.client_id = cl.client_id
+                                    JOIN md_contactperson cp ON cl.contact_person_id = cp.contact_person_id
+                                    JOIN md_companies co ON cl.company_id = co.company_id
+                                    JOIN md_locations loc ON qc.location_id = loc.location_id
                                     JOIN md_provinces p ON loc.addr_province_id = p.province_id
                                     JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
                                     JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
