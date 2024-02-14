@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { FaEllipsisH, FaFilter, FaSort, FaSearch, FaCheck, FaClock} from 'react-icons/fa';
 import { Row, Col, Card, CardBody, CardHeader, Table, Dropdown } from 'react-bootstrap';
 import '../index.css';
-import EditOcularModal from './EditOcularModal';
-import CancelOcularModal from './CancelOcularModal';
+import { Link } from 'react-router-dom';
+
 
 const SalesList = () => {
 
@@ -150,7 +150,9 @@ const SalesList = () => {
                             {quotationList.map((quotation, index) => (
                                 <React.Fragment key={quotation.id}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                        <td style={{color: '#014c91'}}>{quotation.id}</td>
+                                        <td style={{ color: '#014c91' }}>
+                                            <Link to={`/viewsaledetails`} style={{ color: '#014c91'}}>{quotation.id}</Link>
+                                        </td>
                                         <td style={{color: '#014c91'}}>{quotation.client}</td>
                                         <td style={{color: '#014c91'}}>{quotation.company}</td>
                                         <td style={{color: '#014c91'}}>{quotation.contactNumber}</td>
@@ -161,14 +163,14 @@ const SalesList = () => {
                                         <td style={{color: '#014c91'}}>{quotation.status}</td>
                                         <td style={{ color: '#014c91' }}>
                                         <div style={{ position: 'relative' }}>
-                        <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
-                          <FaEllipsisH size={20} />
-                        </div>
-                        <Dropdown show={index === activeDropdown} align="start">
-              
-                          {renderDropdown(index)}
-                        </Dropdown>
-                      </div>
+                                            <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
+                                            <FaEllipsisH size={20} />
+                                            </div>
+                                            <Dropdown show={index === activeDropdown} align="start">
+                                
+                                            {renderDropdown(index)}
+                                            </Dropdown>
+                                        </div>
                                         </td>
                                     </tr>
                                 </React.Fragment>

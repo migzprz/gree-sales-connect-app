@@ -11,6 +11,7 @@ import ViewQuotations from './pages/ViewQuotations';
 import GenerateInvoice from './pages/GenerateInvoice';
 import ConvertToSale from './pages/ConvertToSale';
 import ViewSales from './pages/ViewSales';
+import ViewSaleDetails from './pages/ViewSaleDetails';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
                   <Route path="/generateinvoice" element={<GenerateInvoice/>}/> 
                   <Route path="/converttosale" element={<ConvertToSale/>}/> 
                   <Route path="/viewsales" element={<ViewSales/>}/> 
+                  <Route path="/viewsaledetails" element={<ViewSaleDetails/>}/> 
               </Routes>
           </BrowserRouter>
     </>
