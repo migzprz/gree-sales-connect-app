@@ -7,8 +7,7 @@ const TermsAndConditions = () => {
     const [validated, setValidated] = useState(false);
     const [terms, setTerms] = useState({
         A: 
-        `First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables`
-        ,
+        `First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables`,
         B1:
         `One (1) year from the date of start-up on units with factory defects.`,
         B2:

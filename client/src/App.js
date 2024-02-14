@@ -8,6 +8,7 @@ import SetOcular from './pages/SetOcular';
 import GenerateReport from './pages/GenerateReport';
 import GenerateQuotation from './pages/GenerateQuotation';
 import ViewQuotations from './pages/ViewQuotations';
+import GenerateInvoice from './pages/GenerateInvoice';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
                   <Route path="/report" element={<GenerateReport/>}/> 
                   <Route path="/generatequotation" element={<GenerateQuotation/>}/> 
                   <Route path="/viewquotations" element={<ViewQuotations/>}/> 
+                  <Route path="/generateinvoice" element={<GenerateInvoice/>}/> 
               </Routes>
           </BrowserRouter>
     </>
