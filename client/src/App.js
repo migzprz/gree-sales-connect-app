@@ -9,6 +9,7 @@ import GenerateReport from './pages/GenerateReport';
 import GenerateQuotation from './pages/GenerateQuotation';
 import ViewQuotations from './pages/ViewQuotations';
 import GenerateInvoice from './pages/GenerateInvoice';
+import ConvertToSale from './pages/ConvertToSale';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
                   <Route path="/generatequotation" element={<GenerateQuotation/>}/> 
                   <Route path="/viewquotations" element={<ViewQuotations/>}/> 
                   <Route path="/generateinvoice" element={<GenerateInvoice/>}/> 
+                  <Route path="/converttosale" element={<ConvertToSale/>}/> 
               </Routes>
           </BrowserRouter>
     </>

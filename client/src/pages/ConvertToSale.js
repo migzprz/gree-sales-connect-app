@@ -1,22 +1,22 @@
 import InvoiceDetails from "../components/InvoiceDetails";
 import MainHeader from "../components/MainHeader"
-import QuotationForm from "../components/QuotationForm";
-import ReportOptions from "../components/ReportOptions";
+import ClientSelection from "../components/QuotationComponents/ClientSelection";
+import SaleConvertDetails from "../components/SaleConvertDetails";
 import SetOcularForm from "../components/SetOcularForm";
 import Sidebar from "../components/Sidebar";
 import '../index.css';
 
-const GenerateInvoice = () => {
+const ConvertToSale = () => {
     return (
         <>
             <MainHeader/>
             <div style={{ display: 'flex' }}>
                 <Sidebar />
-                <SetOcularForm/>
+                <SaleConvertDetails/>
             </div>
         </>
 
     );
 };
 
-export default GenerateInvoice;
+export default ConvertToSale;
