@@ -20,7 +20,7 @@ module.exports = (query) => {
 
     router.get('/getTechnicians', async (req, res) => {
         try {
-            const data = await query('SELECT CONCAT(last_name, ", ", first_name, " ", middle_name) as complete_name, email, contact_number FROM md_technicians', [])
+            const data = await query('SELECT CONCAT(last_name, ", ", first_name, " ", middle_name) as complete_name, email, contact_number, technician_id FROM md_technicians', [])
             console.log(data)
         
             res.send(data)

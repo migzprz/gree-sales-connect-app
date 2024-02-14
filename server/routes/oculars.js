@@ -63,11 +63,15 @@ module.exports = (query) => {
 
         const location_name = req.body.location_name || null
 
-        const client_values = [
+        const cp_values = [
             req.body.firstName,
             req.body.lastName,
             req.body.contactNumber,
-            req.body.email,
+            req.body.email
+        ]
+
+        const com_values = [
+            req.body.companyName,
             req.body.tin
         ]
 
@@ -88,8 +92,8 @@ module.exports = (query) => {
             location_name
         ]
 
-        var client_id = req.body.client_id
-        var company_id = req.body.company_id
+        var client_id = req.body.client_id || null
+        var company_id = req.body.company_id || null
 
         const quo_client_values = [
             client_id,
@@ -131,6 +135,27 @@ module.exports = (query) => {
             console.error('Error: ', error)
             res.status(400).json({message: `Error... Failed one or more database operations... ${error}`})
             throw error
+        }
+
+        try {
+            // queries for client
+            const cp_query = 'INSERT INTO md_contactperson (first_name, last_name, email, contact_number) VALUES (?, ?, ?, ?)'
+            const com_query = 'INSERT INTO md_companies (company_name, tin) VALUES (?, ?)'
+            const client_query = 'INSERT INTO md_clients (contact_person_id, company_id) VALUES (?,?)'
+            let cp_data, com_data, client_data
+
+            // if entirely new client
+            if (client_id === null && client_id === null && company_id === null) {
+                cp_data = await query(cp_query, cp_values)
+                com_data = await query(com_query, com_values)
+                client_data = await query(client_query, [cp_data.insertId, com_data.insertId])
+            }
+            else if (client_id != null) {
+                
+            }
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed one or more database operations... ${error}`})
         }
 
     })

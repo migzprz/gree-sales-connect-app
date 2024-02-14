@@ -7,17 +7,27 @@ import ReturningClientModal from './ReturningClientModal';
 import axios from 'axios';
 
 const SetOcularForm = () => {
-    const [location, setLocation] = useState({})
+    const [location, setLocation] = useState([])
     const [clients, setClients] = useState({})
     const [storedLocations, setStoredLocations] = useState({})
     const [companies, setCompanies] = useState({})
+    const [technicians, setTechnicians] = useState([])
+
+    // location data
+    const [region, setRegion] = useState([])
+    const [province, setProvince] = useState([])
+    const [city, setCity] = useState([])
+    const [barangay, setBarangay] = useState([])
 
     // filter data for address dropdown
-    const [filteredRegion, setFilteredRegion] = useState({})
-    const [filteredProvince, setFilteredProvince] = useState({})
-    const [filteredCity, setFilteredCity] = useState({})
-    const [filteredBarangay, setFilteredBarangay] = useState({})
+    const [filteredProvince, setFilteredProvince] = useState([])
+    const [filteredCity, setFilteredCity] = useState([])
+    const [filteredBarangay, setFilteredBarangay] = useState([])
 
+    // is_active useState for address dropdown
+    const [provinceActive, setProvinceActive] = useState(false)
+    const [cityActive, setCityActive] = useState(true)
+    const [barangayActive, setBarangayActive] = useState(true)
 
     const [isNew, setIsNew] = useState(true);
 
@@ -35,6 +45,7 @@ const SetOcularForm = () => {
         // client and company data (OLD)
         // on submit, check if the input values match existing records and update fields
         client_id: null,
+        contact_person_id: null,
         company_id: null,
 
         // location data
@@ -49,51 +60,76 @@ const SetOcularForm = () => {
         // ocular data (transform date and time into datetime)
         date: null,
         time: null,
-        technician: null
+        technician_id: null
 
 
         // TODO: on submit, merge date and time to one datetime format and check for existing record
 
     })
+    useEffect(() => {
+        console.log('form data: ', formData)
+    }, [formData])
 
     // fetch location data and stored client and location data for quick fillup feature
     const fetchData = async () => {
         try {
             const locFormsResponse = await axios.get('http://localhost:4000/api/getLocationsForAddressInForms/')
-            const locStoredResponse = await axios.get('http://localhost:4000/api/getStoredLocations/')
-            const clientResponse = await axios.get('http://localhost:4000/api/getClients/')
-            const companyResponse = await axios.get('http://localhost:4000/api/getCompanies/')
             setLocation(locFormsResponse.data)
+            setRegion(locFormsResponse.data.regions)
+            setProvince(locFormsResponse.data.provinces)
+            setCity(locFormsResponse.data.municipalities)
+            setBarangay(locFormsResponse.data.barangays)
+        } catch (error) {
+            console.error('Error fetching location data: ', error)
+        }
+        
+        try {
+            const locStoredResponse = await axios.get('http://localhost:4000/api/getStoredLocations/')
             setStoredLocations(locStoredResponse.data)
+        } catch (error) {
+            console.error('Error fetching stored location data: ', error)
+        }
+        
+        try {
+            const clientResponse = await axios.get('http://localhost:4000/api/getContactPerson/')
             setClients(clientResponse.data)
+        } catch (error) {
+            console.error('Error fetching client data: ', error)
+        }
+        
+        try {
+            const companyResponse = await axios.get('http://localhost:4000/api/getCompanies/')
             setCompanies(companyResponse.data)
         } catch (error) {
-            console.error('Error fetching data: ', error)
+            console.error('Error fetching company data: ', error)
+        }
+
+        try {
+            const technicianResponse = await axios.get('http://localhost:4000/api/getTechnicians/')
+            setTechnicians(technicianResponse.data)
+        } catch (error) {
+            console.error('Error fetching technician data: ', error)
         }
     }
     useEffect(() => {
         fetchData()
     },[])
     useEffect(() => {
-        console.log(location)
+        console.log('location data: ', location, region, province, city, barangay)
     },[location])
     useEffect(() => {
-        console.log(storedLocations)
+        console.log('stored locations data: ',storedLocations)
     },[storedLocations])
     useEffect(() => {
-        console.log(clients)
+        console.log('contact person data: ',clients)
     },[clients])
     useEffect(() => {
-        console.log(companies)
+        console.log('companies data: ',companies)
     },[companies])
-
-    // handles address dropdown filtering
-    // useEffect(() => {
-    //     const filteredData = location.province.filter(item => item.region_id === formData.region);
-    //     setFilteredProvince
-
-    // }, [formData.region])
-
+    useEffect(() => {
+        console.log('technician data: ',technicians)
+    },[technicians])
+    
 
     const handleOptionClick = (option) => {
         setActiveOption(option);
@@ -127,7 +163,41 @@ const SetOcularForm = () => {
           ...formData,
           [name]: value,
         });
-      };
+    };
+
+    // Event Handlers for Address Select
+    useEffect(() => {
+
+        console.log('formData.region triggered', formData.region)
+
+        // filter province to show provinces in selected region
+        const filteredProvince = province.filter(prov => prov.region_id === Number(formData.region))
+
+        console.log(filteredProvince)
+
+        setFilteredProvince(filteredProvince)
+        setProvinceActive(true)
+
+        // reset city and barangay filtered list
+        setFilteredCity([])
+        setFilteredBarangay([])
+    }, [formData.region])
+
+    useEffect(() => {
+        // filter city data to match selected province id
+        const filteredCity = city.filter(cit => cit.province_id === Number(formData.province))
+        setFilteredCity(filteredCity)
+        setCityActive(true)
+
+        // reset barangay
+        setFilteredBarangay([])
+    }, [formData.province])
+
+    useEffect(() => {
+        const filteredBarangay = barangay.filter(bar => bar.municipality_id === Number(formData.city))
+        setFilteredBarangay(filteredBarangay)
+        setBarangayActive(true)
+    }, [formData.city])
 
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
@@ -168,7 +238,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="firstName">
                     <Form.Label>First Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} onChange={handleChange} required/>
+                    <Form.Control type="text" disabled={!isNew} onChange={handleChange} name='firstName' required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide first name.
                     </Form.Control.Feedback>
@@ -177,7 +247,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="lastName">
                 <Form.Label>Last Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} onChange={handleChange} required/>
+                    <Form.Control type="text" disabled={!isNew} onChange={handleChange} name='lastName' required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide last name.
                     </Form.Control.Feedback>
@@ -186,7 +256,7 @@ const SetOcularForm = () => {
             <Col className="ms-5" lg="4">
                  <Form.Group controlId="companyName">
                     <Form.Label>Company Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} onChange={handleChange} placeholder="optional"/>
+                    <Form.Control type="text" disabled={!isNew} onChange={handleChange} name='companyName' placeholder="optional"/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid company.
                     </Form.Control.Feedback>
@@ -198,7 +268,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="contactNumber">
                     <Form.Label>Contact Number</Form.Label>
-                    <Form.Control type="text" pattern="[0-9]{11}" placeholder="e.g. 09123456789" disabled={!isNew} onChange={handleChange} required />
+                    <Form.Control type="text" pattern="[0-9]{11}" placeholder="e.g. 09123456789" disabled={!isNew} onChange={handleChange} name='contactNumber' required />
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid Contact No.
                     </Form.Control.Feedback>
@@ -207,7 +277,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="email">
                     <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" disabled={!isNew} onChange={handleChange} required/>
+                    <Form.Control type="email" disabled={!isNew} onChange={handleChange} name='email' required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid Email
                     </Form.Control.Feedback>
@@ -216,7 +286,7 @@ const SetOcularForm = () => {
             <Col className="ms-5"  lg="4">
                  <Form.Group controlId="tin">
                     <Form.Label>Company TIN ID</Form.Label>
-                    <Form.Control type="text" pattern="[0-9]*" disabled={!isNew} placeholder="optional" onChange={handleChange}/>
+                    <Form.Control type="text" pattern="[0-9]*" disabled={!isNew} placeholder="optional" name='tin' onChange={handleChange}/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid TIN
                     </Form.Control.Feedback>
@@ -228,7 +298,7 @@ const SetOcularForm = () => {
             <Col lg="4">
                 <Form.Group controlId="bldg_no">
                     <Form.Label>Unit No.</Form.Label>
-                    <Form.Control type="text" onChange={handleChange} required/>
+                    <Form.Control type="text" onChange={handleChange} name='bldg_no' required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid Unit No.
                     </Form.Control.Feedback>
@@ -237,20 +307,76 @@ const SetOcularForm = () => {
             <Col lg="4">
                 <Form.Group controlId="street_name">
                     <Form.Label>Street</Form.Label>
-                    <Form.Control type="text" onChange={handleChange} required/>
+                    <Form.Control type="text" onChange={handleChange} name='street_name' required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid Street Name.
                     </Form.Control.Feedback>
                 </Form.Group>
             </Col>
+            
+            <Col lg="3">
+                <Form.Group controlId="zipcode">
+                    <Form.Label>ZIP Code</Form.Label>
+                    <Form.Control pattern="[0-9]{4}" type="text" onChange={handleChange} name='zipcode' required/>
+                    <Form.Control.Feedback type="invalid" required>
+                        Please provide a valid ZIP Code.
+                    </Form.Control.Feedback>
+                </Form.Group>
+            </Col>
+        </Row>
+
+        {/** TODO: Add disabled field */}
+        <Row className="mt-2">
+            <Col lg="3">
+                <Form.Group controlId="region">
+                    <Form.Label>Region</Form.Label>
+                    <Form.Control as="select" onChange={handleChange} name='region' required>
+                        <option value="">Select</option>
+                        {region.map((reg) => (
+                            <option key={reg.region_id} value={reg.region_id}>{reg.description}</option>
+                        ))}
+                    </Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                        Please choose a region.
+                    </Form.Control.Feedback>
+                 </Form.Group>
+            </Col>
+            <Col lg="3">
+                <Form.Group controlId="province">
+                    <Form.Label>Province</Form.Label>
+                    <Form.Control as="select" onChange={handleChange} name='province'  required>
+                        <option value=""> Select </option>
+                        {filteredProvince.map((prov) => (
+                            <option key={prov.province_id} value={prov.province_id}>{prov.name}</option>
+                        ))}
+                    </Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                        Please choose a province.
+                    </Form.Control.Feedback>
+                 </Form.Group>
+            </Col>
+            <Col lg="3">
+                <Form.Group controlId="city">
+                    <Form.Label>City</Form.Label>
+                    <Form.Control as="select" onChange={handleChange} name='city'  required>
+                        <option value=""> Select </option>
+                        {filteredCity.map((cit) => (
+                            <option key={cit.municipality_id} value={cit.municipality_id}>{cit.name}</option>
+                        ))}
+                    </Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                        Please choose a city.
+                    </Form.Control.Feedback>
+                 </Form.Group>
+            </Col>
             <Col lg="3">
                 <Form.Group controlId="barangay">
                     <Form.Label>Barangay</Form.Label>
-                    <Form.Control as="select" onChange={handleChange} required>
+                    <Form.Control as="select" onChange={handleChange} name='barangay' required>
                         <option value=""> Select </option>
-                        <option value="1"> One </option>
-                        <option value="2"> Two </option>
-                        <option value="3"> Three </option>
+                        {filteredBarangay.map((bar) => (
+                            <option key={bar.barangay_id} value={bar.barangay_id}>{bar.name}</option> 
+                        ))}
                     </Form.Control>
                     <Form.Control.Feedback type="invalid">
                         Please choose a barangay.
@@ -261,63 +387,9 @@ const SetOcularForm = () => {
 
         <Row className="mt-2">
              <Col lg="3">
-                <Form.Group controlId="city">
-                    <Form.Label>City</Form.Label>
-                    <Form.Control as="select" onChange={handleChange} required>
-                        <option value=""> Select </option>
-                        <option value="1"> One </option>
-                        <option value="2"> Two </option>
-                        <option value="3"> Three </option>
-                    </Form.Control>
-                    <Form.Control.Feedback type="invalid">
-                        Please choose a city.
-                    </Form.Control.Feedback>
-                 </Form.Group>
-            </Col>
-            <Col lg="3">
-                <Form.Group controlId="province">
-                    <Form.Label>Province</Form.Label>
-                    <Form.Control as="select" onChange={handleChange} required>
-                        <option value=""> Select </option>
-                        <option value="1"> One </option>
-                        <option value="2"> Two </option>
-                        <option value="3"> Three </option>
-                    </Form.Control>
-                    <Form.Control.Feedback type="invalid">
-                        Please choose a province.
-                    </Form.Control.Feedback>
-                 </Form.Group>
-            </Col>
-            <Col lg="3">
-                <Form.Group controlId="region">
-                    <Form.Label>Region</Form.Label>
-                    <Form.Control as="select" onChange={handleChange} required>
-                        <option value=""> Select </option>
-                        <option value="1"> One </option>
-                        <option value="2"> Two </option>
-                        <option value="3"> Three </option>
-                    </Form.Control>
-                    <Form.Control.Feedback type="invalid">
-                        Please choose a region.
-                    </Form.Control.Feedback>
-                 </Form.Group>
-            </Col>
-            <Col lg="2">
-                <Form.Group controlId="zipcode">
-                    <Form.Label>ZIP Code</Form.Label>
-                    <Form.Control pattern="[0-9]{4}" type="text" onChange={handleChange} required/>
-                    <Form.Control.Feedback type="invalid" required>
-                        Please provide a valid ZIP Code.
-                    </Form.Control.Feedback>
-                </Form.Group>
-            </Col>
-        </Row>
-
-        <Row className="mt-2">
-             <Col lg="3">
                 <Form.Group controlId="date">
                     <Form.Label>Ocular Date</Form.Label>
-                    <Form.Control type="date" onChange={handleChange} required/>
+                    <Form.Control type="date" onChange={handleChange} name='date' required/>
                     <Form.Control.Feedback type="invalid">
                         Please choose a valid date.
                     </Form.Control.Feedback>
@@ -326,7 +398,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="time">
                     <Form.Label>Ocular Time</Form.Label>
-                    <Form.Control type="time" onChange={handleChange} required/>
+                    <Form.Control type="time" onChange={handleChange} name='time' required/>
                     <Form.Control.Feedback type="invalid">
                         Please choose a valid time.
                     </Form.Control.Feedback>
@@ -335,11 +407,11 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="technician">
                     <Form.Label>Assigned Technician</Form.Label>
-                    <Form.Control as="select" onChange={handleChange} required>
-                        <option value=""> Select </option>
-                        <option value="1"> One </option>
-                        <option value="2"> Two </option>
-                        <option value="3"> Three </option>
+                    <Form.Control as="select" onChange={handleChange} name='technician_id' required>
+                        <option value="">Select</option>
+                        {technicians.map((tech) => (
+                            <option key={tech.technician_id} value={tech.technician_id}>{tech.complete_name}</option>
+                        ))}
                     </Form.Control>
                     <Form.Control.Feedback type="invalid">
                         Please choose a technician.
