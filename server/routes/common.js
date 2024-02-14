@@ -42,9 +42,9 @@ module.exports = (query) => {
         }
     })
 
-    router.get('/getClients', async (req, res) => {
+    router.get('/getContactPerson', async (req, res) => {
         try {
-            const data = await query('SELECT * FROM md_clients', [])
+            const data = await query('SELECT * FROM md_contactperson', [])
             console.log(data)
         
             res.send(data)
@@ -53,6 +53,7 @@ module.exports = (query) => {
             throw error
         }
     })
+
 
     /**
      *  Returns the list of regions, provinces, municipalities and barangays

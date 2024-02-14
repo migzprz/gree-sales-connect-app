@@ -25,17 +25,18 @@ module.exports = (query) => {
      */
     router.get('/getOculars', async (req, res) => {
         try {
-            const data = await query(`SELECT ocular_date, 
-                                    CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name, c.company_name, 
-                                    CONCAT(cl.last_name, ", ", cl.first_name, " ", cl.middle_name) as client_name, cl.contact_number as client_number,
+            const data = await query(`SELECT 	ocular_date, 
+                                    CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name,
+                                    CONCAT(cp.last_name, ", ", cp.first_name, " ", cp.middle_name) as client_name, cp.contact_number as client_number,
+                                    co.company_name,
                                     CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address
-                                    FROM greesalesconnect.td_oculars o
-                                    JOIN md_quotation_clients q ON o.ocular_id = q.ocular_id
-                                    JOIN md_login l ON o.login_id = l.login_id
+                                    FROM td_oculars o 
+                                    JOIN md_quotation_clients qc ON o.ocular_id = qc.ocular_id
                                     JOIN md_technicians t ON o.technician_id = t.technician_id
-                                    JOIN md_companies c ON q.company_id = c.company_id
-                                    JOIN md_clients cl ON q.client_id = cl.client_id
-                                    JOIN md_locations loc ON q.location_id = loc.location_id
+                                    JOIN md_clients cl ON qc.client_id = cl.client_id
+                                    JOIN md_contactperson cp ON cl.contact_person_id = cp.contact_person_id
+                                    JOIN md_companies co ON cl.company_id = co.company_id
+                                    JOIN md_locations loc ON qc.location_id = loc.location_id
                                     JOIN md_provinces p ON loc.addr_province_id = p.province_id
                                     JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
                                     JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
@@ -62,30 +63,56 @@ module.exports = (query) => {
 
         const location_name = req.body.location_name || null
 
+        const client_values = [
+            req.body.firstName,
+            req.body.lastName,
+            req.body.contactNumber,
+            req.body.email,
+            req.body.tin
+        ]
+
         const ocu_values = [
             req.body.ocular_date,
             req.body.login_id,
-            req.body.technician_id
+            req.body.technician
         ]
 
         const loc_values = [
-            req.body.region_id,
-            req.body.province_id,
-            req.body.municipality_id,
-            req.body.barangay_id,
+            req.body.region,
+            req.body.province,
+            req.body.city,
+            req.body.baragay,
             req.body.street_name,
             req.body.bldg_no,
             req.body.zipcode,
             location_name
         ]
 
+        var client_id = req.body.client_id
+        var company_id = req.body.company_id
+
         const quo_client_values = [
-            req.body.client_id, 
-            req.body.company_id
+            client_id,
+            company_id
         ]
 
         // new post ocular using `md_quotation_clients`
         try {
+
+            // check whether user is trying to input new client and company data
+            if (client_id === null || company_id === null) {
+                const client_query = 'INSERT INTO md_clients (first_name, last_name, email, contact_number, tin) VALUES (?, ?, ?, ?, ?)'
+                try {
+                    const client_data = await query(client_query, client_values)
+                    quo_client_values[0] = client_data.insertId
+                    
+                } catch (error) {
+                    // check if there 
+                    res.status(400).json({message: `Error... Failed in recording new client information... ${error}`})
+                }
+            }
+
+
             // post new location record
             const loc_query = 'INSERT INTO md_locations (addr_region_id, addr_province_id, addr_municipality_id, addr_barangay_id, addr_street_name, addr_bldg_no, zipcode, location_name) VALUES (?, ?, ?, ?, ?, ?, ?, ? )'
             const loc_data = await query(loc_query, loc_values)

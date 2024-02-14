@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState, useEffect } from 'react';
 import { FaCalendarDay} from 'react-icons/fa';
-import { Row, Col, Form, CardBody } from 'react-bootstrap';
+import { Row, Col, Form } from 'react-bootstrap';
 import '../index.css';
 import ReturningClientModal from './ReturningClientModal';
 import axios from 'axios';
@@ -12,9 +12,49 @@ const SetOcularForm = () => {
     const [storedLocations, setStoredLocations] = useState({})
     const [companies, setCompanies] = useState({})
 
+    // filter data for address dropdown
+    const [filteredRegion, setFilteredRegion] = useState({})
+    const [filteredProvince, setFilteredProvince] = useState({})
+    const [filteredCity, setFilteredCity] = useState({})
+    const [filteredBarangay, setFilteredBarangay] = useState({})
+
+
     const [isNew, setIsNew] = useState(true);
 
     const [activeOption, setActiveOption] = useState('newClient');
+
+    const [formData, setFormData] = useState({
+        // client and company data (NEW)
+        firstName: '',
+        lastName: '',
+        companyName: '',
+        contactNumber: '',
+        email: '',
+        tin: '',
+
+        // client and company data (OLD)
+        // on submit, check if the input values match existing records and update fields
+        client_id: null,
+        company_id: null,
+
+        // location data
+        bldg_no: '',
+        street_name: '',
+        barangay: null,
+        city: null,
+        province: null,
+        region: null,
+        zipcode: '',
+
+        // ocular data (transform date and time into datetime)
+        date: null,
+        time: null,
+        technician: null
+
+
+        // TODO: on submit, merge date and time to one datetime format and check for existing record
+
+    })
 
     // fetch location data and stored client and location data for quick fillup feature
     const fetchData = async () => {
@@ -47,6 +87,13 @@ const SetOcularForm = () => {
         console.log(companies)
     },[companies])
 
+    // handles address dropdown filtering
+    // useEffect(() => {
+    //     const filteredData = location.province.filter(item => item.region_id === formData.region);
+    //     setFilteredProvince
+
+    // }, [formData.region])
+
 
     const handleOptionClick = (option) => {
         setActiveOption(option);
@@ -55,7 +102,7 @@ const SetOcularForm = () => {
 
     const [validated, setValidated] = useState(false);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
       const form = event.currentTarget;
       if (form.checkValidity() === false) {
         event.preventDefault();
@@ -63,7 +110,24 @@ const SetOcularForm = () => {
       }
   
       setValidated(true);
+
+      try {
+        const postReponse = await axios.post('http://localhost:4000/api/postOcular/')
+        console.log(postReponse)
+      } catch (error) {
+        console.error('Error: Problem encountered when posting data', error)
+      }
+
+
     };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+          ...formData,
+          [name]: value,
+        });
+      };
 
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
@@ -104,7 +168,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="firstName">
                     <Form.Label>First Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} required/>
+                    <Form.Control type="text" disabled={!isNew} onChange={handleChange} required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide first name.
                     </Form.Control.Feedback>
@@ -113,7 +177,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="lastName">
                 <Form.Label>Last Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} required/>
+                    <Form.Control type="text" disabled={!isNew} onChange={handleChange} required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide last name.
                     </Form.Control.Feedback>
@@ -122,7 +186,7 @@ const SetOcularForm = () => {
             <Col className="ms-5" lg="4">
                  <Form.Group controlId="companyName">
                     <Form.Label>Company Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew}  placeholder="optional"/>
+                    <Form.Control type="text" disabled={!isNew} onChange={handleChange} placeholder="optional"/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid company.
                     </Form.Control.Feedback>
@@ -134,7 +198,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="contactNumber">
                     <Form.Label>Contact Number</Form.Label>
-                    <Form.Control type="text" pattern="[0-9]{11}" placeholder="e.g. 09123456789" disabled={!isNew} required />
+                    <Form.Control type="text" pattern="[0-9]{11}" placeholder="e.g. 09123456789" disabled={!isNew} onChange={handleChange} required />
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid Contact No.
                     </Form.Control.Feedback>
@@ -143,7 +207,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="email">
                     <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" disabled={!isNew} required/>
+                    <Form.Control type="email" disabled={!isNew} onChange={handleChange} required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid Email
                     </Form.Control.Feedback>
@@ -152,7 +216,7 @@ const SetOcularForm = () => {
             <Col className="ms-5"  lg="4">
                  <Form.Group controlId="tin">
                     <Form.Label>Company TIN ID</Form.Label>
-                    <Form.Control type="text" pattern="[0-9]*" disabled={!isNew} placeholder="optional"/>
+                    <Form.Control type="text" pattern="[0-9]*" disabled={!isNew} placeholder="optional" onChange={handleChange}/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid TIN
                     </Form.Control.Feedback>
@@ -162,18 +226,18 @@ const SetOcularForm = () => {
 
         <Row className="mt-3">
             <Col lg="4">
-                <Form.Group controlId="unitNo">
+                <Form.Group controlId="bldg_no">
                     <Form.Label>Unit No.</Form.Label>
-                    <Form.Control type="text" required/>
+                    <Form.Control type="text" onChange={handleChange} required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid Unit No.
                     </Form.Control.Feedback>
                 </Form.Group>
             </Col>
             <Col lg="4">
-                <Form.Group controlId="street">
+                <Form.Group controlId="street_name">
                     <Form.Label>Street</Form.Label>
-                    <Form.Control type="text" required/>
+                    <Form.Control type="text" onChange={handleChange} required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid Street Name.
                     </Form.Control.Feedback>
@@ -182,7 +246,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="barangay">
                     <Form.Label>Barangay</Form.Label>
-                    <Form.Control as="select" required>
+                    <Form.Control as="select" onChange={handleChange} required>
                         <option value=""> Select </option>
                         <option value="1"> One </option>
                         <option value="2"> Two </option>
@@ -199,7 +263,7 @@ const SetOcularForm = () => {
              <Col lg="3">
                 <Form.Group controlId="city">
                     <Form.Label>City</Form.Label>
-                    <Form.Control as="select" required>
+                    <Form.Control as="select" onChange={handleChange} required>
                         <option value=""> Select </option>
                         <option value="1"> One </option>
                         <option value="2"> Two </option>
@@ -213,7 +277,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="province">
                     <Form.Label>Province</Form.Label>
-                    <Form.Control as="select" required>
+                    <Form.Control as="select" onChange={handleChange} required>
                         <option value=""> Select </option>
                         <option value="1"> One </option>
                         <option value="2"> Two </option>
@@ -227,7 +291,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="region">
                     <Form.Label>Region</Form.Label>
-                    <Form.Control as="select" required>
+                    <Form.Control as="select" onChange={handleChange} required>
                         <option value=""> Select </option>
                         <option value="1"> One </option>
                         <option value="2"> Two </option>
@@ -239,9 +303,9 @@ const SetOcularForm = () => {
                  </Form.Group>
             </Col>
             <Col lg="2">
-                <Form.Group controlId="companyName">
+                <Form.Group controlId="zipcode">
                     <Form.Label>ZIP Code</Form.Label>
-                    <Form.Control pattern="[0-9]{4}" type="text" required/>
+                    <Form.Control pattern="[0-9]{4}" type="text" onChange={handleChange} required/>
                     <Form.Control.Feedback type="invalid" required>
                         Please provide a valid ZIP Code.
                     </Form.Control.Feedback>
@@ -253,7 +317,7 @@ const SetOcularForm = () => {
              <Col lg="3">
                 <Form.Group controlId="date">
                     <Form.Label>Ocular Date</Form.Label>
-                    <Form.Control type="date" required/>
+                    <Form.Control type="date" onChange={handleChange} required/>
                     <Form.Control.Feedback type="invalid">
                         Please choose a valid date.
                     </Form.Control.Feedback>
@@ -262,7 +326,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="time">
                     <Form.Label>Ocular Time</Form.Label>
-                    <Form.Control type="time" required/>
+                    <Form.Control type="time" onChange={handleChange} required/>
                     <Form.Control.Feedback type="invalid">
                         Please choose a valid time.
                     </Form.Control.Feedback>
@@ -271,7 +335,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="technician">
                     <Form.Label>Assigned Technician</Form.Label>
-                    <Form.Control as="select" required>
+                    <Form.Control as="select" onChange={handleChange} required>
                         <option value=""> Select </option>
                         <option value="1"> One </option>
                         <option value="2"> Two </option>
