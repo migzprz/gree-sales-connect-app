@@ -14,9 +14,9 @@ app.use(cors({
     credentials: true,
 }));
 
-let pool
-
 function createDBPool() {
+    // TODO: add condition checker to select between different role pools for table level security
+    // TODO: add condition checker to not create a new pool if the details are the same
     pool = mysql.createPool({
         user: 'root',
         port: 3306,
@@ -38,10 +38,10 @@ const data = await fetchData('SELECT * FROM td_oculars', [])
 
 */
 const query = async function query(query, data) {
-    createDBPool()
+    // TODO: call createDBPool w/ udpated functionality
     let connection;
     try {
-        connection = await pool.getConnection()
+        connection = await pool.getConnection();
         const [rows, fields] = await connection.execute(query, data)
         return rows
     } catch (error) {
@@ -54,6 +54,7 @@ const query = async function query(query, data) {
     }
 }
 
+createDBPool()
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
