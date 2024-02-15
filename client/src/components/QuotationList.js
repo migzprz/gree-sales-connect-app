@@ -3,6 +3,7 @@ import React from 'react';
 import { useState, useEffect } from 'react'; 
 import { FaEllipsisH, FaFilter, FaSort, FaSearch} from 'react-icons/fa';
 import { Row, Col, Card, CardBody, Table, Dropdown } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import '../index.css';
 import EditOcularModal from './EditOcularModal';
 import CancelOcularModal from './CancelOcularModal';
@@ -19,7 +20,7 @@ const QuotationList = () => {
         if (index === activeDropdown) {
           return (
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-              <Dropdown.Item>Convert to Sale</Dropdown.Item>
+              <Dropdown.Item><Link to={`/generateinvoice`} style={{ color: '#014c91'}}>Convert To Sale</Link></Dropdown.Item>
               <Dropdown.Item>Cancel Quotation</Dropdown.Item>
             </Dropdown.Menu>
           );

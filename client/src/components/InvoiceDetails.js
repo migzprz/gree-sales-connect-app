@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { FaSave} from 'react-icons/fa';
 import { Row, Col, Card, CardBody, Table, Dropdown, CardHeader } from 'react-bootstrap';
 import '../index.css';
+import { Link } from 'react-router-dom';
 
 const InvoiceDetails = () => {
 
@@ -191,9 +192,9 @@ const InvoiceDetails = () => {
                 <Row className="mt-3">
                     <Col lg="2"/>
                     <Col lg="2">
-                        <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
+                        <Link to="/converttosale" className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
                         {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })}   Proceed to Sale
-                        </button>
+                        </Link>
                     </Col>
                     <Col lg="2">
                         <button className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}}>
