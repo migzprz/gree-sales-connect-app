@@ -61,8 +61,6 @@ module.exports = (query) => {
      */
     router.post('/postOcular', async (req, res) => {
 
-        const location_name = req.body.location_name || null
-
         const cp_values = [
             req.body.firstName,
             req.body.lastName,
@@ -85,74 +83,75 @@ module.exports = (query) => {
             req.body.region,
             req.body.province,
             req.body.city,
-            req.body.baragay,
+            req.body.barangay,
             req.body.street_name,
             req.body.bldg_no,
             req.body.zipcode,
-            location_name
         ]
-
-        var client_id = req.body.client_id || null
-        var company_id = req.body.company_id || null
-
-        const quo_client_values = [
-            client_id,
-            company_id
-        ]
-
-        // new post ocular using `md_quotation_clients`
-        try {
-
-            // check whether user is trying to input new client and company data
-            if (client_id === null || company_id === null) {
-                const client_query = 'INSERT INTO md_clients (first_name, last_name, email, contact_number, tin) VALUES (?, ?, ?, ?, ?)'
-                try {
-                    const client_data = await query(client_query, client_values)
-                    quo_client_values[0] = client_data.insertId
-                    
-                } catch (error) {
-                    // check if there 
-                    res.status(400).json({message: `Error... Failed in recording new client information... ${error}`})
-                }
-            }
-
-
-            // post new location record
-            const loc_query = 'INSERT INTO md_locations (addr_region_id, addr_province_id, addr_municipality_id, addr_barangay_id, addr_street_name, addr_bldg_no, zipcode, location_name) VALUES (?, ?, ?, ?, ?, ?, ?, ? )'
-            const loc_data = await query(loc_query, loc_values)
-
-            // post new ocular record
-            const ocu_query = 'INSERT INTO td_oculars (ocular_date, login_id, technician_id, date_created) VALUES (?, ?, ?, NOW())'
-            const ocu_data = await query(ocu_query, ocu_values)
-
-            // post new quotation client record
-            const quo_client_query = 'INSERT INTO md_quotation_client (client_id, company_id, ocular_id, location_id) VALUES (?, ?, ?, ?)'
-            const quo_client_data = await query(quo_client_query, [...quo_client_values, ocu_data.insertId, loc_data.insertId])
-
-            res.status(200).json({message: 'Success... New ocular added to the database'})
-            
-        } catch (error) {
-            console.error('Error: ', error)
-            res.status(400).json({message: `Error... Failed one or more database operations... ${error}`})
-            throw error
-        }
 
         try {
             // queries for client
-            const cp_query = 'INSERT INTO md_contactperson (first_name, last_name, email, contact_number) VALUES (?, ?, ?, ?)'
+            const cp_query = 'INSERT INTO md_contactperson (first_name, last_name, contact_number, email) VALUES (?, ?, ?, ?)'
             const com_query = 'INSERT INTO md_companies (company_name, tin) VALUES (?, ?)'
             const client_query = 'INSERT INTO md_clients (contact_person_id, company_id) VALUES (?,?)'
             let cp_data, com_data, client_data
 
+            var client_id = req.body.client_id || null
+            var location_id = req.body.location_id || null
+
+            // STEP 1: INSERT NEW CLIENT IF APPLICABLE
             // if entirely new client
-            if (client_id === null && client_id === null && company_id === null) {
+            if (client_id === null) {
+
+                // TESTING
+                console.log ('step 1 data: ', cp_values, com_values)
+
+                // store new contact person and company record
                 cp_data = await query(cp_query, cp_values)
                 com_data = await query(com_query, com_values)
+
+                // insert new client data with new contact person and company record 
                 client_data = await query(client_query, [cp_data.insertId, com_data.insertId])
+
+                // store client id as var
+                client_id = client_data.insertId
+                console.log('client data result: ', client_data, client_id)
             }
-            else if (client_id != null) {
-                
+
+            // STEP 2: INSERT NEW OCULAR RECORD
+
+            // TESTING
+            console.log('step 2 data: ', ocu_values)
+
+            const ocu_query = 'INSERT INTO td_oculars (ocular_date, login_id, technician_id, date_created) VALUES (?, ?, ?, NOW())'
+            const ocu_data = await query(ocu_query, ocu_values)
+
+            console.log('ocular data result: ', ocu_data)
+
+            // STEP 3: INSERT LOCATION INFO
+            // account for if the location selected already exist in the database
+            if (location_id === null) {
+
+                // TESTING:
+                console.log('location query reached')
+                console.log('step 3 data: ', loc_values)
+
+                const loc_query = 'INSERT INTO md_locations (addr_region_id, addr_province_id, addr_municipality_id, addr_barangay_id, addr_street_name, addr_bldg_no, zipcode) VALUES (?, ?, ?, ?, ?, ?, ?)'
+                const loc_data = await query(loc_query, loc_values)
+                location_id = loc_data.insertId
+
+                // TESTING: 
+                console.log('location_id: ', location_id)
+                console.log(loc_data)
             }
+
+            // STEP 4: INSERT NEW QUOTATION CLIENT RECORD
+            // (client, ocular and location id)
+            const quo_client_query = 'INSERT INTO md_quotation_clients (client_id, ocular_id, location_id) VALUES (?, ?, ?)'
+            const quo_client_data = await query(quo_client_query, [client_id, ocu_data.insertId, location_id])
+
+            res.status(200).json({message: `Ocular successfully posted ${quo_client_data}`})
+
         } catch (error) {
             console.error('Error: ', error)
             res.status(400).json({message: `Error... Failed one or more database operations... ${error}`})
