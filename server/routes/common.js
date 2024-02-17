@@ -105,12 +105,15 @@ module.exports = (query) => {
      */
     router.get('/getClients', async (req, res) => {
         try {
-            const data = await query(`SELECT c.client_id, company_name, CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.email, cp.contact_number
+            const data = await query(`SELECT c.client_id, company_name, CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.email, cp.contact_number, cp.last_name, cp.first_name, co.tin
                                     FROM md_quotation_clients qc
                                     JOIN md_clients c ON qc.client_id = c.client_id
                                     JOIN md_companies co ON c.company_id = co.company_id
                                     JOIN md_contactperson cp ON c.contact_person_id = cp.contact_person_id
-                                    ORDER BY client_name ASC`)
+                                    ORDER BY client_name ASC`, [])
+            console.log(data)
+        
+            res.send(data)
         } catch (error) {
             console.error('Error: ', error)
             throw error

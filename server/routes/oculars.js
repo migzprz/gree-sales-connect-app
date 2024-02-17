@@ -27,7 +27,7 @@ module.exports = (query) => {
         try {
             const data = await query(`SELECT 	ocular_date, 
                                     CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name,
-                                    CONCAT(cp.last_name, ", ", cp.first_name, " ", cp.middle_name) as client_name, cp.contact_number as client_number,
+                                    CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.contact_number as client_number,
                                     co.company_name,
                                     CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address
                                     FROM td_oculars o 

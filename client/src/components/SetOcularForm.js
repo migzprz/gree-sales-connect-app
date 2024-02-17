@@ -45,8 +45,6 @@ const SetOcularForm = () => {
         // client and company data (OLD)
         // on submit, check if the input values match existing records and update fields
         client_id: null,
-        contact_person_id: null,
-        company_id: null,
 
         // location data
         bldg_no: '',
@@ -60,7 +58,8 @@ const SetOcularForm = () => {
         // ocular data (transform date and time into datetime)
         date: null,
         time: null,
-        technician_id: null
+        technician: null,
+        login_id: 1
 
 
         // TODO: on submit, merge date and time to one datetime format and check for existing record
@@ -147,8 +146,16 @@ const SetOcularForm = () => {
   
       setValidated(true);
 
+      // add ocular_date by concat date and time
+      const data = {
+        ...formData,
+        ocular_date: formData.date+"T"+formData.time
+      }
+
+      console.log(data)
+
       try {
-        const postReponse = await axios.post('http://localhost:4000/api/postOcular/')
+        const postReponse = await axios.post('http://localhost:4000/api/postOcular/', data)
         console.log(postReponse)
       } catch (error) {
         console.error('Error: Problem encountered when posting data', error)
@@ -230,7 +237,7 @@ const SetOcularForm = () => {
                     </h5>
                 </div>
 
-                {!isNew && <ReturningClientModal />}
+                {!isNew && <ReturningClientModal formData={formData} setFormData={setFormData} />}
 
         {/*Forms*/ }
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -238,7 +245,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="firstName">
                     <Form.Label>First Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} onChange={handleChange} name='firstName' required/>
+                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientFirstName ?? ''} onChange={handleChange} name='firstName' required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide first name.
                     </Form.Control.Feedback>
@@ -247,7 +254,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="lastName">
                 <Form.Label>Last Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} onChange={handleChange} name='lastName' required/>
+                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientLastName ?? ''} onChange={handleChange} name='lastName' required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide last name.
                     </Form.Control.Feedback>
@@ -256,7 +263,7 @@ const SetOcularForm = () => {
             <Col className="ms-5" lg="4">
                  <Form.Group controlId="companyName">
                     <Form.Label>Company Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} onChange={handleChange} name='companyName' placeholder="optional"/>
+                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientCompanyName ?? ''}onChange={handleChange} name='companyName' placeholder="optional"/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid company.
                     </Form.Control.Feedback>
@@ -268,7 +275,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="contactNumber">
                     <Form.Label>Contact Number</Form.Label>
-                    <Form.Control type="text" pattern="[0-9]{11}" placeholder="e.g. 09123456789" disabled={!isNew} onChange={handleChange} name='contactNumber' required />
+                    <Form.Control type="text" pattern="[0-9]{11}" placeholder="e.g. 09123456789" disabled={!isNew} value={formData.returningClientContactNumber ?? ''} onChange={handleChange} name='contactNumber' required />
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid Contact No.
                     </Form.Control.Feedback>
@@ -277,7 +284,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="email">
                     <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" disabled={!isNew} onChange={handleChange} name='email' required/>
+                    <Form.Control type="email" disabled={!isNew} value={formData.returningClientEmail ?? ''} onChange={handleChange} name='email' required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid Email
                     </Form.Control.Feedback>
@@ -286,7 +293,7 @@ const SetOcularForm = () => {
             <Col className="ms-5"  lg="4">
                  <Form.Group controlId="tin">
                     <Form.Label>Company TIN ID</Form.Label>
-                    <Form.Control type="text" pattern="[0-9]*" disabled={!isNew} placeholder="optional" name='tin' onChange={handleChange}/>
+                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientCompanyTin ?? ''} placeholder="optional" name='tin' onChange={handleChange}/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid TIN
                     </Form.Control.Feedback>
@@ -407,7 +414,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="technician">
                     <Form.Label>Assigned Technician</Form.Label>
-                    <Form.Control as="select" onChange={handleChange} name='technician_id' required>
+                    <Form.Control as="select" onChange={handleChange} name='technician' required>
                         <option value="">Select</option>
                         {technicians.map((tech) => (
                             <option key={tech.technician_id} value={tech.technician_id}>{tech.complete_name}</option>
