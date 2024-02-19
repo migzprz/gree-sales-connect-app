@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Modal, Form,  Dropdown } from 'react-bootstrap';
 import { FaEdit} from 'react-icons/fa';
 
-const EditOcularModal = () => {
+const EditOcularModal = ({ id }) => {
     const [showModal, setShowModal] = useState(false);
 
+    let record;
+    const [editData, setEditData] = useState({})
+    
     const handleShowModal = () => {
         setShowModal(true);
     };
@@ -13,6 +16,22 @@ const EditOcularModal = () => {
         setValidated(false); 
         setShowModal(false);
     };
+
+    const handleFetchById = () => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/api/getOcular/')
+                setOcularData(response.data)
+            } catch (error) {
+                console.error('Error fetching data: ', error)
+            }
+        }
+        fetchData()
+    }
+
+    useEffect(() => {
+        console.log(id)
+    },[])
 
     // Dummy data for ocular details
     const ocularDetails = [
@@ -44,7 +63,7 @@ const EditOcularModal = () => {
     return (
         <div>
 
-        <Dropdown.Item onClick={handleShowModal}>Edit Ocular Details</Dropdown.Item>
+        <Dropdown.Item onClick={() => { handleShowModal(); handleFetchById();}}> Edit Ocular Details</Dropdown.Item>
 
             <Modal show={showModal} onHide={handleCloseModal} size="lg">
                 <Modal.Header style={{color: "white", backgroundColor: "#014c91"}}>

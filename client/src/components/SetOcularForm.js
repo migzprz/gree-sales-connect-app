@@ -5,8 +5,12 @@ import { Row, Col, Form } from 'react-bootstrap';
 import '../index.css';
 import ReturningClientModal from './ReturningClientModal';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const SetOcularForm = () => {
+
+    const navigate = useNavigate()
+
     const [location, setLocation] = useState([])
     const [clients, setClients] = useState({})
     const [storedLocations, setStoredLocations] = useState({})
@@ -59,10 +63,7 @@ const SetOcularForm = () => {
         date: null,
         time: null,
         technician: null,
-        login_id: 1
-
-
-        // TODO: on submit, merge date and time to one datetime format and check for existing record
+        login_id: 1,
 
     })
     useEffect(() => {
@@ -143,7 +144,7 @@ const SetOcularForm = () => {
         event.preventDefault();
         event.stopPropagation();
       }
-  
+      event.preventDefault();
       setValidated(true);
 
       // add ocular_date by concat date and time
@@ -157,6 +158,7 @@ const SetOcularForm = () => {
       try {
         const postReponse = await axios.post('http://localhost:4000/api/postOcular/', data)
         console.log(postReponse)
+        navigate('/viewoculars')
       } catch (error) {
         console.error('Error: Problem encountered when posting data', error)
       }
@@ -245,7 +247,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="firstName">
                     <Form.Label>First Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientFirstName ?? ''} onChange={handleChange} name='firstName' required/>
+                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientFirstName || null } onChange={handleChange} name='firstName' required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide first name.
                     </Form.Control.Feedback>
@@ -254,7 +256,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="lastName">
                 <Form.Label>Last Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientLastName ?? ''} onChange={handleChange} name='lastName' required/>
+                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientLastName || null } onChange={handleChange} name='lastName' required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide last name.
                     </Form.Control.Feedback>
@@ -263,7 +265,7 @@ const SetOcularForm = () => {
             <Col className="ms-5" lg="4">
                  <Form.Group controlId="companyName">
                     <Form.Label>Company Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientCompanyName ?? ''}onChange={handleChange} name='companyName' placeholder="optional"/>
+                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientCompanyName || null }onChange={handleChange} name='companyName' placeholder="optional"/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid company.
                     </Form.Control.Feedback>
@@ -275,7 +277,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="contactNumber">
                     <Form.Label>Contact Number</Form.Label>
-                    <Form.Control type="text" pattern="[0-9]{11}" placeholder="e.g. 09123456789" disabled={!isNew} value={formData.returningClientContactNumber ?? ''} onChange={handleChange} name='contactNumber' required />
+                    <Form.Control type="text" pattern="[0-9]{11}" placeholder="e.g. 09123456789" disabled={!isNew} value={formData.returningClientContactNumber || null } onChange={handleChange} name='contactNumber' required />
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid Contact No.
                     </Form.Control.Feedback>
@@ -284,7 +286,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="email">
                     <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" disabled={!isNew} value={formData.returningClientEmail ?? ''} onChange={handleChange} name='email' required/>
+                    <Form.Control type="email" disabled={!isNew} value={formData.returningClientEmail || null } onChange={handleChange} name='email' required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid Email
                     </Form.Control.Feedback>
@@ -293,7 +295,7 @@ const SetOcularForm = () => {
             <Col className="ms-5"  lg="4">
                  <Form.Group controlId="tin">
                     <Form.Label>Company TIN ID</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientCompanyTin ?? ''} placeholder="optional" name='tin' onChange={handleChange}/>
+                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientCompanyTin || null } placeholder="optional" name='tin' onChange={handleChange}/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid TIN
                     </Form.Control.Feedback>

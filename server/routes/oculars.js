@@ -29,7 +29,8 @@ module.exports = (query) => {
                                     CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name,
                                     CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.contact_number as client_number,
                                     co.company_name,
-                                    CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address
+                                    CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address,
+                                    o.ocular_id
                                     FROM td_oculars o 
                                     JOIN md_quotation_clients qc ON o.ocular_id = qc.ocular_id
                                     JOIN md_technicians t ON o.technician_id = t.technician_id
@@ -47,6 +48,13 @@ module.exports = (query) => {
             console.error('Error: ', error)
             throw error
         }
+    })
+
+    /**
+     * Returns an ocular record and related information by ID parameter
+     */
+    router.get('/getOcular', async (req, res) => {
+
     })
 
     /**

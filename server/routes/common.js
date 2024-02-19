@@ -120,5 +120,26 @@ module.exports = (query) => {
         }
     })
 
+    /**
+     *  Return a list of selectable products 
+     */
+    router.get('/getProducts', async (req, res) => {
+        try {
+            const data = await query(`SELECT *,
+                                    CONCAT(product_hp, ' HORSEPOWER ', UPPER(product_type), ' TYPE ', 
+                                    CASE 
+                                        WHEN is_inverter = 1 THEN 'INVERTER' 
+                                        WHEN is_inverter = 0 THEN 'NON-INVERTER' END) as display
+                                    FROM greesalesconnect.md_products
+                                    ORDER BY unit_model ASC;`, [])
+            console.log(data)
+
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
     return router;
 }

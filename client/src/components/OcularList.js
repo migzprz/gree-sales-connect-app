@@ -11,6 +11,7 @@ import axios from 'axios'
 const OcularList = () => {
 
     const [ocularData, setOcularData] = useState([])
+    const [isUpdate, setIsUpdate] = useState(false)
 
     // fetch and mount ocular data to useState
     useEffect(() => {
@@ -32,20 +33,20 @@ const OcularList = () => {
 
     const handleEllipsisClick = (index) => {
         setActiveDropdown(index === activeDropdown ? null : index);
-      };
+    };
 
-      const renderDropdown = (index) => {
+    const renderDropdown = (index, id) => {
         if (index === activeDropdown) {
-          return (
+            return (
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-              <Dropdown.Item>Generate Quotation</Dropdown.Item>
-              <EditOcularModal/>
-              <CancelOcularModal/>
+                <Dropdown.Item>Generate Quotation</Dropdown.Item>
+                <EditOcularModal id={id}/>
+                <CancelOcularModal/>
             </Dropdown.Menu>
-          );
+            );
         }
-        return null;
-      };
+    return null;
+    };
       
 
     return (
@@ -125,7 +126,7 @@ const OcularList = () => {
                         </thead>
                         <tbody>
                             {ocularData.map((ocular, index) => (
-                                <React.Fragment key={ocular.id}>
+                                <React.Fragment key={ocular.ocular_id}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                         <td style={{color: '#014c91'}}>{ocular.client_name}</td>
                                         <td style={{color: '#014c91'}}>{ocular.company_name}</td>
@@ -135,15 +136,14 @@ const OcularList = () => {
                                         <td style={{color: '#014c91'}}>{new Date(ocular.ocular_date).toLocaleTimeString()}</td>
                                         <td style={{color: '#014c91'}}>{ocular.technician_name}</td>
                                         <td style={{ color: '#014c91' }}>
-                                        <div style={{ position: 'relative' }}>
-                            <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
-                            <FaEllipsisH size={20} />
-                            </div>
-                            <Dropdown show={index === activeDropdown} align="start">
-                
-                            {renderDropdown(index)}
-                            </Dropdown>
-                            </div>
+                                            <div style={{ position: 'relative' }}>
+                                            <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
+                                                <FaEllipsisH size={20} />
+                                            </div>
+                                                <Dropdown show={index === activeDropdown} align="start">
+                                                    {renderDropdown(index, ocular.ocular_id)}
+                                                </Dropdown>
+                                            </div>`
                                         </td>
                                     </tr>
                                 </React.Fragment>
