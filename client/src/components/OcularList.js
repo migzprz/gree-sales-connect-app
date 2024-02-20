@@ -137,13 +137,13 @@ const OcularList = () => {
                                         <td style={{color: '#014c91'}}>{ocular.technician_name}</td>
                                         <td style={{ color: '#014c91' }}>
                                             <div style={{ position: 'relative' }}>
-                                            <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
-                                                <FaEllipsisH size={20} />
+                                                <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
+                                                    <FaEllipsisH size={20} />
+                                                </div>
+                                                    <Dropdown show={index === activeDropdown} align="start">
+                                                        {renderDropdown(index, ocular.ocular_id)}
+                                                    </Dropdown>
                                             </div>
-                                                <Dropdown show={index === activeDropdown} align="start">
-                                                    {renderDropdown(index, ocular.ocular_id)}
-                                                </Dropdown>
-                                            </div>`
                                         </td>
                                     </tr>
                                 </React.Fragment>

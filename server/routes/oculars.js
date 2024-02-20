@@ -53,7 +53,33 @@ module.exports = (query) => {
     /**
      * Returns an ocular record and related information by ID parameter
      */
-    router.get('/getOcular', async (req, res) => {
+    router.get('/getOcular/:id', async (req, res) => {
+        try {
+            const { id } = req.params
+            const q =  `SELECT      ocular_date,
+                                    CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.contact_number as client_number, cp.email,
+                                    co.company_name, co.tin,
+                                    o.ocular_id,
+                                    loc.*
+                        FROM td_oculars o 
+                        JOIN md_quotation_clients qc ON o.ocular_id = qc.ocular_id
+                        JOIN md_technicians t ON o.technician_id = t.technician_id
+                        JOIN md_clients cl ON qc.client_id = cl.client_id
+                        JOIN md_contactperson cp ON cl.contact_person_id = cp.contact_person_id
+                        JOIN md_companies co ON cl.company_id = co.company_id
+                        JOIN md_locations loc ON qc.location_id = loc.location_id
+                        JOIN md_provinces p ON loc.addr_province_id = p.province_id
+                        JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
+                        JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
+                        WHERE o.ocular_id = ?
+                        ORDER BY ocular_date ASC;`
+            const data = await query(q, [id])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
 
     })
 
@@ -88,10 +114,10 @@ module.exports = (query) => {
         ]
 
         const loc_values = [
-            req.body.region,
-            req.body.province,
-            req.body.city,
-            req.body.barangay,
+            req.body.addr_region_id,
+            req.body.addr_province_id,
+            req.body.addr_municipality_id,
+            req.body.addr_barangay_id,
             req.body.street_name,
             req.body.bldg_no,
             req.body.zipcode,

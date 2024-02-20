@@ -1,83 +1,95 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button, Modal, Form,  Dropdown } from 'react-bootstrap';
+import { Row, Col, Modal, Form,  Dropdown } from 'react-bootstrap';
 import { FaEdit} from 'react-icons/fa';
+import axios from 'axios'
+import useAddressFilter from '../hooks/useAddressFilter';
 
 const EditOcularModal = ({ id }) => {
     const [showModal, setShowModal] = useState(false);
-
-    let record;
+    const [recordData, setRecordData] = useState({})
     const [editData, setEditData] = useState({})
-    
+    const [technicians, setTechnicians] = useState([])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:4000/api/getOcular/${id}`)
+                setRecordData(response.data[0])
+            } catch (error) {
+                console.error('Error fetching data: ', error)
+            }
+            try {
+                const technicianResponse = await axios.get('http://localhost:4000/api/getTechnicians/')
+                setTechnicians(technicianResponse.data)
+            } catch (error) {
+                console.error('Error fetching technician data: ', error)
+            }
+        }
+        fetchData()
+    }, [id])
+    useEffect(() => {
+        console.log(recordData)
+    }, [recordData])
+
+    const { region, filteredProvince, filteredCity, filteredBarangay } = useAddressFilter(editData, setEditData)
+
+    const clearData = () => {
+        setEditData({})
+        setRecordData({})
+    }
+
     const handleShowModal = () => {
         setShowModal(true);
     };
 
     const handleCloseModal = () => {
         setValidated(false); 
+        clearData()
         setShowModal(false);
     };
 
-    const handleFetchById = () => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('http://localhost:4000/api/getOcular/')
-                setOcularData(response.data)
-            } catch (error) {
-                console.error('Error fetching data: ', error)
-            }
-        }
-        fetchData()
-    }
-
     useEffect(() => {
-        console.log(id)
-    },[])
+        console.log('edited data: ', editData)
+    }, [editData])
 
-    // Dummy data for ocular details
-    const ocularDetails = [
-        {   id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            location: '41B K1st St. Kamuning Quezon City NCR 1103',
-            contactNumber: '0165189598',
-            emailAddress: 'miguel_josh_perez@dlsu.edu.ph',
-            TIN: '77788899900000',
-            date: '2024-01-15',
-            time: '10:00 AM',
-            technician: 'Technician 1',
-            status: 'Scheduled'}
-      ];
+    const [validated, setValidated] = useState(false);
 
-      const [validated, setValidated] = useState(false);
-      const handleSubmit = (event) => {
+    const handleSubmit = (event) => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
-          event.preventDefault();
-          event.stopPropagation();
+            event.preventDefault();
+            event.stopPropagation();
         }
-    
+
         setValidated(true);
-      };
+    };
       
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setEditData({
+          ...editData,
+          [name]: value,
+        });
+    };
 
     return (
         <div>
 
-        <Dropdown.Item onClick={() => { handleShowModal(); handleFetchById();}}> Edit Ocular Details</Dropdown.Item>
+            <Dropdown.Item onClick={handleShowModal}> Edit Ocular Details</Dropdown.Item>
 
-            <Modal show={showModal} onHide={handleCloseModal} size="lg">
-                <Modal.Header style={{color: "white", backgroundColor: "#014c91"}}>
-                    <Modal.Title>Edit Ocular Details</Modal.Title>
-                </Modal.Header>
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                    <Modal.Body style={{color: "#014c91", backgroundColor: "#E5EDF4"}}>
+                <Modal show={showModal} onHide={handleCloseModal} size="lg">
+                    <Modal.Header style={{color: "white", backgroundColor: "#014c91"}}>
+                        <Modal.Title>Edit Ocular Details</Modal.Title>
+                    </Modal.Header>
+                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                        <Modal.Body style={{color: "#014c91", backgroundColor: "#E5EDF4"}}>
 
                                 <Row>
                                     <Col lg="3">
                                         <strong> Client Name: </strong> 
                                     </Col>
                                     <Col lg="3">
-                                        {ocularDetails[0].client}
+                                        {recordData.client_name}
                                     </Col>
                                 </Row>
 
@@ -86,7 +98,7 @@ const EditOcularModal = ({ id }) => {
                                         <strong> Company Name: </strong>
                                     </Col>
                                     <Col lg="3">
-                                        {ocularDetails[0].company}
+                                        {recordData.company_name}
                                     </Col>
                                 </Row>
 
@@ -95,7 +107,7 @@ const EditOcularModal = ({ id }) => {
                                         <strong> TIN ID: </strong> 
                                     </Col>
                                     <Col lg="3">
-                                        {ocularDetails[0].TIN}
+                                        {recordData.tin}
                                     </Col>
                                 </Row>
 
@@ -104,7 +116,7 @@ const EditOcularModal = ({ id }) => {
                                         <strong> Contact Number: </strong>
                                     </Col>
                                     <Col lg="3">
-                                        {ocularDetails[0].contactNumber}
+                                        {recordData.client_number}
                                     </Col>
                                 </Row>
 
@@ -113,7 +125,7 @@ const EditOcularModal = ({ id }) => {
                                         <strong> Email Address: </strong> 
                                     </Col>
                                     <Col lg="3">
-                                        {ocularDetails[0].emailAddress}
+                                        {recordData.email}
                                     </Col>
                                 </Row>
                 
@@ -121,7 +133,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="4">
                                         <Form.Group controlId="unitNo">
                                             <Form.Label>Unit No.</Form.Label>
-                                            <Form.Control type="text" required/>
+                                            <Form.Control type="text" placeholder={recordData.addr_bldg_no} name='addr_bldg_no' onChange={handleChange} required/>
                                             <Form.Control.Feedback type="invalid">
                                                 Please provide a valid Unit No.
                                             </Form.Control.Feedback>
@@ -130,23 +142,18 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="4">
                                         <Form.Group controlId="street">
                                             <Form.Label>Street</Form.Label>
-                                            <Form.Control type="text" required/>
+                                            <Form.Control type="text"  placeholder={recordData.addr_street_name} name='addr_street_name' required/>
                                             <Form.Control.Feedback type="invalid">
                                                 Please provide a valid Street Name.
                                             </Form.Control.Feedback>
                                         </Form.Group>
                                     </Col>
                                     <Col lg="3">
-                                        <Form.Group controlId="barangay">
-                                            <Form.Label>Barangay</Form.Label>
-                                            <Form.Control as="select" required>
-                                                <option value=""> Select </option>
-                                                <option value="1"> One </option>
-                                                <option value="2"> Two </option>
-                                                <option value="3"> Three </option>
-                                            </Form.Control>
-                                            <Form.Control.Feedback type="invalid">
-                                                Please choose a barangay.
+                                        <Form.Group controlId="zipcode">
+                                            <Form.Label>ZIP Code</Form.Label>
+                                            <Form.Control pattern="[0-9]{4}" placeholder={recordData.zipcode} type="text" required/>
+                                            <Form.Control.Feedback type="invalid" required>
+                                                Please provide a valid ZIP Code.
                                             </Form.Control.Feedback>
                                         </Form.Group>
                                     </Col>
@@ -154,27 +161,27 @@ const EditOcularModal = ({ id }) => {
 
                                 <Row className="mt-2">
                                     <Col lg="3">
-                                        <Form.Group controlId="city">
-                                            <Form.Label>City</Form.Label>
-                                            <Form.Control as="select" required>
-                                                <option value=""> Select </option>
-                                                <option value="1"> One </option>
-                                                <option value="2"> Two </option>
-                                                <option value="3"> Three </option>
+                                        <Form.Group controlId="region">
+                                            <Form.Label>Region</Form.Label>
+                                            <Form.Control as="select" onChange={handleChange} name='addr_region_id' required>
+                                                <option value="">Select</option>
+                                                {region.map((reg) => (
+                                                    <option key={reg.region_id} value={reg.region_id}>{reg.description}</option>
+                                                ))}
                                             </Form.Control>
                                             <Form.Control.Feedback type="invalid">
-                                                Please choose a city.
+                                                Please choose a region.
                                             </Form.Control.Feedback>
                                         </Form.Group>
                                     </Col>
                                     <Col lg="3">
                                         <Form.Group controlId="province">
                                             <Form.Label>Province</Form.Label>
-                                            <Form.Control as="select" required>
-                                                <option value=""> Select </option>
-                                                <option value="1"> One </option>
-                                                <option value="2"> Two </option>
-                                                <option value="3"> Three </option>
+                                            <Form.Control as="select" onChange={handleChange} name='addr_province_id' required>
+                                                <option value="">Select</option>
+                                                {filteredProvince.map((pro) => (
+                                                    <option key={pro.province_id} value={pro.province_id}>{pro.name}</option>
+                                                ))}
                                             </Form.Control>
                                             <Form.Control.Feedback type="invalid">
                                                 Please choose a province.
@@ -182,25 +189,30 @@ const EditOcularModal = ({ id }) => {
                                         </Form.Group>
                                     </Col>
                                     <Col lg="3">
-                                        <Form.Group controlId="region">
-                                            <Form.Label>Region</Form.Label>
-                                            <Form.Control as="select" required>
-                                                <option value=""> Select </option>
-                                                <option value="1"> One </option>
-                                                <option value="2"> Two </option>
-                                                <option value="3"> Three </option>
+                                        <Form.Group controlId="city">
+                                            <Form.Label>City</Form.Label>
+                                            <Form.Control as="select" onChange={handleChange} name='addr_municipality_id'required>
+                                                <option value="">Select</option>
+                                                {filteredCity.map((cit) => (
+                                                    <option key={cit.municipality_id} value={cit.municipality_id}>{cit.name}</option>
+                                                ))}
                                             </Form.Control>
                                             <Form.Control.Feedback type="invalid">
-                                                Please choose a region.
+                                                Please choose a city.
                                             </Form.Control.Feedback>
                                         </Form.Group>
                                     </Col>
-                                    <Col lg="2">
-                                        <Form.Group controlId="companyName">
-                                            <Form.Label>ZIP Code</Form.Label>
-                                            <Form.Control pattern="[0-9]{4}" type="text" required/>
-                                            <Form.Control.Feedback type="invalid" required>
-                                                Please provide a valid ZIP Code.
+                                    <Col lg="3">
+                                        <Form.Group controlId="barangay">
+                                            <Form.Label>Barangay</Form.Label>
+                                            <Form.Control as="select" onChange={handleChange} name='addr_barangay_id' required>
+                                                <option value="">Select</option>
+                                                {filteredBarangay.map((bar) => (
+                                                    <option key={bar.barangay_id} value={bar.barangay_id}>{bar.name}</option>
+                                                ))}
+                                            </Form.Control>
+                                            <Form.Control.Feedback type="invalid">
+                                                Please choose a barangay.
                                             </Form.Control.Feedback>
                                         </Form.Group>
                                     </Col>
@@ -228,11 +240,11 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="technician">
                                             <Form.Label>Assigned Technician</Form.Label>
-                                            <Form.Control as="select" required>
-                                                <option value=""> Select </option>
-                                                <option value="1"> One </option>
-                                                <option value="2"> Two </option>
-                                                <option value="3"> Three </option>
+                                            <Form.Control as="select" onChange={handleChange} name='technician_id' required>
+                                                <option value="">Select</option>
+                                                {technicians.map((tec, index) => (
+                                                    <option key={index} value={tec.technician_id}>{tec.complete_name}</option>
+                                                ))}
                                             </Form.Control>
                                             <Form.Control.Feedback type="invalid">
                                                 Please choose a technician.

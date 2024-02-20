@@ -6,37 +6,18 @@ import '../index.css';
 import ReturningClientModal from './ReturningClientModal';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import useAddressFilter from '../hooks/useAddressFilter'
 
 const SetOcularForm = () => {
 
     const navigate = useNavigate()
 
-    const [location, setLocation] = useState([])
     const [clients, setClients] = useState({})
     const [storedLocations, setStoredLocations] = useState({})
     const [companies, setCompanies] = useState({})
     const [technicians, setTechnicians] = useState([])
-
-    // location data
-    const [region, setRegion] = useState([])
-    const [province, setProvince] = useState([])
-    const [city, setCity] = useState([])
-    const [barangay, setBarangay] = useState([])
-
-    // filter data for address dropdown
-    const [filteredProvince, setFilteredProvince] = useState([])
-    const [filteredCity, setFilteredCity] = useState([])
-    const [filteredBarangay, setFilteredBarangay] = useState([])
-
-    // is_active useState for address dropdown
-    const [provinceActive, setProvinceActive] = useState(false)
-    const [cityActive, setCityActive] = useState(true)
-    const [barangayActive, setBarangayActive] = useState(true)
-
     const [isNew, setIsNew] = useState(true);
-
     const [activeOption, setActiveOption] = useState('newClient');
-
     const [formData, setFormData] = useState({
         // client and company data (NEW)
         firstName: '',
@@ -53,10 +34,10 @@ const SetOcularForm = () => {
         // location data
         bldg_no: '',
         street_name: '',
-        barangay: null,
-        city: null,
-        province: null,
-        region: null,
+        addr_barangay_id: null,
+        addr_municipality_id: null,
+        addr_province_id: null,
+        addr_region_id: null,
         zipcode: '',
 
         // ocular data (transform date and time into datetime)
@@ -70,19 +51,10 @@ const SetOcularForm = () => {
         console.log('form data: ', formData)
     }, [formData])
 
+    const { region, filteredProvince, filteredCity, filteredBarangay } = useAddressFilter(formData, setFormData)
+
     // fetch location data and stored client and location data for quick fillup feature
     const fetchData = async () => {
-        try {
-            const locFormsResponse = await axios.get('http://localhost:4000/api/getLocationsForAddressInForms/')
-            setLocation(locFormsResponse.data)
-            setRegion(locFormsResponse.data.regions)
-            setProvince(locFormsResponse.data.provinces)
-            setCity(locFormsResponse.data.municipalities)
-            setBarangay(locFormsResponse.data.barangays)
-        } catch (error) {
-            console.error('Error fetching location data: ', error)
-        }
-        
         try {
             const locStoredResponse = await axios.get('http://localhost:4000/api/getStoredLocations/')
             setStoredLocations(locStoredResponse.data)
@@ -114,9 +86,6 @@ const SetOcularForm = () => {
     useEffect(() => {
         fetchData()
     },[])
-    useEffect(() => {
-        console.log('location data: ', location, region, province, city, barangay)
-    },[location])
     useEffect(() => {
         console.log('stored locations data: ',storedLocations)
     },[storedLocations])
@@ -173,40 +142,6 @@ const SetOcularForm = () => {
           [name]: value,
         });
     };
-
-    // Event Handlers for Address Select
-    useEffect(() => {
-
-        console.log('formData.region triggered', formData.region)
-
-        // filter province to show provinces in selected region
-        const filteredProvince = province.filter(prov => prov.region_id === Number(formData.region))
-
-        console.log(filteredProvince)
-
-        setFilteredProvince(filteredProvince)
-        setProvinceActive(true)
-
-        // reset city and barangay filtered list
-        setFilteredCity([])
-        setFilteredBarangay([])
-    }, [formData.region])
-
-    useEffect(() => {
-        // filter city data to match selected province id
-        const filteredCity = city.filter(cit => cit.province_id === Number(formData.province))
-        setFilteredCity(filteredCity)
-        setCityActive(true)
-
-        // reset barangay
-        setFilteredBarangay([])
-    }, [formData.province])
-
-    useEffect(() => {
-        const filteredBarangay = barangay.filter(bar => bar.municipality_id === Number(formData.city))
-        setFilteredBarangay(filteredBarangay)
-        setBarangayActive(true)
-    }, [formData.city])
 
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
@@ -339,7 +274,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="region">
                     <Form.Label>Region</Form.Label>
-                    <Form.Control as="select" onChange={handleChange} name='region' required>
+                    <Form.Control as="select" onChange={handleChange} name='addr_region_id' required>
                         <option value="">Select</option>
                         {region.map((reg) => (
                             <option key={reg.region_id} value={reg.region_id}>{reg.description}</option>
@@ -353,7 +288,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="province">
                     <Form.Label>Province</Form.Label>
-                    <Form.Control as="select" onChange={handleChange} name='province'  required>
+                    <Form.Control as="select" onChange={handleChange} name='addr_province_id'  required>
                         <option value=""> Select </option>
                         {filteredProvince.map((prov) => (
                             <option key={prov.province_id} value={prov.province_id}>{prov.name}</option>
@@ -367,7 +302,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="city">
                     <Form.Label>City</Form.Label>
-                    <Form.Control as="select" onChange={handleChange} name='city'  required>
+                    <Form.Control as="select" onChange={handleChange} name='addr_municipality_id'  required>
                         <option value=""> Select </option>
                         {filteredCity.map((cit) => (
                             <option key={cit.municipality_id} value={cit.municipality_id}>{cit.name}</option>
@@ -381,7 +316,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="barangay">
                     <Form.Label>Barangay</Form.Label>
-                    <Form.Control as="select" onChange={handleChange} name='barangay' required>
+                    <Form.Control as="select" onChange={handleChange} name='addr_barangay_id' required>
                         <option value=""> Select </option>
                         {filteredBarangay.map((bar) => (
                             <option key={bar.barangay_id} value={bar.barangay_id}>{bar.name}</option> 
