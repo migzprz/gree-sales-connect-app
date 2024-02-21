@@ -193,7 +193,22 @@ module.exports = (query) => {
 
     })
 
+    router.patch('/editOcularById/:id', (req, res) => {
+        const id = req.params.id
+        const data = Object.fromEntries(
+            // Use Object.entries to get key-value pairs, and filter out null values
+            Object.entries(req.body).filter(([key, value]) => value !== '' && value !== null)
+        );
 
+        try {
+            if (Object.keys(data).length > 0) {
+                console.log('post data w/ id:', data, id)
+            }
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to update ocular record... ${error}`})
+        }
+    })
     // Determining Quotation Statuses:
     /**
      * Ocular made, not converted to quotation ---- md_quotations.login_id IS NULL

@@ -9,6 +9,7 @@ const EditOcularModal = ({ id }) => {
     const [recordData, setRecordData] = useState({})
     const [editData, setEditData] = useState({})
     const [technicians, setTechnicians] = useState([])
+    const [isRequired, setIsRequired] = useState(false)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -59,8 +60,15 @@ const EditOcularModal = ({ id }) => {
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
+            return
         }
 
+        try {
+            const updateResponse = axios.patch(`http://localhost:4000/api/editOcularById/${id}`, editData) 
+            console.log(updateResponse)  
+        } catch (error) {
+            console.log(error)
+        }
         setValidated(true);
     };
       
@@ -133,7 +141,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="4">
                                         <Form.Group controlId="unitNo">
                                             <Form.Label>Unit No.</Form.Label>
-                                            <Form.Control type="text" placeholder={recordData.addr_bldg_no} name='addr_bldg_no' onChange={handleChange} required/>
+                                            <Form.Control type="text" placeholder={recordData.addr_bldg_no} name='addr_bldg_no' onChange={handleChange} />
                                             <Form.Control.Feedback type="invalid">
                                                 Please provide a valid Unit No.
                                             </Form.Control.Feedback>
@@ -142,7 +150,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="4">
                                         <Form.Group controlId="street">
                                             <Form.Label>Street</Form.Label>
-                                            <Form.Control type="text"  placeholder={recordData.addr_street_name} name='addr_street_name' required/>
+                                            <Form.Control type="text"  placeholder={recordData.addr_street_name} name='addr_street_name' onChange={handleChange} />
                                             <Form.Control.Feedback type="invalid">
                                                 Please provide a valid Street Name.
                                             </Form.Control.Feedback>
@@ -151,7 +159,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="zipcode">
                                             <Form.Label>ZIP Code</Form.Label>
-                                            <Form.Control pattern="[0-9]{4}" placeholder={recordData.zipcode} type="text" required/>
+                                            <Form.Control pattern="[0-9]{4}" placeholder={recordData.zipcode} type="text" name='zipcode' onChange={handleChange} />
                                             <Form.Control.Feedback type="invalid" required>
                                                 Please provide a valid ZIP Code.
                                             </Form.Control.Feedback>
@@ -163,7 +171,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="region">
                                             <Form.Label>Region</Form.Label>
-                                            <Form.Control as="select" onChange={handleChange} name='addr_region_id' required>
+                                            <Form.Control as="select" onChange={handleChange} name='addr_region_id' >
                                                 <option value="">Select</option>
                                                 {region.map((reg) => (
                                                     <option key={reg.region_id} value={reg.region_id}>{reg.description}</option>
@@ -177,7 +185,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="province">
                                             <Form.Label>Province</Form.Label>
-                                            <Form.Control as="select" onChange={handleChange} name='addr_province_id' required>
+                                            <Form.Control as="select" onChange={handleChange} name='addr_province_id' >
                                                 <option value="">Select</option>
                                                 {filteredProvince.map((pro) => (
                                                     <option key={pro.province_id} value={pro.province_id}>{pro.name}</option>
@@ -191,7 +199,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="city">
                                             <Form.Label>City</Form.Label>
-                                            <Form.Control as="select" onChange={handleChange} name='addr_municipality_id'required>
+                                            <Form.Control as="select" onChange={handleChange} name='addr_municipality_id'>
                                                 <option value="">Select</option>
                                                 {filteredCity.map((cit) => (
                                                     <option key={cit.municipality_id} value={cit.municipality_id}>{cit.name}</option>
@@ -205,7 +213,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="barangay">
                                             <Form.Label>Barangay</Form.Label>
-                                            <Form.Control as="select" onChange={handleChange} name='addr_barangay_id' required>
+                                            <Form.Control as="select" onChange={handleChange} name='addr_barangay_id' >
                                                 <option value="">Select</option>
                                                 {filteredBarangay.map((bar) => (
                                                     <option key={bar.barangay_id} value={bar.barangay_id}>{bar.name}</option>
@@ -222,7 +230,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="date">
                                             <Form.Label>Ocular Date</Form.Label>
-                                            <Form.Control type="date" required/>
+                                            <Form.Control type="date" onChange={handleChange}/>
                                             <Form.Control.Feedback type="invalid">
                                                 Please choose a valid date.
                                             </Form.Control.Feedback>
@@ -231,7 +239,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="time">
                                             <Form.Label>Ocular Time</Form.Label>
-                                            <Form.Control type="time" required/>
+                                            <Form.Control type="time" onChange={handleChange} />
                                             <Form.Control.Feedback type="invalid">
                                                 Please choose a valid time.
                                             </Form.Control.Feedback>
@@ -240,7 +248,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="technician">
                                             <Form.Label>Assigned Technician</Form.Label>
-                                            <Form.Control as="select" onChange={handleChange} name='technician_id' required>
+                                            <Form.Control as="select" onChange={handleChange} name='technician_id' >
                                                 <option value="">Select</option>
                                                 {technicians.map((tec, index) => (
                                                     <option key={index} value={tec.technician_id}>{tec.complete_name}</option>
