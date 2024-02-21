@@ -157,7 +157,7 @@ module.exports = (query) => {
             // TESTING
             console.log('step 2 data: ', ocu_values)
 
-            const ocu_query = 'INSERT INTO td_oculars (ocular_date, login_id, technician_id, date_created) VALUES (?, ?, ?, NOW())'
+            const ocu_query = 'INSERT INTO td_oculars (ocular_date, login_id, technician_id, date_created, is_active) VALUES (?, ?, ?, NOW(), 1)'
             const ocu_data = await query(ocu_query, ocu_values)
 
             console.log('ocular data result: ', ocu_data)
@@ -193,21 +193,57 @@ module.exports = (query) => {
 
     })
 
-    router.patch('/editOcularById/:id', (req, res) => {
+    router.patch('/editOcularById/:id', async (req, res) => {
         const id = req.params.id
         const data = Object.fromEntries(
             // Use Object.entries to get key-value pairs, and filter out null values
             Object.entries(req.body).filter(([key, value]) => value !== '' && value !== null)
         );
 
-        try {
-            if (Object.keys(data).length > 0) {
-                console.log('post data w/ id:', data, id)
+        console.log(data)
+
+        // separate update data into ocular table (ocular_date, technician_id) and location table (*)
+        const ocular_data = {} 
+        const location_data = {}
+        for (const [key, value] of Object.entries(data)) {
+            if (value !== '' && value !== null) {
+                if (key.startsWith('addr_') || key.includes('zipcode')) {
+                    location_data[key] = value
+                }
+                else {
+                    ocular_data[key] = value
+                }
             }
+        }
+        
+        try {
+            let updateLocationResponse, updateOcularResponse
+            // patch ocular_data
+            if (Object.keys(ocular_data).length > 0) {
+                console.log('patch ocular data w/ id:', ocular_data)
+                const columnsToUpdate = Object.keys(ocular_data).map(column => `${column} = ?`).join(', ');
+                const values = [...Object.values(ocular_data), id];
+                updateOcularResponse = await query(`UPDATE td_oculars SET ${columnsToUpdate} WHERE ocular_id = ?`, values)
+            }
+
+            // patch location_data
+            if (Object.keys(location_data).length > 0) {
+                console.log('patch location data w/ id:', location_data)
+                const locationId = await query('SELECT location_id FROM md_quotation_clients WHERE ocular_id = ?', [id])
+                const columnsToUpdate = Object.keys(location_data).map(column => `${column} = ?`).join(', ');
+                const locationValues = [...Object.values(location_data), locationId[0].location_id];
+                updateLocationResponse = await query(`UPDATE md_locations SET ${columnsToUpdate} WHERE location_id = ?`, locationValues)
+            }
+            
+            res.status(200).json({message: `Ocular successfully updated... ${updateLocationResponse}, ${updateOcularResponse}`})
         } catch (error) {
             console.error('Error: ', error)
             res.status(400).json({message: `Error... Failed to update ocular record... ${error}`})
         }
+    })
+
+    router.patch('/cancelOcular/:id', (req, res) => {
+
     })
     // Determining Quotation Statuses:
     /**

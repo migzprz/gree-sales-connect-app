@@ -64,8 +64,29 @@ const EditOcularModal = ({ id }) => {
         }
 
         try {
-            const updateResponse = axios.patch(`http://localhost:4000/api/editOcularById/${id}`, editData) 
-            console.log(updateResponse)  
+            var output = editData
+            // add ocular_date to editData
+            if ((!output.date || !output.time) && ((output.date && !output.time) || (!output.date && output.time))) {
+                output = {
+                    ...output,
+                    ocular_date: (editData.date ? editData.date : recordData.ocular_date.split('T')[0]) + (editData.time ? 'T'+editData.time : 'T'+recordData.ocular_date.split('T')[1]),
+                    date: '',
+                    time: '',
+                }
+            }
+            else if (output.date && output.time) {
+                output = {
+                    ...output,
+                    ocular_date: editData.date+'T'+editData.time,
+                    date: '',
+                    time: '',
+                }
+            }
+
+            console.log('record vs edit: ', recordData, output)
+            const updateResponse = axios.patch(`http://localhost:4000/api/editOcularById/${id}`, output) 
+            console.log(updateResponse)
+            setShowModal(false)  
         } catch (error) {
             console.log(error)
         }
@@ -74,6 +95,7 @@ const EditOcularModal = ({ id }) => {
       
     const handleChange = (e) => {
         const { name, value } = e.target;
+
         setEditData({
           ...editData,
           [name]: value,
@@ -230,7 +252,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="date">
                                             <Form.Label>Ocular Date</Form.Label>
-                                            <Form.Control type="date" onChange={handleChange}/>
+                                            <Form.Control type="date" onChange={handleChange} name='date'/>
                                             <Form.Control.Feedback type="invalid">
                                                 Please choose a valid date.
                                             </Form.Control.Feedback>
@@ -239,7 +261,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="time">
                                             <Form.Label>Ocular Time</Form.Label>
-                                            <Form.Control type="time" onChange={handleChange} />
+                                            <Form.Control type="time" onChange={handleChange} name='time' />
                                             <Form.Control.Feedback type="invalid">
                                                 Please choose a valid time.
                                             </Form.Control.Feedback>
