@@ -9,18 +9,12 @@ const EditOcularModal = ({ id }) => {
     const [showModal, setShowModal] = useState(false);
     const [editData, setEditData] = useState({})
     const [technicians, setTechnicians] = useState([])
-    const [recordData, setRecordData] = useState([])
     //const [isRequired, setIsRequired] = useState(false)
 
+    const { record, setRecord } = useOcularById(id)
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await axios.get(`http://localhost:4000/api/getOcular/${id}`)
-                setRecordData(response.data[0])
-            } catch (error) {
-                console.error('Error fetching data: ', error)
-            }
             try {
                 const technicianResponse = await axios.get('http://localhost:4000/api/getTechnicians/')
                 setTechnicians(technicianResponse.data)
@@ -30,15 +24,12 @@ const EditOcularModal = ({ id }) => {
         }
         fetchData()
     }, [id])
-    useEffect(() => {
-        console.log(recordData)
-    }, [recordData])
 
     const { region, filteredProvince, filteredCity, filteredBarangay } = useAddressFilter(editData, setEditData)
 
     const clearData = () => {
         setEditData({})
-        setRecordData({})
+        setRecord({})
     }
 
     const handleShowModal = () => {
@@ -79,13 +70,13 @@ const EditOcularModal = ({ id }) => {
             else {
                 output = {
                     ...output,
-                    ocular_date: (editData.date ? editData.date : recordData.ocular_date.split('T')[0]) + (editData.time ? 'T'+editData.time : 'T'+recordData.ocular_date.split('T')[1]),
+                    ocular_date: (editData.date ? editData.date : record.ocular_date.split('T')[0]) + (editData.time ? 'T'+editData.time : 'T'+record.ocular_date.split('T')[1]),
                     date: '',
                     time: '',
                 }
             }
 
-            console.log('record vs edit: ', recordData, output)
+            console.log('record vs edit: ', record, output)
             const updateResponse = axios.patch(`http://localhost:4000/api/editOcularById/${id}`, output) 
             console.log(updateResponse)
             setShowModal(false)  
@@ -122,7 +113,7 @@ const EditOcularModal = ({ id }) => {
                                         <strong> Client Name: </strong> 
                                     </Col>
                                     <Col lg="3">
-                                        {recordData.client_name}
+                                        {record.client_name}
                                     </Col>
                                 </Row>
 
@@ -131,7 +122,7 @@ const EditOcularModal = ({ id }) => {
                                         <strong> Company Name: </strong>
                                     </Col>
                                     <Col lg="3">
-                                        {recordData.company_name}
+                                        {record.company_name}
                                     </Col>
                                 </Row>
 
@@ -140,7 +131,7 @@ const EditOcularModal = ({ id }) => {
                                         <strong> TIN ID: </strong> 
                                     </Col>
                                     <Col lg="3">
-                                        {recordData.tin}
+                                        {record.tin}
                                     </Col>
                                 </Row>
 
@@ -149,7 +140,7 @@ const EditOcularModal = ({ id }) => {
                                         <strong> Contact Number: </strong>
                                     </Col>
                                     <Col lg="3">
-                                        {recordData.client_number}
+                                        {record.client_number}
                                     </Col>
                                 </Row>
 
@@ -158,7 +149,7 @@ const EditOcularModal = ({ id }) => {
                                         <strong> Email Address: </strong> 
                                     </Col>
                                     <Col lg="3">
-                                        {recordData.email}
+                                        {record.email}
                                     </Col>
                                 </Row>
 
@@ -168,7 +159,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="4">
                                         <Form.Group controlId="unitNo">
                                             <Form.Label>Unit No.</Form.Label>
-                                            <Form.Control type="text" placeholder={recordData ? recordData.addr_bldg_no : ''} name='addr_bldg_no' onChange={handleChange} />
+                                            <Form.Control type="text" placeholder={record ? record.addr_bldg_no : ''} name='addr_bldg_no' onChange={handleChange} />
                                             <Form.Control.Feedback type="invalid">
                                                 Please provide a valid Unit No.
                                             </Form.Control.Feedback>
@@ -177,7 +168,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="4">
                                         <Form.Group controlId="street">
                                             <Form.Label>Street</Form.Label>
-                                            <Form.Control type="text"  placeholder={recordData ? recordData.addr_street_name : ''} name='addr_street_name' onChange={handleChange} />
+                                            <Form.Control type="text"  placeholder={record ? record.addr_street_name : ''} name='addr_street_name' onChange={handleChange} />
                                             <Form.Control.Feedback type="invalid">
                                                 Please provide a valid Street Name.
                                             </Form.Control.Feedback>
@@ -186,7 +177,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="zipcode">
                                             <Form.Label>ZIP Code</Form.Label>
-                                            <Form.Control pattern="[0-9]{4}" placeholder={recordData ? recordData.zipcode : ''} type="text" name='zipcode' onChange={handleChange} />
+                                            <Form.Control pattern="[0-9]{4}" placeholder={record ? record.zipcode : ''} type="text" name='zipcode' onChange={handleChange} />
                                             <Form.Control.Feedback type="invalid" required>
                                                 Please provide a valid ZIP Code.
                                             </Form.Control.Feedback>

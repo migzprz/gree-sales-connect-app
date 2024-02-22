@@ -41,6 +41,7 @@ module.exports = (query) => {
                                     JOIN md_provinces p ON loc.addr_province_id = p.province_id
                                     JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
                                     JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
+                                    WHERE o.is_active = 1
                                     ORDER BY ocular_date ASC;`, [])
             console.log(data)
             res.send(data)
@@ -58,6 +59,8 @@ module.exports = (query) => {
             const { id } = req.params
             const q =  `SELECT      ocular_date,
                                     CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.contact_number as client_number, cp.email,
+                                    CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address,
+                                    CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name, t.technician_id,
                                     co.company_name, co.tin,
                                     o.ocular_id,
                                     loc.*

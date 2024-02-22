@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Modal, Form,  Dropdown } from 'react-bootstrap';
 import { FaTrash} from 'react-icons/fa';
 import useOcularById from '../hooks/useOcularById';
+import axios from 'axios';
 
-const CancelOcularModal = ({id}) => {
+const CancelOcularModal = ({ id }) => {
     const [showModal, setShowModal] = useState(false);
-    const { record, setRecord } = useOcularById(id)
+    const { record } = useOcularById(id)
     const handleShowModal = () => {
         setShowModal(true);
     };
@@ -19,31 +20,22 @@ const CancelOcularModal = ({id}) => {
         console.log(record)
     }, [record])
 
-    // Dummy data for ocular details
-    const ocularDetails = [
-        {   id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            location: '41B K1st St. Kamuning Quezon City NCR 1103',
-            contactNumber: '0165189598',
-            emailAddress: 'miguel_josh_perez@dlsu.edu.ph',
-            TIN: '77788899900000',
-            date: '2024-01-15',
-            time: '10:00 AM',
-            technician: 'Technician 1',
-            status: 'Scheduled'}
-      ];
 
-      const [validated, setValidated] = useState(false);
-      const handleSubmit = (event) => {
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-    
-        setValidated(true);
-      };
+    const [validated, setValidated] = useState(false);
+    const handleSubmit = async (event) => {
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    try {
+        const response = await axios.patch(`http://localhost:4000/api/changeOcularState/${id}/0`)
+        console.log(response)
+    } catch (error) {
+        console.error(error)
+    }
+    };
       
 
     return (
@@ -95,7 +87,7 @@ const CancelOcularModal = ({id}) => {
                                         <strong> Contact Number: </strong>
                                     </Col>
                                     <Col>
-                                        {ocularDetails[0].contactNumber}
+                                        {record.client_number}
                                     </Col>
                                 </Row>
 
@@ -104,7 +96,7 @@ const CancelOcularModal = ({id}) => {
                                         <strong> Email Address: </strong> 
                                     </Col>
                                     <Col>
-                                        {ocularDetails[0].emailAddress}
+                                        {record.email}
                                     </Col>
                                 </Row>
 
@@ -113,7 +105,7 @@ const CancelOcularModal = ({id}) => {
                                         <strong> Ocular Location: </strong> 
                                     </Col>
                                     <Col>
-                                        {ocularDetails[0].location}
+                                        {record.site_address}
                                     </Col>
                                 </Row>
 
@@ -122,7 +114,7 @@ const CancelOcularModal = ({id}) => {
                                         <strong> Ocular Date: </strong> 
                                     </Col>
                                     <Col>
-                                        {ocularDetails[0].date}
+                                        {new Date(record.ocular_date).toLocaleDateString()}
                                     </Col>
                                 </Row>
 
@@ -131,7 +123,7 @@ const CancelOcularModal = ({id}) => {
                                         <strong> Ocular Time: </strong> 
                                     </Col>
                                     <Col>
-                                        {ocularDetails[0].time}
+                                        {new Date(record.ocular_date).toLocaleTimeString()}
                                     </Col>
                                 </Row>
 
@@ -140,7 +132,7 @@ const CancelOcularModal = ({id}) => {
                                         <strong> Technician: </strong> 
                                     </Col>
                                     <Col>
-                                        {ocularDetails[0].technician}
+                                        {record.technician_name}
                                     </Col>
                                 </Row>
                 
@@ -149,7 +141,7 @@ const CancelOcularModal = ({id}) => {
                     </Modal.Body>
                     <Modal.Footer style={{backgroundColor: "#E5EDF4"}}>
 
-                            <button className="btn" style={{color: "white", backgroundColor: "#8c1919"}}>
+                            <button className="btn" style={{color: "white", backgroundColor: "#8c1919"}} onClick={handleSubmit}>
                             {React.createElement(FaTrash, { size: 18, style: { marginRight: '5px' } })} Cancel Ocular
                             </button>
 
