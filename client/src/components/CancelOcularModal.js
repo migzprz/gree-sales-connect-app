@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { Row, Col, Button, Modal, Form,  Dropdown } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Row, Col, Modal, Form,  Dropdown } from 'react-bootstrap';
 import { FaTrash} from 'react-icons/fa';
+import useOcularById from '../hooks/useOcularById';
 
-const CancelOcularModal = () => {
+const CancelOcularModal = ({id}) => {
     const [showModal, setShowModal] = useState(false);
-
+    const { record, setRecord } = useOcularById(id)
     const handleShowModal = () => {
         setShowModal(true);
     };
@@ -13,6 +14,10 @@ const CancelOcularModal = () => {
         setValidated(false); 
         setShowModal(false);
     };
+
+    useEffect(() => {
+        console.log(record)
+    }, [record])
 
     // Dummy data for ocular details
     const ocularDetails = [
@@ -63,7 +68,7 @@ const CancelOcularModal = () => {
                                         <strong> Client Name: </strong> 
                                     </Col>
                                     <Col>
-                                        {ocularDetails[0].client}
+                                        {record.client_name}
                                     </Col>
                                 </Row>
 
@@ -72,7 +77,7 @@ const CancelOcularModal = () => {
                                         <strong> Company Name: </strong>
                                     </Col>
                                     <Col>
-                                        {ocularDetails[0].company}
+                                        {record.company_name}
                                     </Col>
                                 </Row>
 
@@ -81,7 +86,7 @@ const CancelOcularModal = () => {
                                         <strong> TIN ID: </strong> 
                                     </Col>
                                     <Col>
-                                        {ocularDetails[0].TIN}
+                                        {record.tin}
                                     </Col>
                                 </Row>
 

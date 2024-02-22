@@ -242,8 +242,19 @@ module.exports = (query) => {
         }
     })
 
-    router.patch('/cancelOcular/:id', (req, res) => {
-
+    /**
+     * Cancel or resume working on a ocular record (cancel/reactivate)
+     */
+    router.patch('/changeOcularState/:id/:state', async (req, res) => {
+        try {
+            const values = [req.params.state, req.params.id]
+            const data = await query('UPDATE td_oculars SET is_active = ?, date_statechanged = NOW() WHERE ocular_id = ?', values)
+            console.log(data)
+            res.status(200).json({message: `Ocular successfully updated... ${data}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to cancel ocular... ${error}`})
+        }
     })
     // Determining Quotation Statuses:
     /**

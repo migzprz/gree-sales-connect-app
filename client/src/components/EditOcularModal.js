@@ -3,13 +3,15 @@ import { Row, Col, Modal, Form,  Dropdown } from 'react-bootstrap';
 import { FaEdit} from 'react-icons/fa';
 import axios from 'axios'
 import useAddressFilter from '../hooks/useAddressFilter';
+import useOcularById from '../hooks/useOcularById';
 
 const EditOcularModal = ({ id }) => {
     const [showModal, setShowModal] = useState(false);
-    const [recordData, setRecordData] = useState({})
     const [editData, setEditData] = useState({})
     const [technicians, setTechnicians] = useState([])
-    const [isRequired, setIsRequired] = useState(false)
+    const [recordData, setRecordData] = useState([])
+    //const [isRequired, setIsRequired] = useState(false)
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -66,18 +68,18 @@ const EditOcularModal = ({ id }) => {
         try {
             var output = editData
             // add ocular_date to editData
-            if ((!output.date || !output.time) && ((output.date && !output.time) || (!output.date && output.time))) {
+            if (output.date && output.time) {
                 output = {
                     ...output,
-                    ocular_date: (editData.date ? editData.date : recordData.ocular_date.split('T')[0]) + (editData.time ? 'T'+editData.time : 'T'+recordData.ocular_date.split('T')[1]),
+                    ocular_date: editData.date+'T'+editData.time,
                     date: '',
                     time: '',
                 }
             }
-            else if (output.date && output.time) {
+            else {
                 output = {
                     ...output,
-                    ocular_date: editData.date+'T'+editData.time,
+                    ocular_date: (editData.date ? editData.date : recordData.ocular_date.split('T')[0]) + (editData.time ? 'T'+editData.time : 'T'+recordData.ocular_date.split('T')[1]),
                     date: '',
                     time: '',
                 }
@@ -114,7 +116,8 @@ const EditOcularModal = ({ id }) => {
                     <Form noValidate validated={validated} onSubmit={handleSubmit}>
                         <Modal.Body style={{color: "#014c91", backgroundColor: "#E5EDF4"}}>
 
-                                <Row>
+                                
+                                    <Row>
                                     <Col lg="3">
                                         <strong> Client Name: </strong> 
                                     </Col>
@@ -158,12 +161,14 @@ const EditOcularModal = ({ id }) => {
                                         {recordData.email}
                                     </Col>
                                 </Row>
+
+
                 
                                 <Row className="mt-3">
                                     <Col lg="4">
                                         <Form.Group controlId="unitNo">
                                             <Form.Label>Unit No.</Form.Label>
-                                            <Form.Control type="text" placeholder={recordData.addr_bldg_no} name='addr_bldg_no' onChange={handleChange} />
+                                            <Form.Control type="text" placeholder={recordData ? recordData.addr_bldg_no : ''} name='addr_bldg_no' onChange={handleChange} />
                                             <Form.Control.Feedback type="invalid">
                                                 Please provide a valid Unit No.
                                             </Form.Control.Feedback>
@@ -172,7 +177,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="4">
                                         <Form.Group controlId="street">
                                             <Form.Label>Street</Form.Label>
-                                            <Form.Control type="text"  placeholder={recordData.addr_street_name} name='addr_street_name' onChange={handleChange} />
+                                            <Form.Control type="text"  placeholder={recordData ? recordData.addr_street_name : ''} name='addr_street_name' onChange={handleChange} />
                                             <Form.Control.Feedback type="invalid">
                                                 Please provide a valid Street Name.
                                             </Form.Control.Feedback>
@@ -181,7 +186,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="zipcode">
                                             <Form.Label>ZIP Code</Form.Label>
-                                            <Form.Control pattern="[0-9]{4}" placeholder={recordData.zipcode} type="text" name='zipcode' onChange={handleChange} />
+                                            <Form.Control pattern="[0-9]{4}" placeholder={recordData ? recordData.zipcode : ''} type="text" name='zipcode' onChange={handleChange} />
                                             <Form.Control.Feedback type="invalid" required>
                                                 Please provide a valid ZIP Code.
                                             </Form.Control.Feedback>
