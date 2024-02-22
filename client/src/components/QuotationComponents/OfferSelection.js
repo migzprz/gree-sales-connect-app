@@ -64,7 +64,7 @@ const handleAddToItemList = (offer) => {
     const newItem = {
       ...offer,
       quantity: 1,
-      discPrice: offer.price // Set discPrice to be the same as price initially
+      discPrice: offer.product_srp // Set discPrice to be the same as price initially
     };
     // Add the new item to the itemList
     setItemList(prevItemList => [...prevItemList, newItem]);
@@ -78,7 +78,7 @@ const handleAddToItemList = (offer) => {
   
     // Calculate subtotal and total
     itemList.forEach(item => {
-      subtotal += parseFloat(item.price) * item.quantity;
+      subtotal += parseFloat(item.product_srp) * item.quantity;
       total += parseFloat(item.discPrice) * item.quantity;
     });
   
@@ -199,11 +199,11 @@ const handleAddToItemList = (offer) => {
                         {offerList.map((offer, index) => (
                             <Col className="mt-3" lg="2" key={index}>
                             <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
-                                <Card.Title>{offer.name}</Card.Title>
+                                <Card.Title>{offer.display}</Card.Title>
                                 <Card.Text>
-                                {offer.code} <br />
-                                <strong>₱ {formatNumber(offer.price)}  </strong><br />
-                                {offer.type}
+                                {offer.unit_model} <br />
+                                <strong>₱ {formatNumber(offer.product_srp)}  </strong><br />
+                                {offer.product_type.toUpperCase()}
                                 </Card.Text>
                             </Card>
                             </Col>
@@ -244,10 +244,10 @@ const handleAddToItemList = (offer) => {
                                                                             value={item.quantity} onChange={(e) => handleItemListChange(e, index, 'quantity')} />
                                                         </Form.Group>
                                                     </td>
-                                                    <td style={{ color: '#014c91' }}>{item.name}</td>
-                                                    <td style={{ color: '#014c91' }}>{item.code}</td>
+                                                    <td style={{ color: '#014c91' }}>{item.display}</td>
+                                                    <td style={{ color: '#014c91' }}>{item.unit_model}</td>
                                                     <td style={{ color: '#014c91' }}>
-                                                        ₱ {formatNumber(item.price)}
+                                                        ₱ {formatNumber(item.product_srp)}
                                                     </td>
                                                     <td style={{ color: '#014c91' }}>
                                                         <Form.Group controlId={`discPrice-${index}`}>
@@ -373,11 +373,11 @@ const handleAddToItemList = (offer) => {
                         {offerList.map((offer, index) => (
                             <Col className="mt-3" lg="4" key={index}>
                             <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
-                                <Card.Title>{offer.name}</Card.Title>
+                                <Card.Title>{offer.display}</Card.Title>
                                 <Card.Text>
-                                {offer.code} <br />
-                                <strong>₱ {formatNumber(offer.price)}  </strong><br />
-                                {offer.type}
+                                {offer.unit_model} <br />
+                                <strong>₱ {formatNumber(offer.product_srp)}  </strong><br />
+                                {offer.product_type.toUpperCase()}
                                 </Card.Text>
                             </Card>
                             </Col>

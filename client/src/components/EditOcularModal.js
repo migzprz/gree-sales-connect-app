@@ -12,20 +12,30 @@ const EditOcularModal = ({ id }) => {
     //const [isRequired, setIsRequired] = useState(false)
 
     const { record, setRecord } = useOcularById(id)
+    const { region, filteredProvince, filteredCity, filteredBarangay, province, city, barangay } = useAddressFilter(editData, setEditData)
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const technicianResponse = await axios.get('http://localhost:4000/api/getTechnicians/')
-                setTechnicians(technicianResponse.data)
+
+                // arrange technician by name under record first
+                const data = technicianResponse.data
+                const technician = [
+                    ...data.filter((tech) => tech.technician_id === record.technician_id),
+                    ...data.filter((tech) => tech.technician_id !== record.technician_id)
+                ]
+                setTechnicians(technician)
             } catch (error) {
                 console.error('Error fetching technician data: ', error)
             }
         }
         fetchData()
-    }, [id])
+    }, [id, record])
 
-    const { region, filteredProvince, filteredCity, filteredBarangay } = useAddressFilter(editData, setEditData)
+    useEffect(() => {
+        console.log(technicians)
+    }, [technicians])
 
     const clearData = () => {
         setEditData({})
@@ -55,11 +65,12 @@ const EditOcularModal = ({ id }) => {
             event.stopPropagation();
             return
         }
-
+        
         try {
             var output = editData
             // add ocular_date to editData
             if (output.date && output.time) {
+                console.log('case 1 reached')
                 output = {
                     ...output,
                     ocular_date: editData.date+'T'+editData.time,
@@ -67,7 +78,8 @@ const EditOcularModal = ({ id }) => {
                     time: '',
                 }
             }
-            else {
+            else if ((!output.date && output.time) || (output.date && !output.time)){
+                console.log('case 2 reached')
                 output = {
                     ...output,
                     ocular_date: (editData.date ? editData.date : record.ocular_date.split('T')[0]) + (editData.time ? 'T'+editData.time : 'T'+record.ocular_date.split('T')[1]),
@@ -190,9 +202,11 @@ const EditOcularModal = ({ id }) => {
                                         <Form.Group controlId="region">
                                             <Form.Label>Region</Form.Label>
                                             <Form.Control as="select" onChange={handleChange} name='addr_region_id' >
-                                                <option value="">Select</option>
-                                                {region.map((reg) => (
-                                                    <option key={reg.region_id} value={reg.region_id}>{reg.description}</option>
+                                                {region.filter((reg) => reg.region_id === record.addr_region_id).map((reg) => (
+                                                    <option value=''>{reg.description + ' (DEFAULT)'}</option>
+                                                ))}
+                                                {region.map((reg, index) => (
+                                                    <option key={index} value={reg.region_id}>{reg.description}</option>
                                                 ))}
                                             </Form.Control>
                                             <Form.Control.Feedback type="invalid">
@@ -204,9 +218,12 @@ const EditOcularModal = ({ id }) => {
                                         <Form.Group controlId="province">
                                             <Form.Label>Province</Form.Label>
                                             <Form.Control as="select" onChange={handleChange} name='addr_province_id' >
-                                                <option value="">Select</option>
-                                                {filteredProvince.map((pro) => (
-                                                    <option key={pro.province_id} value={pro.province_id}>{pro.name}</option>
+                                                {filteredProvince.length === 0 && province.filter((pro) => pro.province_id === record.addr_province_id).map((pro) => (
+                                                    <option value=''>{pro.name}</option>
+                                                ))}
+                                                {(editData.addr_region_id || editData.addr_region_id !== '') && (<option value=''>Select</option>)}
+                                                {filteredProvince.map((pro, index) => (
+                                                    <option key={index} value={pro.province_id}>{pro.name}</option>
                                                 ))}
                                             </Form.Control>
                                             <Form.Control.Feedback type="invalid">
@@ -218,9 +235,12 @@ const EditOcularModal = ({ id }) => {
                                         <Form.Group controlId="city">
                                             <Form.Label>City</Form.Label>
                                             <Form.Control as="select" onChange={handleChange} name='addr_municipality_id'>
-                                                <option value="">Select</option>
-                                                {filteredCity.map((cit) => (
-                                                    <option key={cit.municipality_id} value={cit.municipality_id}>{cit.name}</option>
+                                                {filteredCity.length === 0 && !editData.addr_region_id && city.filter((cit) => cit.municipality_id === record.addr_municipality_id).map((cit) => (
+                                                    <option value=''>{cit.name}</option>
+                                                ))}
+                                                {(editData.addr_region_id || editData.addr_region_id !== '') && (<option value=''>Select</option>)}
+                                                {filteredCity.map((cit, index) => (
+                                                    <option key={index} value={cit.municipality_id}>{cit.name}</option>
                                                 ))}
                                             </Form.Control>
                                             <Form.Control.Feedback type="invalid">
@@ -232,9 +252,12 @@ const EditOcularModal = ({ id }) => {
                                         <Form.Group controlId="barangay">
                                             <Form.Label>Barangay</Form.Label>
                                             <Form.Control as="select" onChange={handleChange} name='addr_barangay_id' >
-                                                <option value="">Select</option>
-                                                {filteredBarangay.map((bar) => (
-                                                    <option key={bar.barangay_id} value={bar.barangay_id}>{bar.name}</option>
+                                                {filteredBarangay.length === 0 && !editData.addr_region_id && barangay.filter((bar) => bar.barangay_id === record.addr_barangay_id).map((bar) => (
+                                                    <option value=''>{bar.name}</option>
+                                                ))}
+                                                {(editData.addr_region_id || editData.addr_region_id !== '') && (<option value=''>Select</option>)}
+                                                {filteredBarangay.map((bar, index) => (
+                                                    <option key={index} value={bar.barangay_id}>{bar.name}</option>
                                                 ))}
                                             </Form.Control>
                                             <Form.Control.Feedback type="invalid">
@@ -267,7 +290,6 @@ const EditOcularModal = ({ id }) => {
                                         <Form.Group controlId="technician">
                                             <Form.Label>Assigned Technician</Form.Label>
                                             <Form.Control as="select" onChange={handleChange} name='technician_id' >
-                                                <option value="">Select</option>
                                                 {technicians.map((tec, index) => (
                                                     <option key={index} value={tec.technician_id}>{tec.complete_name}</option>
                                                 ))}

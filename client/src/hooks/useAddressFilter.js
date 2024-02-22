@@ -98,7 +98,7 @@ const useAddressFilter = (formData, setFormData) => {
       filterBarangay();
   }, [formData.addr_municipality_id, setFilteredBarangay, setBarangayActive, barangay]);
 
-  return { region, filteredProvince, filteredCity, filteredBarangay }
+  return { region, filteredProvince, filteredCity, filteredBarangay, province, city, barangay }
 };
 
 export default useAddressFilter;
