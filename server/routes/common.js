@@ -126,7 +126,7 @@ module.exports = (query) => {
     router.get('/getProducts', async (req, res) => {
         try {
             const data = await query(`SELECT *,
-                                    CONCAT(product_hp, ' HORSEPOWER ', UPPER(product_type), ' TYPE ', 
+                                    CONCAT(product_hp, ' HP ', UPPER(product_type), ' TYPE ', 
                                     CASE 
                                         WHEN is_inverter = 1 THEN 'INVERTER' 
                                         WHEN is_inverter = 0 THEN 'NON-INVERTER' END) as display
