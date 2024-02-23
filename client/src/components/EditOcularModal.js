@@ -9,10 +9,19 @@ const EditOcularModal = ({ id }) => {
     const [showModal, setShowModal] = useState(false);
     const [editData, setEditData] = useState({})
     const [technicians, setTechnicians] = useState([])
+    const [defaultTime, setDefaultTime] = useState('')
     //const [isRequired, setIsRequired] = useState(false)
 
     const { record, setRecord } = useOcularById(id)
     const { region, filteredProvince, filteredCity, filteredBarangay, province, city, barangay } = useAddressFilter(editData, setEditData)
+
+    useEffect(() => {
+        const time = new Date(record.ocular_date).toLocaleTimeString().split(':')
+        let x
+        Number(time[0]) < 9 ? x = '0'+time[0] : x = time[0]
+        const t = x + ':' + time[1]
+        setDefaultTime(t)
+    },[record])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -100,6 +109,32 @@ const EditOcularModal = ({ id }) => {
       
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        if (name === 'date') {
+            const d = new Date(record.ocular_date).toISOString().split('T')[0]
+            console.log(name, value, d)
+            if (d === value) {
+                setEditData({
+                    ...editData,
+                    date: ''
+                })
+                return
+            }
+        }
+
+        if (name === 'time') {
+            const time = new Date(record.ocular_date).toLocaleTimeString().split(':')
+            const t = time[0] + ':' + time[1]
+            const v = value.charAt(0) === '0' ? value.substring(1) : value
+            console.log(name, v, t)
+            if (t === v) {
+                setEditData({
+                    ...editData,
+                    time: ''
+                })
+                return
+            }
+        }
 
         setEditData({
           ...editData,
@@ -209,6 +244,7 @@ const EditOcularModal = ({ id }) => {
                                                     <option key={index} value={reg.region_id}>{reg.description}</option>
                                                 ))}
                                             </Form.Control>
+                                            <Form.Text>Please select the region with '(DEFAULT)' to reset to current address</Form.Text>
                                             <Form.Control.Feedback type="invalid">
                                                 Please choose a region.
                                             </Form.Control.Feedback>
@@ -271,7 +307,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="date">
                                             <Form.Label>Ocular Date</Form.Label>
-                                            <Form.Control type="date" onChange={handleChange} name='date'/>
+                                            <Form.Control type="date" onChange={handleChange} name='date' defaultValue={record.ocular_date ? new Date(record.ocular_date).toISOString().split('T')[0]: null}/>
                                             <Form.Control.Feedback type="invalid">
                                                 Please choose a valid date.
                                             </Form.Control.Feedback>
@@ -280,7 +316,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="time">
                                             <Form.Label>Ocular Time</Form.Label>
-                                            <Form.Control type="time" onChange={handleChange} name='time' />
+                                            <Form.Control type="time" onChange={handleChange} name='time' defaultValue={defaultTime} />
                                             <Form.Control.Feedback type="invalid">
                                                 Please choose a valid time.
                                             </Form.Control.Feedback>
