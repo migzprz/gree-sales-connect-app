@@ -26,83 +26,83 @@ const OfferSelection = ({offerList, onOfferSubmission}) => {
 
 
 
-const [itemList, setItemList] = useState([]);
-const [itemListTotals, setItemListTotals] = useState([]);
+    const [itemList, setItemList] = useState([]);
+    const [itemListTotals, setItemListTotals] = useState([]);
 
-  //Rendering Transition Logic for Alternating Views
-  const [shouldRender, setShouldRender] = useState(false);
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShouldRender(true);
-    }, 250); // 0.03 seconds in milliseconds
+    //Rendering Transition Logic for Alternating Views
+    const [shouldRender, setShouldRender] = useState(false);
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+        setShouldRender(true);
+        }, 250); // 0.03 seconds in milliseconds
 
-    return () => clearTimeout(timeout);
-  }, [isFullView, itemList]);
+        return () => clearTimeout(timeout);
+    }, [isFullView, itemList]);
 
-const handleItemListChange = (event, index, property) => {
-    const { value } = event.target;
+    const handleItemListChange = (event, index, property) => {
+        const { value } = event.target;
 
-    setItemList(prevItemList => {
-        const updatedItemList = [...prevItemList];
-        updatedItemList[index][property] = value;
-        return updatedItemList;
-    });
-};
-
-const handleRemoveFromItemList = (index) => {
-    setItemList(prevItemList => {
-        const updatedItemList = [...prevItemList];
-        updatedItemList.splice(index, 1); // Remove the item at the specified index
-        return updatedItemList;
-    });
-};
-
-console.log(itemList)
-
-const handleAddToItemList = (offer) => {
-    // Create a new object with the offer's properties and add additional fields
-    const newItem = {
-      ...offer,
-      quantity: 1,
-      discPrice: offer.product_srp // Set discPrice to be the same as price initially
+        setItemList(prevItemList => {
+            const updatedItemList = [...prevItemList];
+            updatedItemList[index][property] = value;
+            return updatedItemList;
+        });
     };
-    // Add the new item to the itemList
-    setItemList(prevItemList => [...prevItemList, newItem]);
-  };
+
+    const handleRemoveFromItemList = (index) => {
+        setItemList(prevItemList => {
+            const updatedItemList = [...prevItemList];
+            updatedItemList.splice(index, 1); // Remove the item at the specified index
+            return updatedItemList;
+        });
+    };
+
+    console.log(itemList)
+
+    const handleAddToItemList = (offer) => {
+        // Create a new object with the offer's properties and add additional fields
+        const newItem = {
+        ...offer,
+        quantity: 1,
+        discPrice: offer.product_srp // Set discPrice to be the same as price initially
+        };
+        // Add the new item to the itemList
+        setItemList(prevItemList => [...prevItemList, newItem]);
+    };
 
   // Function to calculate totals
-  const calculateTotals = () => {
-    let subtotal = 0;
-    let total = 0;
-    let totalDisc = 0;
-  
-    // Calculate subtotal and total
-    itemList.forEach(item => {
-      subtotal += parseFloat(item.product_srp) * item.quantity;
-      total += parseFloat(item.discPrice) * item.quantity;
-    });
-  
-    // Calculate total discount
-    totalDisc = total - subtotal;
-  
-    // Update itemListTotals state
-    setItemListTotals({
-      subtotal: subtotal,
-      total: total,
-      totalDisc: totalDisc
-    });
-  };
+    const calculateTotals = () => {
+        let subtotal = 0;
+        let total = 0;
+        let totalDisc = 0;
+    
+        // Calculate subtotal and total
+        itemList.forEach(item => {
+        subtotal += parseFloat(item.product_srp) * item.quantity;
+        total += parseFloat(item.discPrice) * item.quantity;
+        });
+    
+        // Calculate total discount
+        totalDisc = total - subtotal;
+    
+        // Update itemListTotals state
+        setItemListTotals({
+        subtotal: subtotal,
+        total: total,
+        totalDisc: totalDisc
+        });
+    };
   
   
 
-  // Calculate totals when itemList changes
-  useEffect(() => {
-    calculateTotals();
-  }, [itemList]);
+    // Calculate totals when itemList changes
+    useEffect(() => {
+        calculateTotals();
+    }, [itemList]);
 
-  const formatNumber = (number) => {
-    return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
+    const formatNumber = (number) => {
+        return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
   
 
   return (

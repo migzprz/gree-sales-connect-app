@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaCheck} from 'react-icons/fa';
 import { Row, Col, Form, CardBody, Card, Table } from 'react-bootstrap';
 import ReturningClientModal from '../ReturningClientModal';
@@ -10,6 +10,10 @@ const ClientSelection = ({onClientSubmission}) => {
     const [isNew, setIsNew] = useState(true);
     const [activeOption, setActiveOption] = useState('newClient');
     const [clientData, setClientData] = useState({})
+    useEffect(() => {
+        console.log('client data for quotations: ', clientData)
+    }, [clientData])
+
 
     const handleOptionClick = (option) => {
         setActiveOption(option);
@@ -44,7 +48,7 @@ const ClientSelection = ({onClientSubmission}) => {
 
         <Row className="mt-5">
             <Col lg="3">
-                <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
+                <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}} onClick={onClientSubmission}>
                 {React.createElement(FaCheck, { size: 18, style: { marginRight: '5px' } })}   Confirm Client
                 </button>
             </Col>

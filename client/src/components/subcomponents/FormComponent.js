@@ -58,6 +58,19 @@ export default function FormComponent({ formData, setFormData, handleChange, val
     const handleOptionClick = (option) => {
         setActiveOption(option);
         setIsNew(option === 'newClient');
+
+        const {
+            client_id,
+            returningClientCompanyName,
+            returningClientCompanyTin,
+            returningClientContactNumber,
+            returningClientEmail,
+            returningClientFirstName,
+            returningClientLastName,
+            ...updatedFormData
+        } = formData;
+        
+        setFormData(updatedFormData);
     };
 
     return (
