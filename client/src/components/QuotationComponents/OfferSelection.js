@@ -4,24 +4,28 @@ import { FaFilter, FaSort, FaSearch, FaSave, FaEye, FaEyeSlash, FaTrash} from 'r
 import { Row, Col, Form, CardBody, Card, Table, InputGroup} from 'react-bootstrap';
 import '../../index.css';
 
-const OfferSelection = ({offerList, onOfferSubmission}) => {
-  const [hasItems, setHasItems] = useState(false);
-  const [isFullView, setIsFullView] = useState(true);
-  const [validated, setValidated] = useState(false);
+const OfferSelection = ({offerList, onOfferSubmission, }) => {
+    const [hasItems, setHasItems] = useState(false);
+    const [isFullView, setIsFullView] = useState(true);
+    const [validated, setValidated] = useState(false);
 
 
 
-  const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    } else {
-        onOfferSubmission()
-    }
+    const handleSubmit = (event) => {
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+        } else {
 
-    setValidated(true);
-  };
+            // remove all other properties except: product_id, discounted_price, quantity
+            // pass updated data into function
+            
+            onOfferSubmission(itemList)
+        }
+
+        setValidated(true);
+    };
 
 
 

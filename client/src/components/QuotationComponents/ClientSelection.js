@@ -28,7 +28,7 @@ const ClientSelection = ({onClientSubmission}) => {
         event.preventDefault();
         event.stopPropagation();
       } else {
-        onClientSubmission()
+        onClientSubmission(clientData)
       }
   
       setValidated(true);
