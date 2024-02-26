@@ -1,11 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { useState, useEffect } from 'react'; 
-import { FaEdit, FaCheck, FaTruck, FaScrewdriver, FaToolbox, FaPlus, FaMoneyBillWave, FaShoppingBag} from 'react-icons/fa';
+import { FaEdit, FaCheck, FaSearch, FaScrewdriver, FaToolbox, FaPlus, FaMoneyBillWave, FaShoppingBag} from 'react-icons/fa';
 import { Row, Col, Card, CardBody, CardHeader, Table, Form, Dropdown } from 'react-bootstrap';
 import '../index.css';
 
-const SaleDetails= () => {
+const WarrantyDetails= () => {
 
     const quotationList = [
         {
@@ -55,8 +55,8 @@ const SaleDetails= () => {
 
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
-            <h1>Sale Ref. #0001</h1>
-            <h5>View and manage a specific sale</h5>
+            <h1>Warranty Claim #0001</h1>
+            <h5>View and manage a specific warranty</h5>
             <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
 
             <Row>
@@ -66,7 +66,7 @@ const SaleDetails= () => {
                         <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', color: '#014c91'}}>
                             <Row>
                                 <Col lg="9">
-                                    <h3>{React.createElement(FaTruck, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Delivery</h3>
+                                    <h3>{React.createElement(FaSearch, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Inspection</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
                                     {React.createElement(FaEdit, { size: 18 })}
@@ -83,58 +83,20 @@ const SaleDetails= () => {
                                     Time: <strong> 12:00 PM</strong>
                                 </Col>
                             </Row>
+                            <Row>
+                                <Col>
+                                    Technician: <strong> Blake, Lively</strong>
+                                </Col>
+                            </Row>
                             <Row className="mt-2">
                                 <Col>
                                         <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
-                                        {React.createElement(FaCheck, { size: 18, style: { marginRight: '5px' } })}   Complete Delivery
+                                        {React.createElement(FaCheck, { size: 18, style: { marginRight: '5px' } })}   Complete Inspection
                                         </button>
                                 </Col>
                             </Row>
                         </Card>
 
-                        <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', color: '#014c91'}}>
-                                <Row>
-                                    <Col lg="9">
-                                        <h3>{React.createElement(FaScrewdriver, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Installation</h3>
-                                    </Col>
-                                    <Col className="d-flex justify-content-end">
-                                        {React.createElement(FaEdit, { size: 18 })}
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        Technician: <strong> Blake, Lively</strong>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        Start Date: <strong> Jan. 15, 2024</strong>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        Start Time: <strong> 12:00 PM</strong>
-                                    </Col>
-                                </Row>
-                               
-                                <Row className="mt-2">
-                                    <Col>
-                                        End Date: <strong> Jan. 15, 2024</strong>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        End Time: <strong> 12:00 PM</strong>
-                                    </Col>
-                                </Row>
-                                <Row className="mt-2">
-                                    <Col>
-                                            <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
-                                            {React.createElement(FaCheck, { size: 18, style: { marginRight: '5px' } })}   Complete Installation
-                                            </button>
-                                    </Col>
-                                </Row>
-                        </Card>
 
                         <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', background: '#E7FFE2', color: '#008000'}}>
                             <Row>
@@ -157,10 +119,10 @@ const SaleDetails= () => {
                                 </Col>
                             </Row>
                             <Row>
-                                    <Col>
-                                        Technician: <strong> Blake, Lively</strong>
-                                    </Col>
-                                </Row>
+                                <Col>
+                                    Technician: <strong> Blake, Lively</strong>
+                                </Col>
+                            </Row>
                         </Card>
 
                     </Card>
@@ -269,4 +231,4 @@ const SaleDetails= () => {
     );
 };
 
-export default SaleDetails;
+export default WarrantyDetails;

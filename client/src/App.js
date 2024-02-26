@@ -17,8 +17,9 @@ import ViewClientDetails from './pages/ViewClientDetails';
 import ViewProducts from './pages/ViewProducts';
 import ViewUsers from './pages/ViewUsers';
 import ViewWarranties from './pages/ViewWarranties';
-import SetWarranty from './pages/SetWarranty';
+import SearchWarranty from './pages/SearchWarranty';
 import DownloadQuotation from './pages/DownloadQuotation';
+import ViewWarrantyDetails from './pages/ViewWarrantyDetails';
 
 function App() {
   return (
@@ -41,7 +42,8 @@ function App() {
                   <Route path="/viewproducts" element={<ViewProducts/>}/>
                   <Route path="/viewusers" element={<ViewUsers/>}/>
                   <Route path="/viewwarranties" element={<ViewWarranties/>}/>
-                  <Route path="/setwarranty" element={<SetWarranty/>}/>
+                  <Route path="/viewwarrantydetails" element={<ViewWarrantyDetails/>}/>
+                  <Route path="/searchwarranty" element={<SearchWarranty/>}/>
                   <Route path="/downloadquotation" element={<DownloadQuotation/>}/>
               </Routes>
           </BrowserRouter>

@@ -4,19 +4,21 @@ import QuotationList from "../components/QuotationList";
 import SalesList from "../components/SalesList";
 import Sidebar from "../components/Sidebar";
 import UsersList from "../components/UsersList";
+import WarrantiesList from "../components/WarrantiesList";
+import WarrantyDetails from "../components/WarrantyDetails";
 import '../index.css';
 
-const SetWarranty = () => {
+const ViewWarrantyDetails= () => {
     return (
         <>
             <MainHeader/>
             <div style={{ display: 'flex' }}>
                 <Sidebar />
-                <UsersList/>
+                <WarrantyDetails/>
             </div>
         </>
 
     );
 };
 
-export default SetWarranty;
+export default ViewWarrantyDetails;

@@ -18,7 +18,7 @@ const Sidebar = ({ children }) => {
     { name: 'Employees', icon: FaUsers, link: '/viewusers', submenuNames: [], submenuLinks: []},
     { name: 'Expenses', icon: FaMoneyCheckAlt, link: '/report', submenuNames: [], submenuLinks: []},
     { name: 'Reports', icon: FaChartLine, link: '/report', submenuNames: [], submenuLinks: []},
-    { name: 'Warranties', icon: FaShieldAlt, link: '', submenuNames: ['Manage Warranties', 'Set Warranty'], submenuLinks: ['/viewwarranties', '/setwarranty']}
+    { name: 'Warranties', icon: FaShieldAlt, link: '', submenuNames: ['Manage Warranties', 'Set Warranty'], submenuLinks: ['/viewwarranties', '/searchwarranty']}
   ];
 
   const [expandedMenuIndex, setExpandedMenuIndex] = useState(null);
