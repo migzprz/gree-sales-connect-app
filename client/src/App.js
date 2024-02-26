@@ -16,6 +16,9 @@ import ViewClients from './pages/ViewClients';
 import ViewClientDetails from './pages/ViewClientDetails';
 import ViewProducts from './pages/ViewProducts';
 import ViewUsers from './pages/ViewUsers';
+import ViewWarranties from './pages/ViewWarranties';
+import SetWarranty from './pages/SetWarranty';
+import DownloadQuotation from './pages/DownloadQuotation';
 
 function App() {
   return (
@@ -37,6 +40,9 @@ function App() {
                   <Route path="/viewclientdetails" element={<ViewClientDetails/>}/>
                   <Route path="/viewproducts" element={<ViewProducts/>}/>
                   <Route path="/viewusers" element={<ViewUsers/>}/>
+                  <Route path="/viewwarranties" element={<ViewWarranties/>}/>
+                  <Route path="/setwarranty" element={<SetWarranty/>}/>
+                  <Route path="/downloadquotation" element={<DownloadQuotation/>}/>
               </Routes>
           </BrowserRouter>
     </>

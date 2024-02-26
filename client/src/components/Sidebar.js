@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {  FaBars, FaHome, FaEye, FaScroll, FaBriefcase, FaChevronRight, FaChevronDown, FaChartLine,
-          FaMoneyCheckAlt, FaUsers, FaUserTie, FaTag} from 'react-icons/fa';
+          FaMoneyCheckAlt, FaUsers, FaUserTie, FaTag, FaShieldAlt} from 'react-icons/fa';
 import GreeLogo from '../assets/gree_logo.png';
 import { Link, useParams } from 'react-router-dom';
 
@@ -11,13 +11,14 @@ const Sidebar = ({ children }) => {
   const menuItem = [
     { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
     { name: 'Oculars', icon: FaEye, link: '', submenuNames: ['Manage Oculars', 'Set Ocular'], submenuLinks: ['/viewoculars', '/setocular']},
-    { name: 'Quotations', icon: FaScroll, link: '', submenuNames: ['Manage Quotations', 'Generate Quotation'], submenuLinks: ['/viewquotations','/generatequotation'] },
+    { name: 'Quotations', icon: FaScroll, link: '', submenuNames: ['Manage Quotations', 'Generate Quotation', 'Test Download'], submenuLinks: ['/viewquotations','/generatequotation', '/downloadquotation'] },
     { name: 'Sales', icon: FaBriefcase, link: '/viewsales', submenuNames: [], submenuLinks: []},
     { name: 'Clients', icon: FaUserTie, link: '/viewclients', submenuNames: [], submenuLinks: [] },
     { name: 'Products', icon: FaTag, link: '/viewproducts', submenuNames: [], submenuLinks: []},
     { name: 'Employees', icon: FaUsers, link: '/viewusers', submenuNames: [], submenuLinks: []},
     { name: 'Expenses', icon: FaMoneyCheckAlt, link: '/report', submenuNames: [], submenuLinks: []},
-    { name: 'Reports', icon: FaChartLine, link: '/report', submenuNames: [], submenuLinks: []}
+    { name: 'Reports', icon: FaChartLine, link: '/report', submenuNames: [], submenuLinks: []},
+    { name: 'Warranties', icon: FaShieldAlt, link: '', submenuNames: ['Manage Warranties', 'Set Warranty'], submenuLinks: ['/viewwarranties', '/setwarranty']}
   ];
 
   const [expandedMenuIndex, setExpandedMenuIndex] = useState(null);
