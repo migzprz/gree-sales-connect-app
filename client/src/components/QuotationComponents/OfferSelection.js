@@ -26,83 +26,83 @@ const OfferSelection = ({offerList, onOfferSubmission}) => {
 
 
 
-const [itemList, setItemList] = useState([]);
-const [itemListTotals, setItemListTotals] = useState([]);
+    const [itemList, setItemList] = useState([]);
+    const [itemListTotals, setItemListTotals] = useState([]);
 
-  //Rendering Transition Logic for Alternating Views
-  const [shouldRender, setShouldRender] = useState(false);
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShouldRender(true);
-    }, 250); // 0.03 seconds in milliseconds
+    //Rendering Transition Logic for Alternating Views
+    const [shouldRender, setShouldRender] = useState(false);
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+        setShouldRender(true);
+        }, 250); // 0.03 seconds in milliseconds
 
-    return () => clearTimeout(timeout);
-  }, [isFullView, itemList]);
+        return () => clearTimeout(timeout);
+    }, [isFullView, itemList]);
 
-const handleItemListChange = (event, index, property) => {
-    const { value } = event.target;
+    const handleItemListChange = (event, index, property) => {
+        const { value } = event.target;
 
-    setItemList(prevItemList => {
-        const updatedItemList = [...prevItemList];
-        updatedItemList[index][property] = value;
-        return updatedItemList;
-    });
-};
-
-const handleRemoveFromItemList = (index) => {
-    setItemList(prevItemList => {
-        const updatedItemList = [...prevItemList];
-        updatedItemList.splice(index, 1); // Remove the item at the specified index
-        return updatedItemList;
-    });
-};
-
-console.log(itemList)
-
-const handleAddToItemList = (offer) => {
-    // Create a new object with the offer's properties and add additional fields
-    const newItem = {
-      ...offer,
-      quantity: 1,
-      discPrice: offer.price // Set discPrice to be the same as price initially
+        setItemList(prevItemList => {
+            const updatedItemList = [...prevItemList];
+            updatedItemList[index][property] = value;
+            return updatedItemList;
+        });
     };
-    // Add the new item to the itemList
-    setItemList(prevItemList => [...prevItemList, newItem]);
-  };
+
+    const handleRemoveFromItemList = (index) => {
+        setItemList(prevItemList => {
+            const updatedItemList = [...prevItemList];
+            updatedItemList.splice(index, 1); // Remove the item at the specified index
+            return updatedItemList;
+        });
+    };
+
+    console.log(itemList)
+
+    const handleAddToItemList = (offer) => {
+        // Create a new object with the offer's properties and add additional fields
+        const newItem = {
+        ...offer,
+        quantity: 1,
+        discPrice: offer.product_srp // Set discPrice to be the same as price initially
+        };
+        // Add the new item to the itemList
+        setItemList(prevItemList => [...prevItemList, newItem]);
+    };
 
   // Function to calculate totals
-  const calculateTotals = () => {
-    let subtotal = 0;
-    let total = 0;
-    let totalDisc = 0;
-  
-    // Calculate subtotal and total
-    itemList.forEach(item => {
-      subtotal += parseFloat(item.price) * item.quantity;
-      total += parseFloat(item.discPrice) * item.quantity;
-    });
-  
-    // Calculate total discount
-    totalDisc = total - subtotal;
-  
-    // Update itemListTotals state
-    setItemListTotals({
-      subtotal: subtotal,
-      total: total,
-      totalDisc: totalDisc
-    });
-  };
+    const calculateTotals = () => {
+        let subtotal = 0;
+        let total = 0;
+        let totalDisc = 0;
+    
+        // Calculate subtotal and total
+        itemList.forEach(item => {
+        subtotal += parseFloat(item.product_srp) * item.quantity;
+        total += parseFloat(item.discPrice) * item.quantity;
+        });
+    
+        // Calculate total discount
+        totalDisc = total - subtotal;
+    
+        // Update itemListTotals state
+        setItemListTotals({
+        subtotal: subtotal,
+        total: total,
+        totalDisc: totalDisc
+        });
+    };
   
   
 
-  // Calculate totals when itemList changes
-  useEffect(() => {
-    calculateTotals();
-  }, [itemList]);
+    // Calculate totals when itemList changes
+    useEffect(() => {
+        calculateTotals();
+    }, [itemList]);
 
-  const formatNumber = (number) => {
-    return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
+    const formatNumber = (number) => {
+        return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
   
 
   return (
@@ -199,11 +199,11 @@ const handleAddToItemList = (offer) => {
                         {offerList.map((offer, index) => (
                             <Col className="mt-3" lg="2" key={index}>
                             <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
-                                <Card.Title>{offer.name}</Card.Title>
+                                <Card.Title>{offer.display}</Card.Title>
                                 <Card.Text>
-                                {offer.code} <br />
-                                <strong>₱ {formatNumber(offer.price)}  </strong><br />
-                                {offer.type}
+                                {offer.unit_model} <br />
+                                <strong>₱ {formatNumber(offer.product_srp)}  </strong><br />
+                                {offer.product_type.toUpperCase()}
                                 </Card.Text>
                             </Card>
                             </Col>
@@ -244,10 +244,10 @@ const handleAddToItemList = (offer) => {
                                                                             value={item.quantity} onChange={(e) => handleItemListChange(e, index, 'quantity')} />
                                                         </Form.Group>
                                                     </td>
-                                                    <td style={{ color: '#014c91' }}>{item.name}</td>
-                                                    <td style={{ color: '#014c91' }}>{item.code}</td>
+                                                    <td style={{ color: '#014c91' }}>{item.display}</td>
+                                                    <td style={{ color: '#014c91' }}>{item.unit_model}</td>
                                                     <td style={{ color: '#014c91' }}>
-                                                        ₱ {formatNumber(item.price)}
+                                                        ₱ {formatNumber(item.product_srp)}
                                                     </td>
                                                     <td style={{ color: '#014c91' }}>
                                                         <Form.Group controlId={`discPrice-${index}`}>
@@ -373,11 +373,11 @@ const handleAddToItemList = (offer) => {
                         {offerList.map((offer, index) => (
                             <Col className="mt-3" lg="4" key={index}>
                             <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
-                                <Card.Title>{offer.name}</Card.Title>
+                                <Card.Title>{offer.display}</Card.Title>
                                 <Card.Text>
-                                {offer.code} <br />
-                                <strong>₱ {formatNumber(offer.price)}  </strong><br />
-                                {offer.type}
+                                {offer.unit_model} <br />
+                                <strong>₱ {formatNumber(offer.product_srp)}  </strong><br />
+                                {offer.product_type.toUpperCase()}
                                 </Card.Text>
                             </Card>
                             </Col>

@@ -41,7 +41,7 @@ const OcularList = () => {
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
                 <Dropdown.Item>Generate Quotation</Dropdown.Item>
                 <EditOcularModal id={id}/>
-                <CancelOcularModal/>
+                <CancelOcularModal id={id}/>
             </Dropdown.Menu>
             );
         }
@@ -137,13 +137,13 @@ const OcularList = () => {
                                         <td style={{color: '#014c91'}}>{ocular.technician_name}</td>
                                         <td style={{ color: '#014c91' }}>
                                             <div style={{ position: 'relative' }}>
-                                            <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
-                                                <FaEllipsisH size={20} />
+                                                <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
+                                                    <FaEllipsisH size={20} />
+                                                </div>
+                                                    <Dropdown show={index === activeDropdown} align="start">
+                                                        {renderDropdown(index, ocular.ocular_id)}
+                                                    </Dropdown>
                                             </div>
-                                                <Dropdown show={index === activeDropdown} align="start">
-                                                    {renderDropdown(index, ocular.ocular_id)}
-                                                </Dropdown>
-                                            </div>`
                                         </td>
                                     </tr>
                                 </React.Fragment>

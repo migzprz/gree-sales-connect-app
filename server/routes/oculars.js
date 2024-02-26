@@ -41,6 +41,7 @@ module.exports = (query) => {
                                     JOIN md_provinces p ON loc.addr_province_id = p.province_id
                                     JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
                                     JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
+                                    WHERE o.is_active = 1
                                     ORDER BY ocular_date ASC;`, [])
             console.log(data)
             res.send(data)
@@ -53,7 +54,35 @@ module.exports = (query) => {
     /**
      * Returns an ocular record and related information by ID parameter
      */
-    router.get('/getOcular', async (req, res) => {
+    router.get('/getOcular/:id', async (req, res) => {
+        try {
+            const { id } = req.params
+            const q =  `SELECT      ocular_date,
+                                    CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.contact_number as client_number, cp.email,
+                                    CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address,
+                                    CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name, t.technician_id,
+                                    co.company_name, co.tin,
+                                    o.ocular_id,
+                                    loc.*
+                        FROM td_oculars o 
+                        JOIN md_quotation_clients qc ON o.ocular_id = qc.ocular_id
+                        JOIN md_technicians t ON o.technician_id = t.technician_id
+                        JOIN md_clients cl ON qc.client_id = cl.client_id
+                        JOIN md_contactperson cp ON cl.contact_person_id = cp.contact_person_id
+                        JOIN md_companies co ON cl.company_id = co.company_id
+                        JOIN md_locations loc ON qc.location_id = loc.location_id
+                        JOIN md_provinces p ON loc.addr_province_id = p.province_id
+                        JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
+                        JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
+                        WHERE o.ocular_id = ?
+                        ORDER BY ocular_date ASC;`
+            const data = await query(q, [id])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
 
     })
 
@@ -88,10 +117,10 @@ module.exports = (query) => {
         ]
 
         const loc_values = [
-            req.body.region,
-            req.body.province,
-            req.body.city,
-            req.body.barangay,
+            req.body.addr_region_id,
+            req.body.addr_province_id,
+            req.body.addr_municipality_id,
+            req.body.addr_barangay_id,
             req.body.street_name,
             req.body.bldg_no,
             req.body.zipcode,
@@ -131,7 +160,7 @@ module.exports = (query) => {
             // TESTING
             console.log('step 2 data: ', ocu_values)
 
-            const ocu_query = 'INSERT INTO td_oculars (ocular_date, login_id, technician_id, date_created) VALUES (?, ?, ?, NOW())'
+            const ocu_query = 'INSERT INTO td_oculars (ocular_date, login_id, technician_id, date_created, is_active) VALUES (?, ?, ?, NOW(), 1)'
             const ocu_data = await query(ocu_query, ocu_values)
 
             console.log('ocular data result: ', ocu_data)
@@ -167,7 +196,69 @@ module.exports = (query) => {
 
     })
 
+    router.patch('/editOcularById/:id', async (req, res) => {
+        const id = req.params.id
+        const data = Object.fromEntries(
+            // Use Object.entries to get key-value pairs, and filter out null values
+            Object.entries(req.body).filter(([key, value]) => value !== '' && value !== null)
+        );
 
+        console.log(data)
+
+        // separate update data into ocular table (ocular_date, technician_id) and location table (*)
+        const ocular_data = {} 
+        const location_data = {}
+        for (const [key, value] of Object.entries(data)) {
+            if (value !== '' && value !== null) {
+                if (key.startsWith('addr_') || key.includes('zipcode')) {
+                    location_data[key] = value
+                }
+                else {
+                    ocular_data[key] = value
+                }
+            }
+        }
+        
+        try {
+            let updateLocationResponse, updateOcularResponse
+            // patch ocular_data
+            if (Object.keys(ocular_data).length > 0) {
+                console.log('patch ocular data w/ id:', ocular_data)
+                const columnsToUpdate = Object.keys(ocular_data).map(column => `${column} = ?`).join(', ');
+                const values = [...Object.values(ocular_data), id];
+                updateOcularResponse = await query(`UPDATE td_oculars SET ${columnsToUpdate} WHERE ocular_id = ?`, values)
+            }
+
+            // patch location_data
+            if (Object.keys(location_data).length > 0) {
+                console.log('patch location data w/ id:', location_data)
+                const locationId = await query('SELECT location_id FROM md_quotation_clients WHERE ocular_id = ?', [id])
+                const columnsToUpdate = Object.keys(location_data).map(column => `${column} = ?`).join(', ');
+                const locationValues = [...Object.values(location_data), locationId[0].location_id];
+                updateLocationResponse = await query(`UPDATE md_locations SET ${columnsToUpdate} WHERE location_id = ?`, locationValues)
+            }
+            
+            res.status(200).json({message: `Ocular successfully updated... ${updateLocationResponse}, ${updateOcularResponse}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to update ocular record... ${error}`})
+        }
+    })
+
+    /**
+     * Cancel or resume working on a ocular record (cancel/reactivate)
+     */
+    router.patch('/changeOcularState/:id/:state', async (req, res) => {
+        try {
+            const values = [req.params.state, req.params.id]
+            const data = await query('UPDATE td_oculars SET is_active = ?, date_statechanged = NOW() WHERE ocular_id = ?', values)
+            console.log(data)
+            res.status(200).json({message: `Ocular successfully updated... ${data}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to cancel ocular... ${error}`})
+        }
+    })
     // Determining Quotation Statuses:
     /**
      * Ocular made, not converted to quotation ---- md_quotations.login_id IS NULL
