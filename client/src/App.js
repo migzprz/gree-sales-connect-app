@@ -21,17 +21,23 @@ import SearchWarranty from './pages/SearchWarranty';
 import DownloadQuotation from './pages/DownloadQuotation';
 import ViewWarrantyDetails from './pages/ViewWarrantyDetails';
 import ClaimWarranty from './pages/ClaimWarranty';
+import ViewExpenses from './pages/ViewExpenses';
+import ViewExpenseDetails from './pages/ViewExpenseDetails';
+import RecordExpenses from './pages/RecordExpenses';
 
 function App() {
   return (
     <>
           <BrowserRouter>
               <Routes>
+
+                  {/* General Pages */}
                   <Route path="/" element={<Login/>} />
                   <Route path="/home" element={<Home/>}/>
+
+                  {/* Sales Module */}
                   <Route path="/viewoculars" element={<ViewOculars/>}/> 
                   <Route path="/setocular" element={<SetOcular/>}/> 
-                  <Route path="/report" element={<GenerateReport/>}/> 
                   <Route path="/generatequotation" element={<GenerateQuotation/>}/> 
                   <Route path="/viewquotations" element={<ViewQuotations/>}/> 
                   <Route path="/generateinvoice" element={<GenerateInvoice/>}/> 
@@ -40,13 +46,27 @@ function App() {
                   <Route path="/viewsaledetails" element={<ViewSaleDetails/>}/>    
                   <Route path="/viewclients" element={<ViewClients/>}/>
                   <Route path="/viewclientdetails" element={<ViewClientDetails/>}/>
-                  <Route path="/viewproducts" element={<ViewProducts/>}/>
-                  <Route path="/viewusers" element={<ViewUsers/>}/>
+                  <Route path="/downloadquotation" element={<DownloadQuotation/>}/>
+
+                  {/* Aftersales Module */}
                   <Route path="/viewwarranties" element={<ViewWarranties/>}/>
                   <Route path="/viewwarrantydetails" element={<ViewWarrantyDetails/>}/>
                   <Route path="/searchwarranty" element={<SearchWarranty/>}/>
                   <Route path="/claimwarranty" element={<ClaimWarranty/>}/>
-                  <Route path="/downloadquotation" element={<DownloadQuotation/>}/>
+
+                  {/* Executive Module */}
+                  <Route path="/report" element={<GenerateReport/>}/> 
+                  <Route path="/viewexpenses" element={<ViewExpenses/>}/>
+                  <Route path="/viewexpensedetails" element={<ViewExpenseDetails/>}/>
+                  <Route path="/recordexpenses" element={<RecordExpenses/>}/>
+
+                  {/* SysAd Module */}
+                  <Route path="/viewproducts" element={<ViewProducts/>}/>
+                  <Route path="/viewusers" element={<ViewUsers/>}/>
+
+                  
+                  
+
               </Routes>
           </BrowserRouter>
     </>
