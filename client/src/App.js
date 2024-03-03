@@ -20,6 +20,7 @@ import ViewWarranties from './pages/ViewWarranties';
 import SearchWarranty from './pages/SearchWarranty';
 import DownloadQuotation from './pages/DownloadQuotation';
 import ViewWarrantyDetails from './pages/ViewWarrantyDetails';
+import ClaimWarranty from './pages/ClaimWarranty';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
                   <Route path="/viewwarranties" element={<ViewWarranties/>}/>
                   <Route path="/viewwarrantydetails" element={<ViewWarrantyDetails/>}/>
                   <Route path="/searchwarranty" element={<SearchWarranty/>}/>
+                  <Route path="/claimwarranty" element={<ClaimWarranty/>}/>
                   <Route path="/downloadquotation" element={<DownloadQuotation/>}/>
               </Routes>
           </BrowserRouter>

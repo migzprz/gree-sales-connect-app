@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { useState, useEffect } from 'react'; 
-import { FaEdit, FaCheck, FaTruck, FaScrewdriver, FaToolbox, FaPlus, FaMoneyBillWave, FaShoppingBag} from 'react-icons/fa';
+import { FaEdit, FaUserTie, FaCheck, FaTruck, FaScrewdriver, FaToolbox, FaPlus, FaMoneyBillWave, FaShoppingBag} from 'react-icons/fa';
 import { Row, Col, Card, CardBody, CardHeader, Table, Form, Dropdown } from 'react-bootstrap';
 import '../index.css';
 
@@ -56,12 +56,43 @@ const SaleDetails= () => {
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
             <h1>Sale Ref. #0001</h1>
-            <h5>View and manage a specific sale</h5>
+            <Row>
+                <Col>
+                    <Row>
+                        <Col>
+                            Client: <strong>Miguel Josh C. Perez</strong>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            Company: <strong> ABC Company</strong>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            Contact Number: <strong> 09165189598</strong>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            Email Address: <strong> miguel_josh_perez@dlsu.edu.ph</strong>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            Sale Status: <strong> Ongoing</strong>
+                        </Col>
+                    </Row>
+
+                </Col>
+            </Row>
             <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
+
+
 
             <Row>
                 <Col lg="3">
-                    <Card style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9'}}>
+                    <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9'}}>
 
                         <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', color: '#014c91'}}>
                             <Row>

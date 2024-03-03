@@ -56,14 +56,48 @@ const WarrantyDetails= () => {
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
             <h1>Warranty Claim #0001</h1>
-            <h5>View and manage a specific warranty</h5>
+            <Row>
+                <Col>
+                    <Row>
+                        <Col>
+                            Sale Ref.: <strong> #0001</strong>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            Client: <strong>Miguel Josh C. Perez</strong>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            Company: <strong> ABC Company</strong>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            Contact Number: <strong> 09165189598</strong>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            Email Address: <strong> miguel_josh_perez@dlsu.edu.ph</strong>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            Warranty Claim Status: <strong> Ongoing</strong>
+                        </Col>
+                    </Row>
+
+                </Col>
+            </Row>
             <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
 
             <Row>
                 <Col lg="3">
-                    <Card style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9'}}>
+                    <Card style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9', display: 'flex', flexDirection: 'column', height: '100%'}}>
 
-                        <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', color: '#014c91'}}>
+                        <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91'}}>
                             <Row>
                                 <Col lg="9">
                                     <h3>{React.createElement(FaSearch, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Inspection</h3>
@@ -127,99 +161,76 @@ const WarrantyDetails= () => {
 
                     </Card>
                 </Col>
-                <Col lg="4">
-                    <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', color: '#014c91'}}>
-                        <Row>
-                            <Col lg="9">
-                                <h3>{React.createElement(FaMoneyBillWave, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Payment History</h3>
-                            </Col>
-                        </Row>
 
-                        <Table>
-                                <thead>
-                                    <tr>
-                                        <th style={{color: '#014c91'}}>Date</th>
-                                        <th style={{color: '#014c91'}}>Method</th>
-                                        <th style={{color: '#014c91'}}>Ref. #</th>
-                                        <th style={{color: '#014c91'}}>Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <React.Fragment>
-                                        <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                            <td style={{color: '#014c91'}}>Jan. 24, 2024</td>
-                                            <td style={{color: '#014c91'}}>Cash</td>
-                                            <td style={{color: '#014c91'}}>2678982</td>
-                                            <td style={{color: '#014c91'}}>₱45,000.00</td>
-                                        </tr>
+                <Col lg="5">
+                    <Card style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9', display: 'flex', flexDirection: 'column', height: '100%'}}>
+                        <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91',display: 'flex', flexDirection: 'column', height: '100%'}}>
+                            <Row>
+                                <Col lg="9">
+                                    <h3>{React.createElement(FaMoneyBillWave, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Units Claimed</h3>
+                                </Col>
+                            </Row>
 
+                            <Table>
+                                    <thead>
                                         <tr>
-                                            <td colspan="3" style={{color: '#014c91', textAlign: 'right'}}>Total Amount Paid</td>
-                                            <td style={{color: '#014c91'}}><strong>₱45,000.00 </strong></td>
+                                            <th style={{color: '#014c91'}}>Description</th>
+                                            <th style={{color: '#014c91'}}>Unit Model</th>
+                                            <th style={{color: '#014c91'}}>Issue</th>
                                         </tr>
-                                        <tr>
-                                            <td colspan="3" style={{color: '#014c91', textAlign: 'right'}}>Remaining Balance</td>
-                                            <td style={{color: '#014c91'}}><strong>₱15,000.00 </strong></td>
-                                        </tr>
-                                    </React.Fragment>
-                                </tbody>
-                        </Table>
+                                    </thead>
+                                    <tbody>
+                                        <React.Fragment>
+                                            <tr style={{ borderRadius: '20px', padding: '10px' }}>
+                                                <td style={{color: '#014c91'}}>Jan. 24, 2024</td>
+                                                <td style={{color: '#014c91'}}>Cash</td>
+                                                <td style={{color: '#014c91'}}>2678982</td>
+                                            </tr>
+                                        </React.Fragment>
+                                    </tbody>
+                            </Table>
 
-                       
-
-                        
-                        <Row className="mt-2">
-                            <Col>
-                                <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
-                                    {React.createElement(FaPlus, { size: 18, style: { marginRight: '5px' } })}   Add Payment
-                                </button>
-                            </Col>
-                        </Row>
+                        </Card>
                     </Card>
                 </Col>
-                <Col lg="5">
-                    <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', color: '#014c91'}}>
-                        <Row>
-                            <Col lg="9">
-                                <h3>{React.createElement(FaShoppingBag, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Purchase Summary</h3>
-                            </Col>
-                        </Row>
 
-                        <Table>
-                                <thead>
-                                    <tr>
-                                        <th style={{color: '#014c91'}}>Date</th>
-                                        <th style={{color: '#014c91'}}>Quotation</th>
-                                        <th style={{color: '#014c91'}}>Invoice</th>
-                                        <th style={{color: '#014c91'}}>Purchase Order</th>
-                                        <th style={{color: '#014c91'}}>Total Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <React.Fragment>
-                                        <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                            <td style={{color: '#014c91'}}>Jan. 24, 2024</td>
-                                            <td style={{color: '#014c91'}}>#0001</td>
-                                            <td style={{color: '#014c91'}}>#0001</td>
-                                            <td style={{color: '#014c91'}}>#0001</td>
-                                            <td style={{color: '#014c91'}}>₱60,000.00</td>
+                <Col lg="4">
+                    <Card style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9', display: 'flex', flexDirection: 'column', height: '100%'}}>
+                        <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91', display: 'flex', flexDirection: 'column', height: '100%'}}>
+                            <Row>
+                                <Col lg="9">
+                                    <h3>{React.createElement(FaShoppingBag, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Requested Parts </h3>
+                                </Col>
+                            </Row>
+
+                            <Table>
+                                    <thead>
+                                        <tr>
+                                            <th style={{color: '#014c91'}}>Part Type</th>
+                                            <th style={{color: '#014c91'}}>Description</th>                                    
                                         </tr>
-
-                                      
-                                    </React.Fragment>
-                                </tbody>
-                        </Table>
-
-                       
+                                    </thead>
+                                    <tbody>
+                                        <React.Fragment>
+                                            <tr style={{ borderRadius: '20px', padding: '10px' }}>
+                                                <td style={{color: '#014c91'}}>Jan. 24, 2024</td>
+                                                <td style={{color: '#014c91'}}>#0001</td>
+                                            </tr>    
+                                        </React.Fragment>
+                                    </tbody>
+                            </Table>
 
                         
-                        <Row className="mt-2">
-                            <Col>
-                                <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
-                                    {React.createElement(FaPlus, { size: 18, style: { marginRight: '5px' } })}   Add Purchase
-                                </button>
-                            </Col>
-                        </Row>
+
+                            
+                            <Row className="mt-2">
+                                <Col>
+                                    <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
+                                        {React.createElement(FaPlus, { size: 18, style: { marginRight: '5px' } })} Add a Requested Part
+                                    </button>
+                                </Col>
+                            </Row>
+                        </Card>
                     </Card>
                 </Col>
             </Row>
