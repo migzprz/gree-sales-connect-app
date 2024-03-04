@@ -3,10 +3,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import useAddressFilter from "../../hooks/useAddressFilter";
 import { Form, Row, Col } from "react-bootstrap";
+
 /**
  * 
  * @param {*} param0 
  * @returns a form component that allows users to input basic information such as the client and location information
+ * note: form component does not have a handleSubmit function, define it in the parent component it is being used in
  */
 export default function FormComponent({ formData, setFormData, handleChange, validated, handleSubmit }) {
 

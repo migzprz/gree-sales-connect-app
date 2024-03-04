@@ -94,9 +94,13 @@ module.exports = (query) => {
      * Other tables will need to have data stored:
      *     // md_locations: create new record, stores the location where the ocular will be performed 
      *     // md_quotations: create new record, store client, company and location id 
-     *
+     * 
+     * Parameters
+     *  cond ---- condition to check if posting to ocular table will be skipped or not (cond === 1 executes the code inside the condition statement)
      */
-    router.post('/postOcular', async (req, res) => {
+    router.post('/postOcular/:cond', async (req, res) => {
+
+        const cond = req.params.cond
 
         const cp_values = [
             req.body.firstName,
@@ -156,14 +160,20 @@ module.exports = (query) => {
             }
 
             // STEP 2: INSERT NEW OCULAR RECORD
+            
+            var ocu_id = null
+            if (cond === 1) {
+                // TESTING
+                console.log('step 2 data: ', ocu_values)
 
-            // TESTING
-            console.log('step 2 data: ', ocu_values)
+                const ocu_query = 'INSERT INTO td_oculars (ocular_date, login_id, technician_id, date_created, is_active) VALUES (?, ?, ?, NOW(), 1)'
+                const ocu_data = await query(ocu_query, ocu_values)
+                ocu_id = ocu_data.insertId
+    
+                console.log('ocular data result: ', ocu_data)
+            }
+            
 
-            const ocu_query = 'INSERT INTO td_oculars (ocular_date, login_id, technician_id, date_created, is_active) VALUES (?, ?, ?, NOW(), 1)'
-            const ocu_data = await query(ocu_query, ocu_values)
-
-            console.log('ocular data result: ', ocu_data)
 
             // STEP 3: INSERT LOCATION INFO
             // account for if the location selected already exist in the database
@@ -185,9 +195,9 @@ module.exports = (query) => {
             // STEP 4: INSERT NEW QUOTATION CLIENT RECORD
             // (client, ocular and location id)
             const quo_client_query = 'INSERT INTO md_quotation_clients (client_id, ocular_id, location_id) VALUES (?, ?, ?)'
-            const quo_client_data = await query(quo_client_query, [client_id, ocu_data.insertId, location_id])
+            const quo_client_data = await query(quo_client_query, [client_id, ocu_id, location_id])
 
-            res.status(200).json({message: `Ocular successfully posted ${quo_client_data}`})
+            res.status(200).json({message: `Data successfully posted`, data: quo_client_data.insertId})
 
         } catch (error) {
             console.error('Error: ', error)

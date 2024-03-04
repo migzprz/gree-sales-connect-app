@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FaSave } from 'react-icons/fa';
 import { Row, Col, Form } from 'react-bootstrap';
 
-const TermsAndConditions = () => {
+const TermsAndConditions = ({ onTermsSubmission }) => {
     const [validated, setValidated] = useState(false);
     const [terms, setTerms] = useState({
         A: 
@@ -59,6 +59,8 @@ const TermsAndConditions = () => {
         event.preventDefault();
         console.log("Terms submitted:", terms);
         // Implement your form submission logic here
+
+        onTermsSubmission(terms)
     };
 
     return (

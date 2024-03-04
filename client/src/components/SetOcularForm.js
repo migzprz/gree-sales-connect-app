@@ -125,7 +125,7 @@ const SetOcularForm = () => {
       console.log(data)
 
       try {
-        const postReponse = await axios.post('http://localhost:4000/api/postOcular/', data)
+        const postReponse = await axios.post('http://localhost:4000/api/postOcular/1', data)
         console.log(postReponse)
         navigate('/viewoculars')
       } catch (error) {

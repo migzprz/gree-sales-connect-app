@@ -5,7 +5,7 @@ import { Row, Col, Form, CardBody, Card, Table } from 'react-bootstrap';
 import ReturningClientModal from '../ReturningClientModal';
 import FormComponent from '../subcomponents/FormComponent'
 
-const ClientSelection = ({onClientSubmission}) => {
+const ClientSelection = ({ onClientSubmission }) => {
 
     const [isNew, setIsNew] = useState(true);
     const [activeOption, setActiveOption] = useState('newClient');
@@ -44,11 +44,11 @@ const ClientSelection = ({onClientSubmission}) => {
 
   return (
     <>
-        <FormComponent formData={clientData} setFormData={setClientData} handleChange={handleChange} validated={validated} handleSubmit={handleSubmit} />
+        <FormComponent formData={clientData} setFormData={setClientData} handleChange={handleChange} validated={validated} />
 
         <Row className="mt-5">
             <Col lg="3">
-                <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}} onClick={onClientSubmission}>
+                <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}} onClick={handleSubmit}>
                 {React.createElement(FaCheck, { size: 18, style: { marginRight: '5px' } })}   Confirm Client
                 </button>
             </Col>
