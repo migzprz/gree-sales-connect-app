@@ -45,7 +45,7 @@ function App() {
                   <Route path="/viewsales" element={<ViewSales/>}/> 
                   <Route path="/viewsaledetails" element={<ViewSaleDetails/>}/>    
                   <Route path="/viewclients" element={<ViewClients/>}/>
-                  <Route path="/viewclientdetails" element={<ViewClientDetails/>}/>
+                  <Route path="/viewclientdetails/:id" element={<ViewClientDetails/>}/>
                   <Route path="/downloadquotation" element={<DownloadQuotation/>}/>
 
                   {/* Aftersales Module */}
