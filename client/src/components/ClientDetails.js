@@ -1,57 +1,33 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
-import { useState, useEffect } from 'react'; 
+import { useState, useEffect} from 'react'; 
+import { Link, useParams } from 'react-router-dom';
 import { FaEdit, FaCheck, FaTruck, FaPlus, FaShoppingBag, FaUserTie} from 'react-icons/fa';
 import { Row, Col, Card, CardBody, CardHeader, Table, Form, Dropdown } from 'react-bootstrap';
 import '../index.css';
+import axios from 'axios'
 
 const ClientDetails= () => {
 
-    const quotationList = [
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        // Add more ocular objects as needed
-    ];
+    const { id } = useParams();
+    const [clientData, setClientData] = useState([])
+    
 
-    const [activeOption, setActiveOption] = useState('newClient');
-
-    const handleOptionClick = (option) => {
-        setActiveOption(option);
-    };
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:4000/api/getClient/${id}/`)
+                setClientData(response.data[0])
+            } catch (error) {
+                console.error('Error fetching data: ', error)
+            }
+        }
+        fetchData()
+    },[])
+    
+    useEffect(() => {
+        console.log(clientData)
+    },[clientData])
 
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
@@ -66,7 +42,7 @@ const ClientDetails= () => {
                         <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91'}}>
                             <Row>
                                 <Col lg="9">
-                                    <h3>{React.createElement(FaUserTie, { size: 50, style: { marginRight: '5px', marginBottom: '5px'  }})}Miguel Perez</h3>
+                                    <h3>{React.createElement(FaUserTie, { size: 50, style: { marginRight: '5px', marginBottom: '5px'  }})}{clientData.client_name}</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
                                     {React.createElement(FaEdit, { size: 18 })}
@@ -74,22 +50,22 @@ const ClientDetails= () => {
                             </Row>
                             <Row>
                                 <Col>
-                                    Company: <strong> De La Salle University Inc. </strong>
+                                    Company: <strong> {clientData.company_name} </strong>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col>
-                                    TIN ID: <strong> 777 555 333</strong>
+                                    TIN ID: <strong> {clientData.tin} </strong>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col>
-                                    Contact Number: <strong> 0916 518 9598</strong>
+                                    Contact Number: <strong> {clientData.contact_number}</strong>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col>
-                                    Email: <strong> miguel_josh_perez@dlsu.edu.ph</strong>
+                                    Email: <strong> {clientData.email}</strong>
                                 </Col>
                             </Row>
                          
