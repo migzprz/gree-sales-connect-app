@@ -154,17 +154,17 @@ console.log(expenseList)
                                         )}
                                     <Col lg="2" className="ms-2">
                                     <button
-        className="btn w-100"
-        onClick={(e) => {
-            e.preventDefault();
-            if (!e.currentTarget.disabled) {
-                addSubexpense(index);
-            }
-        }}
-        style={{color: "white", backgroundColor: "#014c91"}}
-    >
-        {React.createElement(FaPlus, { size: 18, style: { marginRight: '5px' } })} Add Subexpense
-    </button>
+                                        className="btn w-100"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            if (!e.currentTarget.disabled) {
+                                                addSubexpense(index);
+                                            }
+                                        }}
+                                        style={{color: "white", backgroundColor: "#014c91"}}
+                                    >
+                                        {React.createElement(FaPlus, { size: 18, style: { marginRight: '5px' } })} Add Subexpense
+                                    </button>
                                     </Col>
                                 </Row>
                             )}
