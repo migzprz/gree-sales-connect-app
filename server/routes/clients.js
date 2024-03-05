@@ -4,7 +4,7 @@ const router = express.Router()
 module.exports = (query) => {
 
       /**
-     * Returns a list of clients and accompanying data for returning clients selector for setting oculars
+     * Returns a list of clients
      */
       router.get('/getAllClients', async (req, res) => {
         try {
@@ -32,6 +32,9 @@ module.exports = (query) => {
         }
     })
 
+     /**
+     * Returns the data of a specific client based on param id
+     */
     router.get('/getClient/:id', async (req, res) => {
         try {
             const { id } = req.params

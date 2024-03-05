@@ -24,6 +24,7 @@ import ClaimWarranty from './pages/ClaimWarranty';
 import ViewExpenses from './pages/ViewExpenses';
 import ViewExpenseDetails from './pages/ViewExpenseDetails';
 import RecordExpenses from './pages/RecordExpenses';
+import ViewTechnicians from './pages/ViewTechnicians';
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
                   {/* SysAd Module */}
                   <Route path="/viewproducts" element={<ViewProducts/>}/>
                   <Route path="/viewusers" element={<ViewUsers/>}/>
+                  <Route path="/viewtechnicians" element={<ViewTechnicians/>}/>
 
                   
                   

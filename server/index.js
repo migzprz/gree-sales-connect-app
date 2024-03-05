@@ -9,6 +9,7 @@ const Oculars = require('./routes/oculars')
 const Common = require('./routes/common')
 const Quotation = require('./routes/quotations')
 const Clients = require('./routes/clients')
+const Employees = require('./routes/employees')
 
 app.use(cors({
     origin: 'http://localhost:3000',
@@ -71,6 +72,7 @@ app.use('/api', Oculars(query));
 app.use('/api', Common(query));
 app.use('/api', Quotation(query));
 app.use('/api', Clients(query));
+app.use('/api', Employees(query));
 
 app.listen(4000, () => {
     console.log("Server is RUNNING ON PORT 4000");

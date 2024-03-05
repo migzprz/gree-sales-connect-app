@@ -15,7 +15,7 @@ const Sidebar = ({ children }) => {
     { name: 'Sales', icon: FaBriefcase, link: '/viewsales', submenuNames: [], submenuLinks: []},
     { name: 'Clients', icon: FaUserTie, link: '/viewclients', submenuNames: [], submenuLinks: [] },
     { name: 'Products', icon: FaTag, link: '/viewproducts', submenuNames: [], submenuLinks: []},
-    { name: 'Employees', icon: FaUsers, link: '/viewusers', submenuNames: [], submenuLinks: []},
+    { name: 'Employees', icon: FaUsers, link: '', submenuNames: ['Manage System Users', 'Manage Technicians'], submenuLinks: ['/viewusers', '/viewtechnicians']},
     { name: 'Expenses', icon: FaMoneyCheckAlt, link: '', submenuNames: ['Manage Expenses', 'Record Expenses'], submenuLinks: ['/viewexpenses', '/recordexpenses']},
     { name: 'Reports', icon: FaChartLine, link: '/report', submenuNames: [], submenuLinks: []},
     { name: 'Warranties', icon: FaShieldAlt, link: '', submenuNames: ['Manage Warranties', 'Set Warranty'], submenuLinks: ['/viewwarranties', '/searchwarranty']}
