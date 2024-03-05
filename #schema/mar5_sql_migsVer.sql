@@ -236,9 +236,9 @@ DROP TABLE IF EXISTS `md_login`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `md_login` (
-  `login_id` int NOT NULL,
+  `login_id` int NOT NULL AUTO_INCREMENT,
   `first_name` varchar(45) NOT NULL,
-  `middle_name` varchar(45) NOT NULL,
+  `middle_name` varchar(45) DEFAULT NULL,
   `last_name` varchar(45) NOT NULL,
   `password` varchar(45) NOT NULL,
   `role` varchar(45) NOT NULL,
@@ -250,7 +250,7 @@ CREATE TABLE `md_login` (
   `date_added` datetime DEFAULT NULL,
   `is_active` int DEFAULT NULL,
   PRIMARY KEY (`login_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -259,7 +259,7 @@ CREATE TABLE `md_login` (
 
 LOCK TABLES `md_login` WRITE;
 /*!40000 ALTER TABLE `md_login` DISABLE KEYS */;
-INSERT INTO `md_login` VALUES (1,'Raymond','Matthew','Intervalo','123','Salesperson','raymond',0,1,1,0,'2024-03-02 16:07:54',1),(2,'Miguel','Josh','Perez','123','Executive','miguel',0,1,0,1,'2024-03-02 16:07:54',1),(3,'Wilfredo','','Argana','123','Salesperson','wilfredo',0,1,1,1,'2024-03-02 16:07:54',0);
+INSERT INTO `md_login` VALUES (1,'Raymond','Matthew','Intervalo','123','Salesperson','raymond',0,1,1,0,'2024-03-02 16:07:54',1),(2,'Miguel','Josh','Perez','123','Executive','miguel',0,1,0,1,'2024-03-02 16:07:54',1),(3,'Wilfredo','','Argana','123','Salesperson','wilfredo',0,1,1,1,'2024-03-02 16:07:54',0),(4,'Jackson',NULL,'Wang','123','Salesperson','jwang',1,1,0,0,'2024-03-02 16:07:54',1),(5,'Michael',NULL,'Jackson','123','Executive','mjheehee',1,1,0,0,'2024-03-05 07:02:06',1);
 /*!40000 ALTER TABLE `md_login` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -815,7 +815,6 @@ CREATE TABLE `td_expenses` (
   KEY `fk_td_expenses_md_login_idx` (`login_id`),
   KEY `fk_td_expenses_ref_expense_type1_idx` (`extype_id`),
   KEY `fk_td_expenses_ref_mode_of_payment1_idx` (`mop_id`),
-  CONSTRAINT `fk_td_expenses_md_login` FOREIGN KEY (`login_id`) REFERENCES `md_login` (`login_id`),
   CONSTRAINT `fk_td_expenses_ref_expense_type1` FOREIGN KEY (`extype_id`) REFERENCES `ref_expense_type` (`exptype_id`),
   CONSTRAINT `fk_td_expenses_ref_mode_of_payment1` FOREIGN KEY (`mop_id`) REFERENCES `ref_mode_of_payment` (`mop_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -1004,4 +1003,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-03-05 11:55:02
+-- Dump completed on 2024-03-05 15:05:38

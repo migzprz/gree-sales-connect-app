@@ -32,11 +32,6 @@ const UsersList = () => {
         fetchData()
     },[])
     
-    useEffect(() => {
-        console.log(employeeData)
-    },[employeeData])
-
-    
     //Navigation Functions
 
     const handleSearch = (e) => {

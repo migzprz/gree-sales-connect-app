@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Modal, Form,  InputGroup } from 'react-bootstrap';
 import { FaSave, FaPlus} from 'react-icons/fa';
+import axios from 'axios'
 
 const AddUserModal = () => {
     const [showModal, setShowModal] = useState(false);
@@ -14,23 +15,37 @@ const AddUserModal = () => {
         setShowModal(false);
     };
 
-    // Dummy data for ocular details
-    const ocularDetails = [
-        {   id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            location: '41B K1st St. Kamuning Quezon City NCR 1103',
-            contactNumber: '0165189598',
-            emailAddress: 'miguel_josh_perez@dlsu.edu.ph',
-            TIN: '77788899900000',
-            date: '2024-01-15',
-            time: '10:00 AM',
-            technician: 'Technician 1',
-            status: 'Scheduled'}
-      ];
+    const [formData, setFormData] = useState({
+        // new user data
+        first_name: '',
+        last_name: '',
+        password: '',
+        role: '',
+        username: '',
+        aftersales_access: 0,
+        sales_access: 0,
+        exec_access: 0,
+        sysad_access: 0,
+        date_added: new Date().toISOString().slice(0, 19).replace('T', ' '),
+        is_active: 1
+    })
 
-      const [validated, setValidated] = useState(false);
-      const handleSubmit = (event) => {
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name]: type === 'checkbox' ? (checked ? 1 : 0) : value
+        }));
+    };
+
+    useEffect(() => {
+        console.log(formData)
+    },[formData])
+
+    const [validated, setValidated] = useState(false);
+
+
+    const handleSubmit = async (event) => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
           event.preventDefault();
@@ -38,7 +53,22 @@ const AddUserModal = () => {
         }
     
         setValidated(true);
+
+        try {
+            const postReponse = await axios.post('http://localhost:4000/api/postSystemUser', formData)
+            console.log(postReponse)
+          } catch (error) {
+            console.error('Error: Problem encountered when posting data', error)
+          }
       };
+
+    const handleCheckboxChange = (event) => {
+        const { name, checked } = event.target;
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: checked ? 1 : 0,
+        }));
+    };
       
 
     return (
@@ -59,15 +89,14 @@ const AddUserModal = () => {
         
                         <Row className="mt-1">
                             <Col lg="4">
-                                <Form.Group controlId="type">
+                                <Form.Group controlId="role">
                                     <Form.Label>Employee Role</Form.Label>
-                                    <Form.Control as="select" required>
+                                    <Form.Control as="select" name="role" value={formData.role} onChange={handleChange} required>
                                         <option value=""> Select </option>
-                                        <option value="1"> Sales Rep. </option>
-                                        <option value="2"> AfterSales Rep. </option>
-                                        <option value="3"> Executive </option>
-                                        <option value="4"> System Administrator </option>
-                                        <option value="5"> Technician </option>
+                                        <option value="Salesperson"> Salesperson</option>
+                                        <option value="Aftersales Staff"> Aftersales Staff </option>
+                                        <option value="Executive"> Executive</option>
+                                        <option value="System Administrator"> System Administrator </option>
                                     </Form.Control>
                                     <Form.Control.Feedback type="invalid">
                                         Please select role.
@@ -75,9 +104,9 @@ const AddUserModal = () => {
                                 </Form.Group>
                             </Col>
                             <Col lg="4">
-                                <Form.Group controlId="description">
+                                <Form.Group controlId="first_name">
                                     <Form.Label>First Name</Form.Label>
-                                    <Form.Control type="text" name='hp' required/>
+                                    <Form.Control type="text" name="first_name" value={formData.first_name} onChange={handleChange} required/>
                                     <Form.Control.Feedback type="invalid">
                                         Please provide first name
                                     </Form.Control.Feedback>
@@ -86,7 +115,7 @@ const AddUserModal = () => {
                             <Col lg="4">
                                 <Form.Group controlId="description">
                                     <Form.Label>Last Name</Form.Label>
-                                    <Form.Control type="text" name='hp' required/>
+                                    <Form.Control type="text" name="last_name" value={formData.last_name} onChange={handleChange} required/>
                                     <Form.Control.Feedback type="invalid">
                                         Please provide last name
                                     </Form.Control.Feedback>
@@ -99,7 +128,7 @@ const AddUserModal = () => {
                             <Col lg="4">
                                 <Form.Group controlId="description">
                                     <Form.Label>User ID</Form.Label>
-                                    <Form.Control type="text" name='hp' required/>
+                                    <Form.Control type="text" name="username" value={formData.username} onChange={handleChange} required/>
                                     <Form.Control.Feedback type="invalid">
                                         Please provide user ID
                                     </Form.Control.Feedback>
@@ -108,7 +137,7 @@ const AddUserModal = () => {
                             <Col lg="4">
                                 <Form.Group controlId="description">
                                     <Form.Label>Default Password</Form.Label>
-                                    <Form.Control type="text" name='hp' required/>
+                                    <Form.Control type="text" name="password" value={formData.password} onChange={handleChange} required/>
                                     <Form.Control.Feedback type="invalid">
                                         Please provide default password
                                     </Form.Control.Feedback>
@@ -128,25 +157,37 @@ const AddUserModal = () => {
                                             type="checkbox"
                                             id="sales"
                                             label="Sales Module"
-                                            name="modules"
+                                            name="sales_access"
+                                            onChange={handleCheckboxChange}
+                                            required={formData.aftersales_access === 0 && formData.exec_access === 0 && formData.sysad_access === 0 }
+                                            isInvalid={validated && !formData.sales_access}
                                         />
                                         <Form.Check
                                             type="checkbox"
                                             id="aftersales"
                                             label="Aftersales Module"
-                                            name="modules"
+                                            name="aftersales_access"
+                                            onChange={handleCheckboxChange}
+                                            required={formData.sales_access === 0 && formData.exec_access === 0 && formData.sysad_access === 0 }
+                                            isInvalid={validated && !formData.aftersales_access}
                                         />
                                         <Form.Check
                                             type="checkbox"
                                             id="executive"
                                             label="Executive Module"
-                                            name="modules"
+                                            name="exec_access"
+                                            onChange={handleCheckboxChange}
+                                            required={formData.sales_access === 0 && formData.aftersales_access === 0 && formData.sysad_access === 0 }
+                                            isInvalid={validated && !formData.exec_access}
                                         />
                                         <Form.Check
                                             type="checkbox"
                                             id="admin"
                                             label="System Administrator Module"
-                                            name="modules"
+                                            name="sysad_access"
+                                            onChange={handleCheckboxChange}
+                                            required={formData.sales_access === 0 && formData.exec_access === 0 && formData.aftersales_access === 0 }
+                                            isInvalid={validated && !formData.sysad_access}
                                         />
                                     </div>
                                     <Form.Control.Feedback type="invalid">
