@@ -157,10 +157,11 @@ module.exports = (query) => {
                 // store client id as var
                 client_id = client_data.insertId
                 console.log('client data result: ', client_data, client_id)
+            } else {
+                console.log('existing client already skipping STEP 1')
             }
 
             // STEP 2: INSERT NEW OCULAR RECORD
-            
             var ocu_id = null
             if (cond === 1) {
                 // TESTING
@@ -171,6 +172,8 @@ module.exports = (query) => {
                 ocu_id = ocu_data.insertId
     
                 console.log('ocular data result: ', ocu_data)
+            } else {
+                console.log("logic used for quotations, skipping STEP 2")
             }
             
 

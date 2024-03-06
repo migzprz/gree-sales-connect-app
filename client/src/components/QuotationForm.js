@@ -22,32 +22,26 @@ const QuotationForm = () => {
   const [clientData, setClientData] = useState({})
   const [termsData, setTermsData] = useState({})
 
+  const [selectionType, setSelectionType] = useState('offer'); // Default to offer selection
+
   const handleSubmit = async () => {
 
-    let id
-
+    let id 
+    console.log(offerData, clientData, termsData)
     try {
+
       const response = await axios.post('http://localhost:4000/api/postOcular/0', clientData)
-      const result = await response.json()
+      id = response.data.data
 
-      if (response.ok) {
-        id = result.data
+      const data = {
+        offer: offerData,
+        terms: termsData,
+        id: id
       }
-    } catch (error) {
-      console.error('Error: Problem encountered when posting data', error)
-    }
 
-    const data = {
-      offer: offerData,
-      client: clientData,
-      terms: termsData,
-      id: id
-    }
-
-    try {
       const postReponse = await axios.post('http://localhost:4000/api/postQuotation/', data)
       console.log(postReponse)
-      // navigate('/viewoculars')
+
     } catch (error) {
       console.error('Error: Problem encountered when posting data', error)
     }
@@ -55,7 +49,14 @@ const QuotationForm = () => {
     setValidated(true);
   };
 
-  const [selectionType, setSelectionType] = useState('offer'); // Default to offer selection
+  useEffect(() => {
+    console.log('tried submitting...')
+    if (Object.keys(offerData).length && Object.keys(clientData).length && Object.keys(termsData).length) {
+      console.log('submission successfull...')
+      handleSubmit()
+    }
+  }, [offerData, clientData, termsData])
+  
 
   const handleOfferSubmission = (data) => {
     setSelectionType('client');
@@ -67,8 +68,8 @@ const QuotationForm = () => {
     setClientData(data)
   };
 
-  const handleGetTermsData = (data) => {
-    setTermsData(data)
+  const handleGetTermsData = async (data) => {
+    await setTermsData(data)
     handleSubmit()
   }
 
