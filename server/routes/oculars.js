@@ -100,7 +100,7 @@ module.exports = (query) => {
      */
     router.post('/postOcular/:cond', async (req, res) => {
 
-        const cond = req.params.cond
+        const cond = Number(req.params.cond)
 
         const cp_values = [
             req.body.firstName,

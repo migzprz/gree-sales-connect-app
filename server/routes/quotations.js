@@ -3,8 +3,20 @@ const router = express.Router()
 
 module.exports = (query) => {
 
-    router.post('/getQuotations', async (req, res) => {
+    router.get('/getQuotations', async (req, res) => {
+        const data = await query(`SELECT q.quotation_id, q.date_created,
+                                CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.contact_number as client_number,
+                                co.company_name,
+                                SUM(qp.discounted_price_each*qp.quantity) AS totalprice, q.is_cancelled
+                                FROM td_quotations q
+                                JOIN md_quotation_clients qc ON q.quotation_client_id = qc.quotation_client_id
+                                JOIN md_clients c ON qc.client_id = c.client_id
+                                JOIN md_contactperson cp ON c.contact_person_id = cp.contact_person_id
+                                JOIN md_companies co ON c.company_id = co.company_id
+                                JOIN md_quotation_products qp ON q.quotation_id = qp.quotation_id
+                                GROUP BY q.quotation_id`, [])
 
+        res.send(data)
     })
 
     router.post('/postQuotation', async (req, res) => {
