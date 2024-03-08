@@ -9,6 +9,7 @@ import AddProductModal from './AddProductModal';
 import AddUserModal from './AddUserModal';
 import axios from 'axios'
 import EditUserModal from './EditUserModal';
+import UpdateUserStatusModal from './UpdateUserStatusModal';
 
 
 const UsersList = () => {
@@ -71,7 +72,7 @@ const UsersList = () => {
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
               <EditUserModal id={id}/>
               <Dropdown.Item>Reset Password</Dropdown.Item>
-              <Dropdown.Item>Deactivate User</Dropdown.Item>
+              <UpdateUserStatusModal id={id}/>
             </Dropdown.Menu>
           );
         }

@@ -174,6 +174,18 @@ module.exports = (query) => {
         }
     })
 
+    router.patch('/changeUserState/:id/:state', async (req, res) => {
+        try {
+            const values = [req.params.state, req.params.id]
+            const data = await query('UPDATE md_login SET is_active = ? WHERE login_id = ?', values)
+            console.log(data)
+            res.status(200).json({message: `User successfully updated... ${data}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to update user... ${error}`})
+        }
+    })
+
 
     return router;
 }
