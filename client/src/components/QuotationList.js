@@ -7,68 +7,42 @@ import { Link } from 'react-router-dom';
 import '../index.css';
 import EditOcularModal from './EditOcularModal';
 import CancelOcularModal from './CancelOcularModal';
+import axios from 'axios';
+
 
 const QuotationList = () => {
 
     const [activeDropdown, setActiveDropdown] = useState(null);
+    const [quotations, setQuotations] = useState([])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/api/getQuotations/')
+                setQuotations(response.data)
+            } catch (error) {
+                console.error('Error fetching data: ', error)
+            }
+        }
+        fetchData()
+    }, [])
+
 
     const handleEllipsisClick = (index) => {
         setActiveDropdown(index === activeDropdown ? null : index);
-      };
+    };
 
-      const renderDropdown = (index) => {
+    const renderDropdown = (index) => {
         if (index === activeDropdown) {
-          return (
+            return (
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-              <Dropdown.Item><Link to={`/generateinvoice`} style={{ color: '#014c91'}}>Convert To Sale</Link></Dropdown.Item>
-              <Dropdown.Item>Cancel Quotation</Dropdown.Item>
+                <Dropdown.Item><Link to={`/generateinvoice`} style={{ color: '#014c91'}}>Convert To Sale</Link></Dropdown.Item>
+                <Dropdown.Item>Cancel Quotation</Dropdown.Item>
             </Dropdown.Menu>
-          );
+            );
         }
         return null;
-      };
-      
-
-
-    const quotationList = [
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        // Add more ocular objects as needed
-    ];
+    };
 
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
@@ -146,16 +120,16 @@ const QuotationList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {quotationList.map((quotation, index) => (
+                            {quotations.map((quotation, index) => (
                                 <React.Fragment key={quotation.id}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                        <td style={{color: '#014c91'}}>{quotation.id}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.client}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.company}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.contactNumber}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.dateGenerated}</td>
-                                        <td style={{color: '#014c91'}}>Php {quotation.totalPrice}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.status}</td>
+                                        <td style={{color: '#014c91'}}>{quotation.quotation_id}</td>
+                                        <td style={{color: '#014c91'}}>{quotation.client_name}</td>
+                                        <td style={{color: '#014c91'}}>{quotation.company_name}</td>
+                                        <td style={{color: '#014c91'}}>{quotation.client_number}</td>
+                                        <td style={{color: '#014c91'}}>{new Date(quotation.date_created).toLocaleString()}</td>
+                                        <td style={{color: '#014c91'}}>Php {quotation.totalprice}</td>
+                                        <td style={{color: '#014c91'}}>{quotation.is_cancelled === 0 ? 'ACTIVE' : 'INACTIVE'}</td>
                                         <td style={{ color: '#014c91' }}>
                                         <div style={{ position: 'relative' }}>
                         <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
