@@ -9,6 +9,8 @@ import AddProductModal from './AddProductModal';
 import AddUserModal from './AddUserModal';
 import axios from 'axios'
 import AddTechnicianModal from './AddTechnicianModal';
+import EditTechnicianModal from './EditTechnicianModal';
+import UpdateTechnicianStatusModal from './UpdateTechnicianStatusModal';
 
 
 const TechniciansList = () => {
@@ -67,12 +69,12 @@ const TechniciansList = () => {
         setActiveDropdown(index === activeDropdown ? null : index);
       };
 
-      const renderDropdown = (index) => {
+      const renderDropdown = (index, id) => {
         if (index === activeDropdown) {
           return (
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-              <Dropdown.Item>Edit Technician Details</Dropdown.Item>
-              <Dropdown.Item>Deactivate Technician</Dropdown.Item>
+              <EditTechnicianModal id={id}/>
+              <UpdateTechnicianStatusModal id={id}/>
             </Dropdown.Menu>
           );
         }
@@ -191,7 +193,7 @@ const TechniciansList = () => {
                                                 </div>
                                                 <Dropdown show={index === activeDropdown} align="start">
                                     
-                                                {renderDropdown(index)}
+                                                {renderDropdown(index, user.technician_id)}
                                                 </Dropdown>
                                             </div>
                                         </td>

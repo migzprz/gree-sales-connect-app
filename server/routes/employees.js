@@ -198,6 +198,56 @@ module.exports = (query) => {
         }
     })
 
+    router.patch('/updateTechnicianDetails/:id', async (req, res) => {
+        const id = req.params.id
+        const data = Object.fromEntries(
+            // Use Object.entries to get key-value pairs, and filter out null values
+            Object.entries(req.body).filter(([key, value]) => value !== '' && value !== null)
+        );
+
+        try {
+            let updateResponse
+            console.log('patch technician data w/ id:', data)
+            const columnsToUpdate = Object.keys(data).map(column => `${column} = ?`).join(', ');
+            const values = [...Object.values(data), id];
+            updateResponse = await query(`UPDATE md_technicians SET ${columnsToUpdate} WHERE technician_id = ?`, values)
+
+            res.status(200).json({message: `Technician successfully updated... ${updateResponse}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to update technician record... ${error}`})
+        }
+    })
+
+    router.get('/getTechnician/:id', async (req, res) => {
+        try {
+            const { id } = req.params
+            const q =  `SELECT  technician_id, first_name, middle_name, last_name,
+                                CONCAT(last_name, ", ", first_name) AS name,
+                                date_added, contact_number, email, is_active
+                        FROM md_technicians
+                        WHERE technician_id = ?`
+            const data = await query(q, [id])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+
+    })
+
+    router.patch('/changeTechnicianState/:id/:state', async (req, res) => {
+        try {
+            const values = [req.params.state, req.params.id]
+            const data = await query('UPDATE md_technicians SET is_active = ? WHERE technician_id = ?', values)
+            console.log(data)
+            res.status(200).json({message: `Technician successfully updated... ${data}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to update technician... ${error}`})
+        }
+    })
 
     return router;
 }

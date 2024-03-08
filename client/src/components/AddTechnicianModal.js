@@ -13,6 +13,15 @@ const AddTechnicianModal = () => {
     const handleCloseModal = () => {
         setValidated(false); 
         setShowModal(false);
+        setFormData({
+            // new user data
+            first_name: '',
+            last_name: '',
+            email:'',
+            contact_number:'',
+            date_added: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            is_active: 1
+        })
     };
 
     const [formData, setFormData] = useState({
@@ -41,6 +50,7 @@ const AddTechnicianModal = () => {
 
 
     const handleSubmit = async (event) => {
+        event.preventDefault();
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
           event.preventDefault();
@@ -48,13 +58,15 @@ const AddTechnicianModal = () => {
         }
     
         setValidated(true);
-
-        try {
-            const postReponse = await axios.post('http://localhost:4000/api/postTechnician', formData)
-            console.log(postReponse)
-          } catch (error) {
-            console.error('Error: Problem encountered when posting data', error)
-          }
+        if (form.checkValidity()) {
+            try {
+                const postReponse = await axios.post('http://localhost:4000/api/postTechnician', formData)
+                console.log(postReponse)
+                window.location.reload()
+            } catch (error) {
+                console.error('Error: Problem encountered when posting data', error)
+            }
+        }
       };
       
 
@@ -132,7 +144,7 @@ const AddTechnicianModal = () => {
                             {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })} Save Employee
                             </button>
 
-                            <button className="btn" onClick={handleCloseModal} style={{color: "white", backgroundColor: "#6c757d"}}>
+                            <button className="btn" onClick={(e) => { e.preventDefault(); handleCloseModal(); }} style={{color: "white", backgroundColor: "#6c757d"}}>
                             Cancel
                             </button>
 
