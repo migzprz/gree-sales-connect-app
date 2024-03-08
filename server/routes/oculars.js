@@ -26,23 +26,25 @@ module.exports = (query) => {
     router.get('/getOculars', async (req, res) => {
         try {
             const data = await query(`SELECT 	ocular_date, 
-                                    CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name,
-                                    CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.contact_number as client_number,
-                                    co.company_name,
-                                    CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address,
-                                    o.ocular_id
-                                    FROM td_oculars o 
-                                    JOIN md_quotation_clients qc ON o.ocular_id = qc.ocular_id
-                                    JOIN md_technicians t ON o.technician_id = t.technician_id
-                                    JOIN md_clients cl ON qc.client_id = cl.client_id
-                                    JOIN md_contactperson cp ON cl.contact_person_id = cp.contact_person_id
-                                    JOIN md_companies co ON cl.company_id = co.company_id
-                                    JOIN md_locations loc ON qc.location_id = loc.location_id
-                                    JOIN md_provinces p ON loc.addr_province_id = p.province_id
-                                    JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
-                                    JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
-                                    WHERE o.is_active = 1
-                                    ORDER BY ocular_date ASC;`, [])
+                                        CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name,
+                                        CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.contact_number as client_number,
+                                        co.company_name,
+                                        CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address,
+                                        o.ocular_id, qt.quotation_id
+                                        FROM td_oculars o 
+                                        JOIN md_quotation_clients qc ON o.ocular_id = qc.ocular_id
+                                        JOIN md_technicians t ON o.technician_id = t.technician_id
+                                        JOIN md_clients cl ON qc.client_id = cl.client_id
+                                        JOIN md_contactperson cp ON cl.contact_person_id = cp.contact_person_id
+                                        JOIN md_companies co ON cl.company_id = co.company_id
+                                        JOIN md_locations loc ON qc.location_id = loc.location_id
+                                        JOIN md_provinces p ON loc.addr_province_id = p.province_id
+                                        JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
+                                        JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
+                                        LEFT JOIN td_quotations qt ON qt.quotation_client_id = qc.quotation_client_id 
+                                        WHERE o.is_active = 1
+                                        AND qt.quotation_id IS NULL
+                                        ORDER BY ocular_date ASC;`, [])
             console.log(data)
             res.send(data)
         } catch (error) {
@@ -58,10 +60,10 @@ module.exports = (query) => {
         try {
             const { id } = req.params
             const q =  `SELECT      ocular_date,
-                                    CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.contact_number as client_number, cp.email,
-                                    CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address,
+                                    CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.contact_number as contactNumber, cp.email, cp.first_name AS firstName, cp.last_name AS lastName,
+                                    CONCAT(loc.addr_bldg_no, " ", loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address,
                                     CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name, t.technician_id,
-                                    co.company_name, co.tin,
+                                    co.company_name AS companyName, co.tin,
                                     o.ocular_id,
                                     loc.*
                         FROM td_oculars o 

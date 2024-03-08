@@ -19,6 +19,15 @@ module.exports = (query) => {
         res.send(data)
     })
 
+    router.get('/getQuoClientIdByOcularId/:id', async (req, res) => {
+        const { id } = req.params
+
+        console.log(id)
+        const data = await query('SELECT quotation_client_id FROM md_quotation_clients WHERE ocular_id = ?;', [id])
+
+        res.send(data)
+    })
+
     router.post('/postQuotation', async (req, res) => {
 
         const { offer, terms, id } = req.body

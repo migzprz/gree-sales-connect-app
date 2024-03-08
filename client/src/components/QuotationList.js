@@ -44,6 +44,10 @@ const QuotationList = () => {
         return null;
     };
 
+    const formatNumber = (number) => {
+        return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
             <h1>Manage Quotations</h1>
@@ -128,7 +132,7 @@ const QuotationList = () => {
                                         <td style={{color: '#014c91'}}>{quotation.company_name}</td>
                                         <td style={{color: '#014c91'}}>{quotation.client_number}</td>
                                         <td style={{color: '#014c91'}}>{new Date(quotation.date_created).toLocaleString()}</td>
-                                        <td style={{color: '#014c91'}}>Php {quotation.totalprice}</td>
+                                        <td style={{color: '#014c91'}}>Php {formatNumber(quotation.totalprice)}</td>
                                         <td style={{color: '#014c91'}}>{quotation.is_cancelled === 0 ? 'ACTIVE' : 'INACTIVE'}</td>
                                         <td style={{ color: '#014c91' }}>
                                         <div style={{ position: 'relative' }}>

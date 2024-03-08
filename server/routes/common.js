@@ -85,7 +85,7 @@ module.exports = (query) => {
      */
     router.get('/getStoredLocations', async (req, res) => {
         try {
-            const data = await query(`SELECT location_id, CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address,
+            const data = await query(`SELECT location_id, CONCAT(loc.addr_bldg_no, " ", loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address,
                                       p.province_id, m.municipality_id, b.barangay_id,  r.region_id
                                         FROM md_locations loc
                                         JOIN md_regions r ON loc.addr_region_id = r.region_id
@@ -131,6 +131,29 @@ module.exports = (query) => {
                                         WHEN is_inverter = 0 THEN 'NON-INVERTER' END) as display
                                     FROM greesalesconnect.md_products
                                     ORDER BY unit_model ASC;`, [])
+            console.log(data)
+
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    /**
+     * Returns a string based of the identifiers of the address columns excluding the unit no, street and zipcode
+     */
+    router.get('/getAddressString', async (req, res) => {
+        try {
+            const data = await query(`SELECT CONCAT(b.name, ",", m.name, ",", p.name) as site_address
+                                    FROM md_regions r 
+                                    JOIN md_provinces p ON r.region_id = p.region_id
+                                    JOIN md_municipalities m ON p.province_id = m.province_id
+                                    JOIN md_barangays b ON m.municipality_id = b.municipality_id
+                                    WHERE r.region_id = ?
+                                    AND p.province_id = ?
+                                    AND m.municipality_id = ?
+                                    AND b.barangay_id = ?`, [req.body])
             console.log(data)
 
             res.send(data)

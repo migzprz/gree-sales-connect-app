@@ -49,6 +49,7 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
         setItemList(prevItemList => {
             const updatedItemList = [...prevItemList];
             updatedItemList[index][property] = value;
+            updatedItemList[index]['totalPrice'] = updatedItemList[index]['discPrice'] * updatedItemList[index]['quantity']
             return updatedItemList;
         });
     };
@@ -68,7 +69,8 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
         const newItem = {
         ...offer,
         quantity: 1,
-        discPrice: offer.product_srp // Set discPrice to be the same as price initially
+        discPrice: offer.product_srp, // Set discPrice to be the same as price initially
+        totalPrice: offer.product_srp
         };
         // Add the new item to the itemList
         setItemList(prevItemList => [...prevItemList, newItem]);
