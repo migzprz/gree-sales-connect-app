@@ -69,7 +69,7 @@ const CancelOcularModal = ({ id }) => {
                                         <strong> Company Name: </strong>
                                     </Col>
                                     <Col>
-                                        {record.company_name}
+                                        {record.companyName}
                                     </Col>
                                 </Row>
 
@@ -87,7 +87,7 @@ const CancelOcularModal = ({ id }) => {
                                         <strong> Contact Number: </strong>
                                     </Col>
                                     <Col>
-                                        {record.client_number}
+                                        {record.contactNumber}
                                     </Col>
                                 </Row>
 

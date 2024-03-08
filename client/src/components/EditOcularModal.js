@@ -169,7 +169,7 @@ const EditOcularModal = ({ id }) => {
                                         <strong> Company Name: </strong>
                                     </Col>
                                     <Col lg="3">
-                                        {record.company_name}
+                                        {record.companyName}
                                     </Col>
                                 </Row>
 
@@ -187,7 +187,7 @@ const EditOcularModal = ({ id }) => {
                                         <strong> Contact Number: </strong>
                                     </Col>
                                     <Col lg="3">
-                                        {record.client_number}
+                                        {record.contactNumber}
                                     </Col>
                                 </Row>
 

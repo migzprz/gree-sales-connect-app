@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaDownload, FaEye } from 'react-icons/fa';
 import { Row, Col, Card, Table } from 'react-bootstrap';
 import '../index.css';
@@ -8,16 +8,20 @@ import logo from '../assets/gree_documentlogo.png';
 import Spinner from 'react-bootstrap/Spinner';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import useAddressString from '../hooks/useAddressString';
+import { Form } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
+const PreviewQuotation = ({ client, offers, terms, POST }) => {
 
-
-
-
-const PreviewQuotation = () => {
+    const navigate = useNavigate()
 
     const [validated, setValidated] = useState(false);
     const [preview, setPreview] = useState(false);
     const [loader, setLoader] = useState(false);
+    const [totalSum, setTotalSum] = useState(null)
+    const [checkDl, setCheckDl] = useState(true)
+    //const [address, setAddress] = useAddressString(client)
 
     const downloadPDF = () => {
       const capture1 = document.querySelector('.quotation-file');
@@ -44,57 +48,31 @@ const PreviewQuotation = () => {
         doc.save('quotation.pdf');
       });
     };
-    
-    
-    
-    
-    const quotationData = [
-      { qty: 1, description: 'Product A', unitModel: 'Model 123', srp: 100, discountedPrice: 80, lineTotal: 80 },
-      { qty: 2, description: 'Product B', unitModel: 'Model 456', srp: 50, discountedPrice: 40, lineTotal: 80 },
-      { qty: 1, description: 'Product C', unitModel: 'Model 789', srp: 120, discountedPrice: 100, lineTotal: 100 },
-  ];
 
-  const [terms, setTerms] = useState({
-    A: 
-    `First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables`,
-    B1:
-    `One (1) year from the date of start-up on units with factory defects.`,
-    B2:
-    `Five (5) years warranty on the Compressor`,
-    B3:
-    `No warranty claims unless units are fully paid by the client.`,
-    C1: 
-    `Warranty: Warranty for workmanship within a period of three (3) months.`,
-    C2: 
-    `Work Schedule: To be arranged after receipt of down-payment.`,
-    D1: 
-    `i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.`,
-    D2: 
-    `ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and`,
-    D3: 
-    `iii. Plans, Permits and other licenses.`,
-    D4: 
-    `In Excess of 10 feet piping to be charged:`,
-    D5: 
-    `350`,
-    D6: 
-    `php per feet on the 1.0hp-1.5hp Wall Mounted Type`,
-    D7: 
-    `400`,
-    D8: 
-    `php per feet for 2.0hp-2.5hp Wall Mounted Type`,
-    D9: 
-    `500`,
-    D10: 
-    `php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type`,
-    D11: 
-    `550`,
-    D12: 
-    `php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.`,
-    E: 
-    `*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well`,
-});
+    const handleSubmit = () => {
+        if (checkDl) { downloadPDF() }
+        POST()
+    }
 
+    const handleCheckboxChange = () => [
+        setCheckDl((prev) => (!prev))
+    ]
+    
+    // Get price sum of all products selected
+    useEffect(() => {
+        var total = 0
+        offers.forEach((item) => {
+            console.log(item.quantity, item.discPrice)
+            total += Number(item.quantity)*item.discPrice
+            console.log(total)
+        })
+        setTotalSum(total)
+    }, [offers])
+    useEffect(() => {
+        console.log('Total Price: ', totalSum)
+    }, [totalSum])
+    
+    
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
             <h1>Preview Generated Quotation</h1>
@@ -139,19 +117,19 @@ const PreviewQuotation = () => {
                             <td colSpan="7" style={{ padding: '0', border: 'none', color: 'white', background: '#082464'}}><strong>{'\u00A0'} BILL TO</strong></td>
                         </tr>
                         <tr>
-                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Name: Miguel Josh C. Perez</td> 
+                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Name: {client.returningClientFirstName ? client.returningClientFirstName + ' ' + client.returningClientLastName : client.firstName + ' ' + client.lastName}</td> 
                         </tr>
                         <tr>
-                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Company Name/Buidling: Sheperd Animal Clinic</td> 
+                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Company Name/Buidling: {client.returningClientCompanyName ? client.returningClientCompanyName : client.companyName}</td> 
                         </tr>
                         <tr>
-                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Street Address: Sheperd Animal Clinic</td> 
+                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Street Address: {client.site_address ? client.site_address : ''}</td> 
                         </tr>
                         <tr>
-                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Delivery Address: Sheperd Animal Clinic</td> 
+                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Delivery Address: {client.site_address ? client.site_address : ''}</td> 
                         </tr>
                         <tr>
-                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Phone: 09165189598</td> 
+                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Phone: {client.returningClientContactNumber ? client.returningClientContactNumber : client.contactNumber}</td> 
                         </tr>
                         <tr>
                             <td style={{ padding: '0', border: '1px solid white', color: 'white', background: '#082464', textAlign: 'center', verticalAlign: 'middle'}}>QTY</td> 
@@ -172,16 +150,16 @@ const PreviewQuotation = () => {
                         </tr>
 
                         {/* Quotation items */}
-                        {quotationData.map((item, index) => (
+                        {offers.map((item, index) => (
                             <tr key={index}>
-                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.qty}</td>
-                                <td colSpan="2" style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.description}</td>
-                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.unitModel}</td>
-                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.srp}</td>
-                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.discountedPrice}</td>
+                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.quantity}</td>
+                                <td colSpan="2" style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.display}</td>
+                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.unit_model}</td>
+                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.product_srp}</td>
+                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.discPrice}</td>
                                 <td style={{ padding: '0', border: '1px solid black', textAlign: 'right' }}>
                                     <span style={{ float: 'left', marginLeft: '5px' }}>₱</span> 
-                                    <span style={{ marginRight: '5px' }}>{item.lineTotal}</span>
+                                    <span style={{ marginRight: '5px' }}>{Number(item.quantity)*item.discPrice}</span>
                                 </td>
                             </tr>
                         ))}
@@ -190,7 +168,7 @@ const PreviewQuotation = () => {
                             <td style={{ padding: '0', border: 'none', textAlign: 'right' }}>SUBTOTAL:</td>
                             <td style={{ padding: '0', border: 'none', borderBottom: '2px solid black', textAlign: 'right' }}>
                                 <span style={{ float: 'left', marginLeft: '5px' }}>₱</span> 
-                                <span style={{ marginRight: '5px' }}>200</span>
+                                <span style={{ marginRight: '5px' }}>{totalSum}</span>
                             </td>
                         </tr>
 
@@ -203,7 +181,7 @@ const PreviewQuotation = () => {
                             <td colSpan="2" style={{ padding: '0', border: '1px solid black', textAlign: 'center', color: 'red' }}>TOTAL AMOUNT:</td>
                             <td colSpan="2" style={{ padding: '0', border: '1px solid black', background:'#ffc404', textAlign: 'right' }}>
                                 <span style={{ float: 'left', marginLeft: '5px' }}>₱</span> 
-                                <span style={{ marginRight: '5px' }}>200</span>
+                                <span style={{ marginRight: '5px' }}>{totalSum}</span>
                             </td>
                         </tr>
 
@@ -449,15 +427,16 @@ const PreviewQuotation = () => {
 
             </Card>
 
-            <button className="mt-4 btn w-40" onClick={downloadPDF} disabled={(loader)} style={{color: "white", backgroundColor: "#014c91"}}>
+            <button className="mt-4 btn w-40" onClick={handleSubmit} disabled={(loader)} style={{color: "white", backgroundColor: "#014c91"}}>
                 
                 {!loader?(
-                  <span> {React.createElement(FaDownload, { size: 18, style: { marginRight: '5px' } })}  Download Forms </span>
+                    <span> {React.createElement(FaDownload, { size: 18, style: { marginRight: '5px' } })}  Submit Forms </span>
                 ):(
                   <span> <Spinner animation="border" size="sm" />  Downloading </span>
                 )}
             
             </button>
+            <Form><Form.Check type='checkbox' id='downloadCheckbox' label='Download Form as PDF?' onClick={handleCheckboxChange} checked={checkDl}/></Form>
         </div>
     );
 };

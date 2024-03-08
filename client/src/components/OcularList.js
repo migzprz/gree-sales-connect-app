@@ -39,7 +39,7 @@ const OcularList = () => {
         if (index === activeDropdown) {
             return (
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-                <Dropdown.Item>Generate Quotation</Dropdown.Item>
+                <Dropdown.Item href={`generatequotation/${id}`}>Generate Quotation</Dropdown.Item>
                 <EditOcularModal id={id}/>
                 <CancelOcularModal id={id}/>
             </Dropdown.Menu>

@@ -40,6 +40,7 @@ function App() {
                   <Route path="/viewoculars" element={<ViewOculars/>}/> 
                   <Route path="/setocular" element={<SetOcular/>}/> 
                   <Route path="/generatequotation" element={<GenerateQuotation/>}/> 
+                  <Route path="/generatequotation/:id" element={<GenerateQuotation/>}/> 
                   <Route path="/viewquotations" element={<ViewQuotations/>}/> 
                   <Route path="/generateinvoice" element={<GenerateInvoice/>}/> 
                   <Route path="/converttosale" element={<ConvertToSale/>}/> 
