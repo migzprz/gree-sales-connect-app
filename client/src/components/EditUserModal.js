@@ -13,6 +13,17 @@ const EditUserModal = ({id}) => {
     const handleCloseModal = () => {
         setValidated(false); 
         setShowModal(false);
+        setEditData({
+            // new user data
+            first_name: '',
+            last_name: '',
+            role: '',
+            username: '',
+            aftersales_access: record.aftersales_access,
+            sales_access: record.sales_access,
+            exec_access: record.exec_access,
+            sysad_access: record.sysad_access,
+        });
     };
 
     const [record, setRecord] = useState({})
@@ -73,6 +84,7 @@ const EditUserModal = ({id}) => {
 
 
     const handleSubmit = async (event) => {
+        event.preventDefault();
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
           event.preventDefault();
@@ -80,13 +92,17 @@ const EditUserModal = ({id}) => {
         }
     
         setValidated(true);
+        if (form.checkValidity()) {
+            try {
+                const postReponse = await axios.patch(`http://localhost:4000/api/updateUserDetails/${record.login_id}`, editData)
+                console.log(postReponse)
+                window.location.reload()
+            } catch (error) {
+                console.error('Error: Problem encountered when posting data', error)
+            }
+        }
 
-        try {
-            const postReponse = await axios.patch(`http://localhost:4000/api/updateUserDetails/${record.login_id}`, editData)
-            console.log(postReponse)
-          } catch (error) {
-            console.error('Error: Problem encountered when posting data', error)
-          }
+        
       };
 
     const handleCheckboxChange = (event) => {
@@ -174,7 +190,7 @@ const EditUserModal = ({id}) => {
                                             name="aftersales_access"
                                             onChange={handleCheckboxChange}
                                             checked={editData.aftersales_access}
-                                            required={record.aftersales_access === 0 && record.exec_access === 0 && record.sysad_access === 0 }
+                                            required={record.sales_access === 0 && record.exec_access === 0 && record.sysad_access === 0 }
                                             isInvalid={validated && !record.aftersales_access}
                                         />
                                         <Form.Check
@@ -216,7 +232,7 @@ const EditUserModal = ({id}) => {
                             {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })} Save Employee
                             </button>
 
-                            <button className="btn" onClick={handleCloseModal} style={{color: "white", backgroundColor: "#6c757d"}}>
+                            <button className="btn" onClick={(e) => { e.preventDefault(); handleCloseModal(); }} style={{color: "white", backgroundColor: "#6c757d"}}>
                             Cancel
                             </button>
 

@@ -13,6 +13,20 @@ const AddUserModal = () => {
     const handleCloseModal = () => {
         setValidated(false); 
         setShowModal(false);
+        setFormData({
+            // new user data
+            first_name: '',
+            last_name: '',
+            password: '',
+            role: '',
+            username: '',
+            aftersales_access: 0,
+            sales_access: 0,
+            exec_access: 0,
+            sysad_access: 0,
+            date_added: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            is_active: 1
+        })
     };
 
     const [formData, setFormData] = useState({
@@ -53,13 +67,15 @@ const AddUserModal = () => {
         }
     
         setValidated(true);
-
-        try {
-            const postReponse = await axios.post('http://localhost:4000/api/postSystemUser', formData)
-            console.log(postReponse)
-          } catch (error) {
-            console.error('Error: Problem encountered when posting data', error)
-          }
+        if (form.checkValidity()) {
+            try {
+                const postReponse = await axios.post('http://localhost:4000/api/postSystemUser', formData)
+                console.log(postReponse)
+                window.location.reload()
+            } catch (error) {
+                console.error('Error: Problem encountered when posting data', error)
+            }
+        }
       };
 
     const handleCheckboxChange = (event) => {
@@ -205,11 +221,11 @@ const AddUserModal = () => {
                     <Modal.Footer style={{backgroundColor: "#E5EDF4"}}>
 
                             <button className="btn" style={{color: "white", backgroundColor: "#014c91"}}>
-                            {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })} Save Employee
+                                {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })} Save Employee
                             </button>
 
-                            <button className="btn" onClick={handleCloseModal} style={{color: "white", backgroundColor: "#6c757d"}}>
-                            Cancel
+                            <button className="btn" onClick={(e) => { e.preventDefault(); handleCloseModal(); }} style={{color: "white", backgroundColor: "#6c757d"}}>
+                                Cancel
                             </button>
 
                     </Modal.Footer>

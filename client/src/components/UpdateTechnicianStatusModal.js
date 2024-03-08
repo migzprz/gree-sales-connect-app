@@ -3,14 +3,14 @@ import { Row, Col, Modal, Form,  Dropdown } from 'react-bootstrap';
 import { FaTrash, FaCheck} from 'react-icons/fa';
 import axios from 'axios';
 
-const UpdateUserStatusModal = ({ id }) => {
+const UpdateTechnicianStatusModal = ({ id }) => {
     const [showModal, setShowModal] = useState(false);
     const [record, setRecord] = useState({})
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:4000/api/getUser/${id}`)
+                const response = await axios.get(`http://localhost:4000/api/getTechnician/${id}`)
                 console.log(response.data)
                 setRecord(response.data[0])
             } catch (error) {
@@ -47,10 +47,10 @@ const UpdateUserStatusModal = ({ id }) => {
     try {
 
         if (record.is_active){
-            const response = await axios.patch(`http://localhost:4000/api/changeUserState/${id}/0`)
+            const response = await axios.patch(`http://localhost:4000/api/changeTechnicianState/${id}/0`)
             console.log(response)
         } else {
-            const response = await axios.patch(`http://localhost:4000/api/changeUserState/${id}/1`)
+            const response = await axios.patch(`http://localhost:4000/api/changeTechnicianState/${id}/1`)
             console.log(response)
         }
             
@@ -66,15 +66,15 @@ const UpdateUserStatusModal = ({ id }) => {
         <div>
         
         {record.is_active ? (
-            <Dropdown.Item onClick={handleShowModal}>Deactivate User</Dropdown.Item>
+            <Dropdown.Item onClick={handleShowModal}>Deactivate Technician</Dropdown.Item>
         ) : (
-            <Dropdown.Item onClick={handleShowModal}>Reactivate User</Dropdown.Item>
+            <Dropdown.Item onClick={handleShowModal}>Reactivate Technician</Dropdown.Item>
         )}
         
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header style={{color: "white", backgroundColor: record.is_active ? "#8c1919" : "#014c91"}}>
-                    <Modal.Title>{record.is_active ? "Deactivate User" : "Reactivate User"}</Modal.Title>
+                    <Modal.Title>{record.is_active ? "Deactivate Technician" : "Reactivate Technician"}</Modal.Title>
                 </Modal.Header>
 
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -82,14 +82,14 @@ const UpdateUserStatusModal = ({ id }) => {
                                 {record.is_active ? (
                                     <Row>
                                         <Col>
-                                            Removing access for <strong> {record.name} </strong> <br/>
+                                            Deactivating <strong> {record.name} </strong> as a technician <br/>
                                             Continue?
                                         </Col>
                                     </Row>
                                 ):(
                                     <Row>
                                         <Col>
-                                            Reinstating access to <strong> {record.name} </strong><br/>
+                                            Reinstating <strong> {record.name} </strong> as a technician<br/>
                                             Continue?
                                         </Col>
                                     </Row>
@@ -102,11 +102,11 @@ const UpdateUserStatusModal = ({ id }) => {
                             <button className="btn" style={{color: "white", backgroundColor: record.is_active ? "#8c1919" : "#014c91"}} onClick={handleSubmit}>
                                 {record.is_active ? (
                                     <>
-                                        {React.createElement(FaTrash, { size: 18, style: { marginRight: '5px' } })} Deactivate User
+                                        {React.createElement(FaTrash, { size: 18, style: { marginRight: '5px' } })} Deactivate Technician
                                     </>
                                 ):(
                                     <>
-                                        {React.createElement(FaCheck, { size: 18, style: { marginRight: '5px' } })} Reactivate User
+                                        {React.createElement(FaCheck, { size: 18, style: { marginRight: '5px' } })} Reactivate Technician
                                     </>
                                 )}
                             </button>
@@ -123,4 +123,4 @@ const UpdateUserStatusModal = ({ id }) => {
     );
 };
 
-export default UpdateUserStatusModal;
+export default UpdateTechnicianStatusModal;
