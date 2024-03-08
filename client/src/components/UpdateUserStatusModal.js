@@ -72,22 +72,25 @@ const UpdateUserStatusModal = ({ id }) => {
         )}
         
 
-            <Modal show={showModal} onHide={handleCloseModal} size="lg">
-                <Modal.Header style={{color: "white", backgroundColor: "#8c1919"}}>
-                    <Modal.Title> {record.is_active ? ("Deactivate User"):("Reactivate User")}</Modal.Title>
+            <Modal show={showModal} onHide={handleCloseModal}>
+                <Modal.Header style={{color: "white", backgroundColor: record.is_active ? "#8c1919" : "#014c91"}}>
+                    <Modal.Title>{record.is_active ? "Deactivate User" : "Reactivate User"}</Modal.Title>
                 </Modal.Header>
+
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                    <Modal.Body style={{color: "#8c1919", backgroundColor: "#E5EDF4"}}>
+                    <Modal.Body style={{color: "#014c91", backgroundColor: "#E5EDF4"}}>
                                 {record.is_active ? (
                                     <Row>
                                         <Col>
-                                            Are you sure you want to remove the access of <strong> {record.name} </strong>?
+                                            Removing access for <strong> {record.name} </strong> <br/>
+                                            Continue?
                                         </Col>
                                     </Row>
                                 ):(
                                     <Row>
                                         <Col>
-                                            Are you sure you want to give back access to <strong> {record.name} </strong>?
+                                            Reinstating access to <strong> {record.name} </strong><br/>
+                                            Continue?
                                         </Col>
                                     </Row>
                                 )}
@@ -96,7 +99,7 @@ const UpdateUserStatusModal = ({ id }) => {
                     <Modal.Footer style={{backgroundColor: "#E5EDF4"}}>
                             
 
-                            <button className="btn" style={{color: "white", backgroundColor: "#8c1919"}} onClick={handleSubmit}>
+                            <button className="btn" style={{color: "white", backgroundColor: record.is_active ? "#8c1919" : "#014c91"}} onClick={handleSubmit}>
                                 {record.is_active ? (
                                     <>
                                         {React.createElement(FaTrash, { size: 18, style: { marginRight: '5px' } })} Deactivate User
@@ -109,8 +112,8 @@ const UpdateUserStatusModal = ({ id }) => {
                             </button>
                             
 
-                            <button className="btn" onClick={handleCloseModal} style={{color: "white", backgroundColor: "#6c757d"}}>
-                            Cancel
+                            <button className="btn" onClick={(e) => { e.preventDefault(); handleCloseModal(); }} style={{color: "white", backgroundColor: "#6c757d"}}>
+                                Cancel
                             </button>
 
                     </Modal.Footer>

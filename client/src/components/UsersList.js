@@ -10,6 +10,7 @@ import AddUserModal from './AddUserModal';
 import axios from 'axios'
 import EditUserModal from './EditUserModal';
 import UpdateUserStatusModal from './UpdateUserStatusModal';
+import ResetPasswordModal from './ResetPasswordModal';
 
 
 const UsersList = () => {
@@ -71,7 +72,7 @@ const UsersList = () => {
           return (
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
               <EditUserModal id={id}/>
-              <Dropdown.Item>Reset Password</Dropdown.Item>
+              <ResetPasswordModal id={id}/>
               <UpdateUserStatusModal id={id}/>
             </Dropdown.Menu>
           );

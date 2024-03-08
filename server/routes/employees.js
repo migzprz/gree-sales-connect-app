@@ -186,6 +186,18 @@ module.exports = (query) => {
         }
     })
 
+    router.patch('/changePassword/:id', async (req, res) => {
+        try {
+            const values = [req.body.password, req.params.id]
+            const data = await query('UPDATE md_login SET password = ? WHERE login_id = ?', values)
+            console.log(data)
+            res.status(200).json({message: `User successfully updated... ${data}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to update user... ${error}`})
+        }
+    })
+
 
     return router;
 }
