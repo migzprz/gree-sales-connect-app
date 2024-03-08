@@ -8,6 +8,7 @@ import '../index.css';
 import AddProductModal from './AddProductModal';
 import AddUserModal from './AddUserModal';
 import axios from 'axios'
+import EditUserModal from './EditUserModal';
 
 
 const UsersList = () => {
@@ -64,11 +65,11 @@ const UsersList = () => {
         setActiveDropdown(index === activeDropdown ? null : index);
       };
 
-      const renderDropdown = (index) => {
+      const renderDropdown = (index, id) => {
         if (index === activeDropdown) {
           return (
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-              <Dropdown.Item>Edit User Details</Dropdown.Item>
+              <EditUserModal id={id}/>
               <Dropdown.Item>Reset Password</Dropdown.Item>
               <Dropdown.Item>Deactivate User</Dropdown.Item>
             </Dropdown.Menu>
@@ -191,7 +192,7 @@ const UsersList = () => {
                         </thead>
                         <tbody>
                             {filteredEmployees.map((user, index) => (
-                                <React.Fragment key={user.id}>
+                                <React.Fragment key={user.login_id}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                         <td style={{color: '#014c91'}}>{user.name}</td>
                                         <td style={{color: '#014c91'}}>{user.username}</td>
@@ -208,8 +209,7 @@ const UsersList = () => {
                                                 <FaEllipsisH size={20} />
                                                 </div>
                                                 <Dropdown show={index === activeDropdown} align="start">
-                                    
-                                                {renderDropdown(index)}
+                                                    {renderDropdown(index, user.login_id)}
                                                 </Dropdown>
                                             </div>
                                         </td>

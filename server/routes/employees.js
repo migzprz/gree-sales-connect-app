@@ -99,6 +99,81 @@ module.exports = (query) => {
 
     })
 
+    router.post('/postTechnician', async (req, res) => {
+
+        const user_values = [
+            req.body.first_name,
+            req.body.last_name,
+            req.body.email,
+            req.body.contact_number,
+            req.body.date_added,
+            req.body.is_active
+            
+        ]
+
+        try {
+            // queries for client
+            const user_query = 'INSERT INTO md_technicians (first_name, last_name, email, contact_number, date_added, is_active) VALUES (?,?,?,?,?,?)'
+            const user_data = await query(user_query, user_values)
+
+            res.status(200).json({message: `Data successfully posted`, data: user_data.insertId})
+
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed one or more database operations... ${error}`})
+        }
+
+    })
+
+    router.get('/getUser/:id', async (req, res) => {
+        try {
+            const { id } = req.params
+            const q =  `SELECT 
+                            login_id, 
+                            CONCAT(last_name, ", ", first_name) AS name,
+                            date_added, 
+                            role,
+                            first_name,
+                            last_name, 
+                            username, 
+                            sales_access, 
+                            aftersales_access, 
+                            exec_access, 
+                            sysad_access,
+                            is_active
+                    FROM md_login
+                    WHERE login_id = ?`
+            const data = await query(q, [id])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+
+    })
+
+    router.patch('/updateUserDetails/:id', async (req, res) => {
+        const id = req.params.id
+        const data = Object.fromEntries(
+            // Use Object.entries to get key-value pairs, and filter out null values
+            Object.entries(req.body).filter(([key, value]) => value !== '' && value !== null)
+        );
+
+        try {
+            let updateResponse
+            console.log('patch user data w/ id:', data)
+            const columnsToUpdate = Object.keys(data).map(column => `${column} = ?`).join(', ');
+            const values = [...Object.values(data), id];
+            updateResponse = await query(`UPDATE md_login SET ${columnsToUpdate} WHERE login_id = ?`, values)
+
+            res.status(200).json({message: `User successfully updated... ${updateResponse}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to update user record... ${error}`})
+        }
+    })
+
 
     return router;
 }

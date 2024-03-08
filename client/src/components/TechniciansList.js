@@ -8,6 +8,7 @@ import '../index.css';
 import AddProductModal from './AddProductModal';
 import AddUserModal from './AddUserModal';
 import axios from 'axios'
+import AddTechnicianModal from './AddTechnicianModal';
 
 
 const TechniciansList = () => {
@@ -202,7 +203,7 @@ const TechniciansList = () => {
 
                     <Row className="mt-3">
                         <Col>
-                            <AddUserModal/>
+                            <AddTechnicianModal/>
                         </Col>
                     </Row>
 
