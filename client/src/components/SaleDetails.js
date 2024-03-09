@@ -5,6 +5,8 @@ import { FaEdit, FaUserTie, FaCheck, FaTruck, FaScrewdriver, FaToolbox, FaPlus, 
 import { Row, Col, Card, CardBody, CardHeader, Table, Form, Dropdown } from 'react-bootstrap';
 import '../index.css';
 import CompleteServiceModal from './CompleteServiceModal';
+import AddPaymentModal from './AddPaymentModal';
+import EditServiceDetailsModal from './EditServiceDetailsModal';
 
 const SaleDetails= () => {
 
@@ -101,7 +103,7 @@ const SaleDetails= () => {
                                     <h3>{React.createElement(FaTruck, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Delivery</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
-                                    {React.createElement(FaEdit, { size: 18 })}
+                                    <EditServiceDetailsModal type={"pickup"}/>
                                 </Col>
                             </Row>
 
@@ -128,7 +130,7 @@ const SaleDetails= () => {
                                         <h3>{React.createElement(FaScrewdriver, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Installation</h3>
                                     </Col>
                                     <Col className="d-flex justify-content-end">
-                                        {React.createElement(FaEdit, { size: 18 })}
+                                        <EditServiceDetailsModal type={"installation"}/>
                                     </Col>
                                 </Row>
                                 <Row>
@@ -170,7 +172,7 @@ const SaleDetails= () => {
                                     <h3>{React.createElement(FaToolbox, { size: 25, style: { marginRight: '5px', marginBottom: '5px' }})}Service</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
-                                    {React.createElement(FaCheck, { size: 18 })}
+                                    <EditServiceDetailsModal type={"service"}/>
                                 </Col>
                             </Row>
 
@@ -242,9 +244,7 @@ const SaleDetails= () => {
                             
                             <Row className="mt-2">
                                 <Col>
-                                    <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
-                                        {React.createElement(FaPlus, { size: 18, style: { marginRight: '5px' } })}   Add Payment
-                                    </button>
+                                    <AddPaymentModal/>
                                 </Col>
                             </Row>
                         </Card>

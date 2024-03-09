@@ -42,14 +42,16 @@ const CompleteServiceModal = ({ type }) => {
                     "Complete Delivery"
                 ) : type === "installation" ? (
                     "Complete Installation"
-                ) : (
+                ) : type === "pickup" ? (
+                    "Complete Pick up"
+                ): (
                     "Complete Service"
                 )}
             </button>
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header style={{color: "white", backgroundColor: record.is_active ? "#8c1919" : "#014c91"}}>
-                    <Modal.Title>{type==="delivery" ? "Complete Delivery" : type==="installation" ? "Complete Installation": "Complete Service"}</Modal.Title>
+                    <Modal.Title>{type==="delivery" ? "Complete Delivery" : type==="installation" ? "Complete Installation" : type==="pickup" ? "Complete Pick up": "Complete Service"}</Modal.Title>
                 </Modal.Header>
 
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -64,6 +66,12 @@ const CompleteServiceModal = ({ type }) => {
                                     <Row>
                                         <Col>
                                             Complete installation for Sale Ref. #0001
+                                        </Col>
+                                    </Row>
+                                ): type === "pickup" ? (
+                                    <Row>
+                                        <Col>
+                                            Complete pick up for Sale Ref. #0001
                                         </Col>
                                     </Row>
                                 ):(
@@ -86,6 +94,10 @@ const CompleteServiceModal = ({ type }) => {
                                 ): type === "installation" ? (
                                     <>
                                         {React.createElement(FaCheck, { size: 18, style: { marginRight: '5px' } })} Complete Installation
+                                    </>
+                                ): type === "pickup" ? (
+                                    <>
+                                        {React.createElement(FaCheck, { size: 18, style: { marginRight: '5px' } })} Complete Pick up
                                     </>
                                 ):(
                                     <>

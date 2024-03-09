@@ -35,10 +35,9 @@ const SaleConvertDetails = () => {
         {/*Forms*/ }
         
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
-        <Row>
-            <Col lg="6">
-                <Row className="mt-3">
-                <Col lg="4">
+        
+            <Row className="mt-3">
+                <Col lg="2">
                     <Form.Group controlId="paymentOption">
                         <Form.Label>Payment Option</Form.Label>
                         <div>
@@ -63,7 +62,7 @@ const SaleConvertDetails = () => {
                     </Form.Group>
                 </Col>
 
-                <Col lg="4">
+                <Col lg="2">
                         <Form.Group controlId="paymentMode">
                             <Form.Label>Mode of Payment</Form.Label>
                             <Form.Control as="select" required>
@@ -76,8 +75,9 @@ const SaleConvertDetails = () => {
                                 Please choose a mode of payment.
                             </Form.Control.Feedback>
                         </Form.Group>
-                    </Col>
-                    <Col lg="4">
+                </Col>
+                
+                <Col lg="2">
                             <Form.Group controlId="amount">
                             <Form.Label>Amount</Form.Label>
                             <InputGroup>
@@ -89,114 +89,213 @@ const SaleConvertDetails = () => {
                                 Please provide an amount.
                             </Form.Control.Feedback>
                         </Form.Group>
-                    </Col>
-                </Row>
+                </Col>
 
-                <Row className="mt-3">
-                    <Col lg="4">
-                        <Form.Group controlId="transportationMode">
-                            <Form.Label>Mode of Transportation</Form.Label>
-                            <div>
-                                <Form.Check
-                                    type="radio"
-                                    id="delivery"
-                                    label="Delivery"
-                                    name="transportationMode"
-                                    required
-                                />
-                                <Form.Check
-                                    type="radio"
-                                    id="pickup"
-                                    label="Pick Up"
-                                    name="transportationMode"
-                                    required
-                                />
-                            </div>
+                <Col lg="2">
+                        <Form.Group controlId="paymentMode">
+                            <Form.Label>Reference Number</Form.Label>
+                            <Form.Control type="text" required/>
                             <Form.Control.Feedback type="invalid">
-                                Please select a transportation mode.
+                                Please input reference number
                             </Form.Control.Feedback>
                         </Form.Group>
-                    </Col>
-                    <Col lg="4">
-                        <Form.Group controlId="date">
-                            <Form.Label>Delivery Date</Form.Label>
-                            <Form.Control type="date" required/>
-                            <Form.Control.Feedback type="invalid">
-                                Please choose a valid date.
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                    <Col lg="4">
-                        <Form.Group controlId="time">
-                            <Form.Label>Delivery Time</Form.Label>
-                            <Form.Control type="time" required/>
-                            <Form.Control.Feedback type="invalid">
-                                Please choose a valid time.
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                </Row>
+                </Col>   
+            </Row>
 
-                <Row className="mt-3">
-                    <Col lg="4">
-                        <Form.Group controlId="forInstallation">
-                            <Form.Label>For Installation</Form.Label>
-                            <div>
-                                <Form.Check
-                                    type="radio"
-                                    id="yesInstall"
-                                    label="Yes"
-                                    name="forInstallation"
-                                    required
-                                />
-                                <Form.Check
-                                    type="radio"
-                                    id="noInstall"
-                                    label="No"
-                                    name="forInstallation"
-                                    required
-                                />
-                            </div>
-                            <Form.Control.Feedback type="invalid">
-                                Please select a transportation mode.
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                    <Col lg="4">
-                        <Form.Group controlId="installstartdate">
-                            <Form.Label>Installation Date</Form.Label>
-                            <Form.Control type="date" required/>
-                            <Form.Control.Feedback type="invalid">
-                                Please choose a valid date.
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                    <Col lg="4">
-                        <Form.Group controlId="installstarttime">
-                            <Form.Label>Installation Time</Form.Label>
-                            <Form.Control type="time" required/>
-                            <Form.Control.Feedback type="invalid">
-                                Please choose a valid time.
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                </Row>
+            <Row className="mt-3">
+                <Col lg="2">
+                    <Form.Group controlId="transportationMode">
+                        <Form.Label>Mode of Transportation</Form.Label>
+                        <div>
+                            <Form.Check
+                                type="radio"
+                                id="delivery"
+                                label="Delivery"
+                                name="transportationMode"
+                                required
+                            />
+                            <Form.Check
+                                type="radio"
+                                id="pickup"
+                                label="Pick Up"
+                                name="transportationMode"
+                                required
+                            />
+                        </div>
+                        <Form.Control.Feedback type="invalid">
+                            Please select a transportation mode.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
 
-                <Row className="mt-5">
-                    <Col lg="4"/>
-                    <Col lg="4">
-                        <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
-                        {React.createElement(FaBriefcase, { size: 18, style: { marginRight: '5px' } })}   Convert to Sale
-                        </button>
-                    </Col>
-                    <Col lg="4">
-                        <button className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}}>
-                        Cancel
-                        </button>
-                    </Col>
-                </Row>
-            </Col>
-       </Row>
+                <Col lg="2">
+                    <Form.Group controlId="date">
+                        <Form.Label>Delivery Date</Form.Label>
+                        <Form.Control type="date" required/>
+                        <Form.Control.Feedback type="invalid">
+                            Please choose a valid date.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+
+                <Col lg="2">
+                    <Form.Group controlId="time">
+                        <Form.Label>Delivery Time</Form.Label>
+                        <Form.Control type="time" required/>
+                        <Form.Control.Feedback type="invalid">
+                            Please choose a valid time.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+            </Row>
+
+            <Row className="mt-3">
+                <Col lg="2">
+                    <Form.Group controlId="forInstallation">
+                        <Form.Label>Installation Details</Form.Label>
+                        <div>
+                            <Form.Check
+                                type="radio"
+                                id="yesInstall"
+                                label="One Day installation"
+                                name="forInstallation"
+                                required
+                            />
+                            <Form.Check
+                                type="radio"
+                                id="noInstall"
+                                label="Multiple Days Installation"
+                                name="forInstallation"
+                                required
+                            />
+                            <Form.Check
+                                type="radio"
+                                id="noInstall"
+                                label="No Installation"
+                                name="forInstallation"
+                                required
+                            />
+                        </div>
+                        <Form.Control.Feedback type="invalid">
+                            Please select a transportation mode.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+
+                <Col lg="2">
+                    <Form.Group controlId="installstartdate">
+                        <Form.Label>Installation Start Date</Form.Label>
+                        <Form.Control type="date" required/>
+                        <Form.Control.Feedback type="invalid">
+                            Please choose a valid date.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+
+                <Col lg="2">
+                    <Form.Group controlId="installstarttime">
+                        <Form.Label>Installation Start Time</Form.Label>
+                        <Form.Control type="time" required/>
+                        <Form.Control.Feedback type="invalid">
+                            Please choose a valid time.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+            </Row>
+
+            <Row style={{ marginTop: '-30px' }}>
+                <Col lg="2"/>
+                <Col lg="2">
+                    <Form.Group controlId="installstartdate">
+                        <Form.Label>Installation End Date</Form.Label>
+                        <Form.Control type="date" required/>
+                        <Form.Control.Feedback type="invalid">
+                            Please choose a valid date.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+
+                <Col lg="2">
+                    <Form.Group controlId="installstarttime">
+                        <Form.Label>Installation End Time</Form.Label>
+                        <Form.Control type="time" required/>
+                        <Form.Control.Feedback type="invalid">
+                            Please choose a valid time.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+
+                <Col lg="2">
+                    <Form.Group controlId="paymentMode">
+                        <Form.Label>Technician</Form.Label>
+                        <Form.Control as="select" required>
+                            <option value=""> Select </option>
+                            <option value="1"> One </option>
+                            <option value="2"> Two </option>
+                            <option value="3"> Three </option>
+                        </Form.Control>
+                        <Form.Control.Feedback type="invalid">
+                            Please choose a mode of payment.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+            </Row>
+
+            <Row className="mt-4">
+                <Col lg="2"/>
+
+                <Col lg="2">
+                    <Form.Group controlId="installstartdate">
+                        <Form.Label>Service Date</Form.Label>
+                        <Form.Control type="date" required/>
+                        <Form.Control.Feedback type="invalid">
+                            Please choose a valid date.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+
+                <Col lg="2">
+                    <Form.Group controlId="installstarttime">
+                        <Form.Label>Service Time</Form.Label>
+                        <Form.Control type="time" required/>
+                        <Form.Control.Feedback type="invalid">
+                            Please choose a valid time.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+
+                <Col lg="2">
+                    <Form.Group controlId="paymentMode">
+                        <Form.Label>Technician</Form.Label>
+                        <Form.Control as="select" required>
+                            <option value=""> Select </option>
+                            <option value="1"> One </option>
+                            <option value="2"> Two </option>
+                            <option value="3"> Three </option>
+                        </Form.Control>
+                        <Form.Control.Feedback type="invalid">
+                            Please choose a mode of payment.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+            </Row>
+
+            <Row className="mt-5">
+                <Col lg="2"/>
+
+                <Col lg="2">
+                    <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
+                    {React.createElement(FaBriefcase, { size: 18, style: { marginRight: '5px' } })}   Convert to Sale
+                    </button>
+                </Col>
+
+                <Col lg="2">
+                    <button className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}}>
+                    Cancel
+                    </button>
+                </Col>
+            </Row>
+            
         
     </Form>
 
