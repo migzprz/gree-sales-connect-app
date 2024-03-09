@@ -6,11 +6,16 @@ import { Row, Col, Card, CardBody, CardHeader, Table, Dropdown } from 'react-boo
 import '../index.css';
 import { Link } from 'react-router-dom';
 import AddProductModal from './AddProductModal';
-
+import axios from 'axios'
 
 const ProductsList = () => {
 
     const [activeDropdown, setActiveDropdown] = useState(null);
+    const [productData, setProductData] = useState([]);
+    const [sortOption, setSortOption] = useState('');
+    const [filterOption, setFilterOption] = useState('');
+    const [typeFilterOption, setTypeFilterOption] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
 
     const handleEllipsisClick = (index) => {
         setActiveDropdown(index === activeDropdown ? null : index);
@@ -28,47 +33,54 @@ const ProductsList = () => {
         return null;
       };
       
+      useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/api/getAllProducts/')
+                setProductData(response.data)
+            } catch (error) {
+                console.error('Error fetching data: ', error)
+            }
+        }
+        fetchData()
+    },[])
+
+    useEffect(() => {
+        console.log(productData)
+    },[productData])
+
+    //Navigation Functions
+
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const handleSort = (e) => {
+        setSortOption(e.target.value);
+    };
+
+    let sortedProducts = [...productData];
+    if (sortOption === 'description-asc') {
+        sortedProducts.sort((a, b) => a.description.localeCompare(b.description));
+    } else if (sortOption === 'description-desc') {
+        sortedProducts.sort((a, b) => b.description.localeCompare(a.description));
+    } else if (sortOption === 'unitm-asc') {
+        sortedProducts.sort((a, b) => a.unit_model.localeCompare(b.unit_model));
+    } else if (sortOption === 'unitm-desc') {
+        sortedProducts.sort((a, b) => b.unit_model.localeCompare(a.unit_model));
+    } else if (sortOption === 'srp-asc') {
+        sortedProducts.sort((a, b) => parseFloat(a.srp) - parseFloat(b.srp));
+    } else if (sortOption === 'srp-desc') {
+        sortedProducts.sort((a, b) => parseFloat(b.srp) - parseFloat(a.srp));
+    }
 
 
-    const quotationList = [
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        // Add more ocular objects as needed
-    ];
+    const filteredProducts = sortedProducts.filter(product => (
+        (filterOption === '' || product.is_active.toString() === filterOption) &&
+        (typeFilterOption === '' || product.type.toString() === typeFilterOption) &&
+        (product.unit_model.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    ));
     
 
     return (
@@ -81,21 +93,20 @@ const ProductsList = () => {
             {/*Navigation Forms*/ }
             <Row>
                 {/*Search Bar*/ }
-                <Col lg="4">
-                    <form>
-                        <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", borderRadius: "10px", 
-                                                                        overflow: "hidden"}} >
-                            <input type="search" className="form-control" placeholder="Search"/>
-                            <button className="btn me-auto" style={{color: "white", backgroundColor: "#014c91"}}>
-                                <div style={{color: 'white'}}>
-                                    {React.createElement(FaSearch, { size: 20 })}
-                                </div>
-                            </button>
+                <Col lg="3">
+                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
+                                                                    backgroundColor: "#014c91", borderRadius: "10px", 
+                                                                    overflow: "hidden"}}>
+                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>
+                            <div style={{padding: "5px", color: 'white'}}>
+                                {React.createElement(FaSearch, { size: 20 })}
+                            </div>
                         </div>
-                    </form>
+                        <input type="search" className="form-control" placeholder="Search" value={searchTerm} onChange={handleSearch}/>
+                    </div>
                 </Col>
                 {/*Sorting Mechanism*/ }
-                <Col lg="4">
+                <Col lg="3">
                     <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
                                                                     backgroundColor: "#014c91", borderRadius: "10px", 
                                                                     overflow: "hidden"}}>
@@ -104,14 +115,18 @@ const ProductsList = () => {
                                 {React.createElement(FaSort, { size: 20 })}
                             </div>
                         </div>
-                        <select className="form-select">
-                            <option value="">Sort by Date and Time (A-Z)</option>
-                            <option value="1">Sort by Date and Time (Z-A)</option>
+                        <select className="form-select" value={sortOption} onChange={handleSort}>
+                            <option value="description-asc">Sort by Description (A-Z)</option>
+                            <option value="description-desc">Sort by Description (Z-A)</option>
+                            <option value="unitm-asc">Sort by Unit Model (A-Z)</option>
+                            <option value="unitm-desc">Sort by Unit Model (Z-A)</option>
+                            <option value="srp-asc">Sort by Price (A-Z)</option>
+                            <option value="srp-desc">Sort by Price (Z-A)</option>
                         </select>
                     </div>
                 </Col>
                 {/*Filtering Mechanism*/ }
-                <Col lg="4">
+                <Col lg="3">
                     <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
                                                                     backgroundColor: "#014c91", borderRadius: "10px",
                                                                     overflow: "hidden"}}>
@@ -120,10 +135,27 @@ const ProductsList = () => {
                                 {React.createElement(FaFilter, { size: 20 })}
                             </div>  
                         </div>
-                        <select className="form-select">
-                            <option value="">All Quotations</option>
+                        <select className="form-select" value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
+                            <option value="">All Status</option>
                             <option value="1">Active</option>
-                            <option value="0">Expired</option>
+                            <option value="0">Deactivated</option>
+                        </select>
+                    </div>
+                </Col>
+                <Col lg="3">
+                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
+                                                                    backgroundColor: "#014c91", borderRadius: "10px",
+                                                                    overflow: "hidden"}}>
+                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
+                            <div style={{padding: "5px", color: 'white'}}>
+                                {React.createElement(FaFilter, { size: 20 })}
+                            </div>  
+                        </div>
+                        <select className="form-select" value={typeFilterOption} onChange={(e) => setTypeFilterOption(e.target.value)}>
+                            <option value="">All Types</option>
+                            <option value="products">Products</option>
+                            <option value="parts">Parts</option>
+                            <option value="services">Services</option>
                         </select>
                     </div>
                 </Col>
@@ -145,14 +177,16 @@ const ProductsList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {quotationList.map((quotation, index) => (
-                                <React.Fragment key={quotation.id}>
+                            {filteredProducts.map((product, index) => (
+                                <React.Fragment key={index}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                        <td style={{color: '#014c91'}}>{quotation.client}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.company}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.contactNumber}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.dateGenerated}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.dateGenerated}</td>
+                                        <td style={{color: '#014c91'}}>{product.description}</td>
+                                        <td style={{color: '#014c91'}}>{product.unit_model}</td>
+                                        <td style={{color: '#014c91'}}>{product.type}</td>
+                                        <td style={{color: '#014c91'}}>{product.srp}</td>
+                                        <td style={{ color: product.is_active === 1 ? 'green' : 'red' }}>
+                                            {product.is_active === 1 ? 'Active' : 'Deactivated'}
+                                        </td>
                                         <td style={{ color: '#014c91' }}>
                                         <div style={{ position: 'relative' }}>
                                             <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
