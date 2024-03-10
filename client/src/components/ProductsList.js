@@ -7,31 +7,33 @@ import '../index.css';
 import { Link } from 'react-router-dom';
 import AddProductModal from './AddProductModal';
 import axios from 'axios'
+import EditProductModal from './EditProductModal';
+import RemoveProductModal from './RemoveProductModal';
 
 const ProductsList = () => {
 
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [productData, setProductData] = useState([]);
     const [sortOption, setSortOption] = useState('');
-    const [filterOption, setFilterOption] = useState('');
     const [typeFilterOption, setTypeFilterOption] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
 
     const handleEllipsisClick = (index) => {
         setActiveDropdown(index === activeDropdown ? null : index);
-      };
+    };
+    
 
-      const renderDropdown = (index) => {
+    const renderDropdown = (index, id, type) => {
         if (index === activeDropdown) {
-          return (
-            <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-              <Dropdown.Item>Edit Details</Dropdown.Item>
-              <Dropdown.Item>Remove Product</Dropdown.Item>
-            </Dropdown.Menu>
-          );
+            return (
+                <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
+                    <EditProductModal id={id} type={type}/>
+                    <RemoveProductModal id={id} type={type}/>
+                </Dropdown.Menu>
+            );
         }
         return null;
-      };
+    };
       
       useEffect(() => {
         const fetchData = async () => {
@@ -76,7 +78,6 @@ const ProductsList = () => {
 
 
     const filteredProducts = sortedProducts.filter(product => (
-        (filterOption === '' || product.is_active.toString() === filterOption) &&
         (typeFilterOption === '' || product.type.toString() === typeFilterOption) &&
         (product.unit_model.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.description.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -93,7 +94,7 @@ const ProductsList = () => {
             {/*Navigation Forms*/ }
             <Row>
                 {/*Search Bar*/ }
-                <Col lg="3">
+                <Col lg="4">
                     <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
                                                                     backgroundColor: "#014c91", borderRadius: "10px", 
                                                                     overflow: "hidden"}}>
@@ -106,7 +107,7 @@ const ProductsList = () => {
                     </div>
                 </Col>
                 {/*Sorting Mechanism*/ }
-                <Col lg="3">
+                <Col lg="4">
                     <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
                                                                     backgroundColor: "#014c91", borderRadius: "10px", 
                                                                     overflow: "hidden"}}>
@@ -126,23 +127,7 @@ const ProductsList = () => {
                     </div>
                 </Col>
                 {/*Filtering Mechanism*/ }
-                <Col lg="3">
-                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
-                                                                    backgroundColor: "#014c91", borderRadius: "10px",
-                                                                    overflow: "hidden"}}>
-                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
-                            <div style={{padding: "5px", color: 'white'}}>
-                                {React.createElement(FaFilter, { size: 20 })}
-                            </div>  
-                        </div>
-                        <select className="form-select" value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
-                            <option value="">All Status</option>
-                            <option value="1">Active</option>
-                            <option value="0">Deactivated</option>
-                        </select>
-                    </div>
-                </Col>
-                <Col lg="3">
+                <Col lg="4">
                     <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
                                                                     backgroundColor: "#014c91", borderRadius: "10px",
                                                                     overflow: "hidden"}}>
@@ -155,7 +140,7 @@ const ProductsList = () => {
                             <option value="">All Types</option>
                             <option value="Window Type AC">Window Type AC</option>
                             <option value="Split Type AC">Split Type AC</option>
-                            <option value="AC Parts">Parts</option>
+                            <option value="AC Parts">AC Parts</option>
                             <option value="Services">Services</option>
                         </select>
                     </div>
@@ -173,7 +158,6 @@ const ProductsList = () => {
                                 <th style={{color: '#014c91'}}>Unit Model</th>
                                 <th style={{color: '#014c91'}}>Type</th>
                                 <th style={{color: '#014c91'}}>SRP</th>
-                                <th style={{color: '#014c91'}}>Status</th>
                                 <th style={{color: '#014c91'}}></th>
                             </tr>
                         </thead>
@@ -185,17 +169,13 @@ const ProductsList = () => {
                                         <td style={{color: '#014c91'}}>{product.unit_model}</td>
                                         <td style={{color: '#014c91'}}>{product.type}</td>
                                         <td style={{color: '#014c91'}}>{product.srp}</td>
-                                        <td style={{ color: product.is_active === 1 ? 'green' : 'red' }}>
-                                            {product.is_active === 1 ? 'Active' : 'Deactivated'}
-                                        </td>
                                         <td style={{ color: '#014c91' }}>
-                                        <div style={{ position: 'relative' }}>
-                                            <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
-                                                <FaEllipsisH size={20} />
+                                            <div style={{ position: 'relative' }}>
+                                                <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
+                                                    <FaEllipsisH size={20} />
                                                 </div>
                                                 <Dropdown show={index === activeDropdown} align="start">
-                                    
-                                                {renderDropdown(index)}
+                                                    {renderDropdown(index, product.id, product.type)}
                                                 </Dropdown>
                                             </div>
                                         </td>

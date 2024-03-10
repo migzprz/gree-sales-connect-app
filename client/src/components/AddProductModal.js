@@ -19,12 +19,14 @@ const AddProductModal = () => {
     const [formData, setFormData] = useState({
         // new product/service data
         unit_model: '',
-        srp: '',
+        product_srp: '',
+        service_srp: '',
+        parts_srp: '',
         product_hp:'',
         is_inverter:'',
         description:'',
         is_active: 1,
-        type:''
+        product_type:''
     })
 
     useEffect(() => {
@@ -35,41 +37,47 @@ const AddProductModal = () => {
         const { name, value } = e.target;
         let newData = { ...formData, [name]: value };
     
-        // Reset form data based on type
-        if (name === 'type') {
+        // Reset form data based on product_type
+        if (name === 'product_type') {
             switch (value) {
                 case 'window':
                 case 'split':
                     newData = {
                         unit_model: '',
-                        srp: '',
+                        product_srp: '',
+                        service_srp: '',
+                        parts_srp: '',
                         product_hp: '',
                         is_inverter: '',
                         description: '',
                         is_active: 1,
-                        type: value
+                        product_type: value
                     };
                     break;
                 case 'part':
                     newData = {
                         unit_model: '',
-                        srp: '',
+                        product_srp: '',
+                        service_srp: '',
+                        parts_srp: '',
                         product_hp: '',
                         is_inverter: '',
                         description: '',
                         is_active: 1,
-                        type: value
+                        product_type: value
                     };
                     break;
                 case 'service':
                     newData = {
                         unit_model: '',
-                        srp: '',
+                        product_srp: '',
+                        service_srp: '',
+                        parts_srp: '',
                         product_hp: '',
                         is_inverter: '',
                         description: '',
                         is_active: 1,
-                        type: value
+                        product_type: value
                     };
                     break;
                 default:
@@ -91,7 +99,7 @@ const AddProductModal = () => {
 
     
         setValidated(true);
-        if (form.checkValidity() && (formData.type === 'window' || formData.type === 'split')) {
+        if (form.checkValidity() && (formData.product_type === 'window' || formData.product_type === 'split')) {
             try {
                 const postReponse = await axios.post('http://localhost:4000/api/postProduct', formData);
                 console.log(postReponse);
@@ -99,7 +107,7 @@ const AddProductModal = () => {
             } catch (error) {
                 console.error('Error: Problem encountered when posting data', error);
             }
-        } else if (form.checkValidity() && formData.type === 'service') {
+        } else if (form.checkValidity() && formData.product_type === 'service') {
             try {
                 const postReponse = await axios.post('http://localhost:4000/api/postService', formData);
                 console.log(postReponse);
@@ -107,7 +115,7 @@ const AddProductModal = () => {
             } catch (error) {
                 console.error('Error: Problem encountered when posting data', error);
             }
-        } else if (form.checkValidity() && formData.type === 'part') {
+        } else if (form.checkValidity() && formData.product_type === 'part') {
             try {
                 const postReponse = await axios.post('http://localhost:4000/api/postPart', formData);
                 console.log(postReponse);
@@ -138,9 +146,9 @@ const AddProductModal = () => {
         
                         <Row className="mt-1">
                             <Col lg="5">
-                                <Form.Group controlId="type">
+                                <Form.Group controlId="product_type">
                                     <Form.Label>Type</Form.Label>
-                                    <Form.Control as="select" name="type" value={formData.type} onChange={handleChange} required>
+                                    <Form.Control as="select" name="product_type" value={formData.product_type} onChange={handleChange} required>
                                         <option value=""> Select </option>
                                         <option value="window"> Window Type </option>
                                         <option value="split"> Split Type </option>
@@ -154,7 +162,7 @@ const AddProductModal = () => {
                             </Col>
                         </Row>
 
-                        {formData.type === "window" || formData.type === "split" ? (
+                        {formData.product_type === "window" || formData.product_type === "split" ? (
                             <Row className="mt-2">
                                <Col lg="2">
                                    <Form.Group controlId="inverter">
@@ -209,12 +217,12 @@ const AddProductModal = () => {
                                        <Form.Label>SRP</Form.Label>
                                        <InputGroup>
                                            <InputGroup.Text> ₱ </InputGroup.Text>
-                                           <Form.Control className="money" type="number" inputmode="numeric"  name="srp" min="0" value={formData.srp} onChange={handleChange} required onWheel={(e) => e.target.blur()}/>
+                                           <Form.Control className="money" type="number" inputmode="numeric"  name="product_srp" min="0" value={formData.product_srp} onChange={handleChange} required onWheel={(e) => e.target.blur()}/>
                                        </InputGroup>
                                    </Form.Group>
                                </Col>
                            </Row>
-                        ) : formData.type === "part" ? (
+                        ) : formData.product_type === "part" ? (
                             <Row className="mt-2">
                                 <Col lg="5">
                                     <Form.Group controlId="description">
@@ -239,12 +247,12 @@ const AddProductModal = () => {
                                         <Form.Label>SRP</Form.Label>
                                         <InputGroup>
                                             <InputGroup.Text> ₱ </InputGroup.Text>
-                                            <Form.Control className="money" type="number" inputmode="numeric"  name="srp" min="0" value={formData.srp} onChange={handleChange} required onWheel={(e) => e.target.blur()}/>
+                                            <Form.Control className="money" type="number" inputmode="numeric"  name="parts_srp" min="0" value={formData.parts_srp} onChange={handleChange} required onWheel={(e) => e.target.blur()}/>
                                         </InputGroup>
                                     </Form.Group>
                                 </Col>
                             </Row>
-                        ) : formData.type === "service" ? (
+                        ) : formData.product_type === "service" ? (
                             <Row className="mt-2">
                                 <Col lg="8">
                                     <Form.Group controlId="description">
@@ -260,7 +268,7 @@ const AddProductModal = () => {
                                         <Form.Label>SRP</Form.Label>
                                         <InputGroup>
                                             <InputGroup.Text> ₱ </InputGroup.Text>
-                                            <Form.Control className="money" type="number" inputmode="numeric"  name="srp" min="0" value={formData.srp} onChange={handleChange} required onWheel={(e) => e.target.blur()}/>
+                                            <Form.Control className="money" type="number" inputmode="numeric"  name="service_srp" min="0" value={formData.service_srp} onChange={handleChange} required onWheel={(e) => e.target.blur()}/>
                                         </InputGroup>
                                     </Form.Group>
                                 </Col>
@@ -279,7 +287,7 @@ const AddProductModal = () => {
                             {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })} Save Product/Service
                             </button>
 
-                            <button className="btn" onClick={handleCloseModal} style={{color: "white", backgroundColor: "#6c757d"}}>
+                            <button className="btn" onClick={(e) => { e.preventDefault(); handleCloseModal(); }} style={{color: "white", backgroundColor: "#6c757d"}}>
                             Cancel
                             </button>
 
