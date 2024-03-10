@@ -6,69 +6,27 @@ import { Row, Col, Card, CardBody, CardHeader, Table, Dropdown } from 'react-boo
 import '../index.css';
 import { Link } from 'react-router-dom';
 import AddProductModal from './AddProductModal';
-
+import axios from 'axios'
 
 const ExpensesList = () => {
 
-    const [activeDropdown, setActiveDropdown] = useState(null);
-
-    const handleEllipsisClick = (index) => {
-        setActiveDropdown(index === activeDropdown ? null : index);
-      };
-
-      const renderDropdown = (index) => {
-        if (index === activeDropdown) {
-          return (
-            <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-              <Dropdown.Item>Edit Details</Dropdown.Item>
-              <Dropdown.Item>Remove Product</Dropdown.Item>
-            </Dropdown.Menu>
-          );
+    const [expenseData, setExpenseData] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/api/getExpenses/')
+                setExpenseData(response.data)
+            } catch (error) {
+                console.error('Error fetching data: ', error)
+            }
         }
-        return null;
-      };
-      
+        fetchData()
+    },[])
+    
+    useEffect(() => {
+        console.log(expenseData)
+    },[expenseData])
 
-
-    const quotationList = [
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        // Add more ocular objects as needed
-    ];
     
 
     return (
@@ -108,19 +66,19 @@ const ExpensesList = () => {
                                 <thead>
                                     <tr>
                                         <th style={{color: '#014c91'}}>Date Recorded</th>
-                                        <th style={{color: '#014c91'}}>Date of Transactions</th>
+                                        <th style={{color: '#014c91'}}>Recorded by</th>
                                         <th style={{color: '#014c91'}}>Expenses Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {quotationList.map((quotation, index) => (
-                                        <React.Fragment key={quotation.id}>
+                                    {expenseData.map((expense, index) => (
+                                        <React.Fragment key={expense.expense_id}>
                                             <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                                 <td style={{color: '#014c91'}}>
-                                                    <Link to={`/viewexpensedetails`} style={{ color: '#014c91'}}>{quotation.id}</Link>
+                                                    <Link to={`/viewexpensedetails`} style={{ color: '#014c91'}}>{expense.date_created}</Link>
                                                 </td>
-                                                <td style={{color: '#014c91'}}>{quotation.client}</td>
-                                                <td style={{color: '#014c91'}}>{quotation.company}</td>
+                                                <td style={{color: '#014c91'}}>{expense.login_name}</td>
+                                                <td style={{color: '#014c91'}}>{expense.totalAmount}</td>
                                             </tr>
                                         </React.Fragment>
                                     ))}

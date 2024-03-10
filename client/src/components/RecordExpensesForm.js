@@ -46,7 +46,7 @@ const RecordExpensesForm = () => {
         setValidated(true);
         if (form.checkValidity()) {
             try {
-                const postReponse = await axios.post(`http://localhost:4000/api/postExpenses/${userId}`)
+                const postReponse = await axios.post(`http://localhost:4000/api/postExpenses/${userId}`, {expenseList})
                 console.log(postReponse)
                 window.location.reload()
             } catch (error) {
