@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `greesalesconnect` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `greesalesconnect`;
 -- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: greesalesconnect
@@ -302,7 +304,7 @@ CREATE TABLE `md_parts` (
   `is_active` tinyint NOT NULL,
   `description` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`parts_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -311,7 +313,7 @@ CREATE TABLE `md_parts` (
 
 LOCK TABLES `md_parts` WRITE;
 /*!40000 ALTER TABLE `md_parts` DISABLE KEYS */;
-INSERT INTO `md_parts` VALUES (1,'XRP-232',12000,1,'COMPRESSOR'),(2,'GSC-345',11000,1,'EXPANSION VALVE'),(3,'YD6-689',10000,1,'CONDENSER');
+INSERT INTO `md_parts` VALUES (1,'XRP-232',12000,1,'COMPRESSOR'),(2,'GSC-345',11000,1,'EXPANSION VALVE'),(3,'YD6-689',10000,1,'CONDENSER'),(4,'XBC-233',10000,1,'HEATER'),(5,'ABC-234',1200,1,'ULTRA COMPRESSOR');
 /*!40000 ALTER TABLE `md_parts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -332,7 +334,7 @@ CREATE TABLE `md_products` (
   `product_type` varchar(45) DEFAULT NULL,
   `description` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -341,7 +343,7 @@ CREATE TABLE `md_products` (
 
 LOCK TABLES `md_products` WRITE;
 /*!40000 ALTER TABLE `md_products` DISABLE KEYS */;
-INSERT INTO `md_products` VALUES (1,'AC23-9IN',25990,1,1.5,1,'window',NULL),(2,'AC24-9WN',17990,1,1.5,0,'window',NULL),(3,'LG23-6IN',21225,1,1,1,'window',NULL),(4,'LG24-6WN',16750,1,1,0,'window',NULL),(5,'SM22-6ST',45700,1,2,1,'split',NULL),(6,'SM24-9IN',30900,1,2,1,'window',NULL),(7,'CR21-6IN',27000,1,1.5,1,'window',NULL),(8,'CR24-9WN',20000,1,1.5,0,'window',NULL),(9,'CR23-9XT',45000,1,2.5,1,'split',NULL);
+INSERT INTO `md_products` VALUES (1,'AC23-9IN',25990,1,1.5,1,'window',NULL),(2,'AC24-9WN',17990,1,1.5,0,'window',NULL),(3,'LG23-6IN',21225,0,1,1,'window',NULL),(4,'LG24-6WN',16750,1,1,0,'window',NULL),(5,'SM22-6ST',45700,1,2,1,'split',NULL),(6,'SM24-9IN',30900,1,2,1,'window',NULL),(7,'CR21-6IN',27000,1,1.5,1,'window',NULL),(8,'CR24-9WN',20000,0,1.5,0,'window',NULL),(9,'CR23-9XT',45000,1,2.5,1,'split',NULL),(10,'BEN-1033',2121,1,12,1,'window',NULL),(11,'XRP-2300',10000,0,1,1,'split',NULL),(13,'XRP-230',15000,0,1,1,'split',NULL),(14,'XRP-2300',15000,0,1,1,'split',NULL),(15,'XRP-2300',10000,0,1,1,'split',NULL),(16,'XRP-2300',15000,0,1,1,'split',NULL);
 /*!40000 ALTER TABLE `md_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -562,7 +564,7 @@ CREATE TABLE `md_services` (
   `service_srp` float NOT NULL,
   `is_active` tinyint NOT NULL,
   PRIMARY KEY (`services_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -571,7 +573,7 @@ CREATE TABLE `md_services` (
 
 LOCK TABLES `md_services` WRITE;
 /*!40000 ALTER TABLE `md_services` DISABLE KEYS */;
-INSERT INTO `md_services` VALUES (1,'CLEANING',1000,1),(2,'DELIVERY',600,1),(3,'MAINTENANCE',800,1);
+INSERT INTO `md_services` VALUES (1,'CLEANING',1000,1),(2,'DELIVERY',600,1),(3,'MAINTENANCE',800,0),(4,'SHIPPING',1000,1),(5,'ULTRA CLEANING',1300,1),(6,'MAINTENANCE',1200,1);
 /*!40000 ALTER TABLE `md_services` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -592,7 +594,7 @@ CREATE TABLE `md_technicians` (
   `date_added` datetime DEFAULT NULL,
   `is_active` int DEFAULT NULL,
   PRIMARY KEY (`technician_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -601,7 +603,7 @@ CREATE TABLE `md_technicians` (
 
 LOCK TABLES `md_technicians` WRITE;
 /*!40000 ALTER TABLE `md_technicians` DISABLE KEYS */;
-INSERT INTO `md_technicians` VALUES (1,'Zara','Zayne','Black','zara.black@gmail.com','09235567481','2024-03-02 16:07:54',1),(2,'Ivan','William','Carlson','ivan.carlson@gmail.com','09343588295','2024-03-02 16:07:54',1);
+INSERT INTO `md_technicians` VALUES (1,'Zara','Zayne','Black','zara.black@gmail.com','09235567481','2024-03-02 16:07:54',1),(2,'Ivan','William','Carlson','ivan.carlson@gmail.com','09343588295','2024-03-02 16:07:54',1),(3,'Michael',NULL,'Jordan','mjordan@gmail.com','09165189898','2024-03-10 02:24:27',1);
 /*!40000 ALTER TABLE `md_technicians` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -731,29 +733,6 @@ LOCK TABLES `md_warranty_services` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `ref_expense_type`
---
-
-DROP TABLE IF EXISTS `ref_expense_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `ref_expense_type` (
-  `exptype_id` int NOT NULL,
-  `name` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`exptype_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ref_expense_type`
---
-
-LOCK TABLES `ref_expense_type` WRITE;
-/*!40000 ALTER TABLE `ref_expense_type` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ref_expense_type` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `ref_mode_of_payment`
 --
 
@@ -807,19 +786,12 @@ DROP TABLE IF EXISTS `td_expenses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `td_expenses` (
-  `expense_id` int NOT NULL,
+  `expense_id` int NOT NULL AUTO_INCREMENT,
   `date_created` datetime NOT NULL,
   `login_id` int NOT NULL,
-  `mop_id` int NOT NULL,
-  `extype_id` int NOT NULL,
-  `expense_name` varchar(45) NOT NULL,
   PRIMARY KEY (`expense_id`),
-  KEY `fk_td_expenses_md_login_idx` (`login_id`),
-  KEY `fk_td_expenses_ref_expense_type1_idx` (`extype_id`),
-  KEY `fk_td_expenses_ref_mode_of_payment1_idx` (`mop_id`),
-  CONSTRAINT `fk_td_expenses_ref_expense_type1` FOREIGN KEY (`extype_id`) REFERENCES `ref_expense_type` (`exptype_id`),
-  CONSTRAINT `fk_td_expenses_ref_mode_of_payment1` FOREIGN KEY (`mop_id`) REFERENCES `ref_mode_of_payment` (`mop_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `fk_td_expenses_md_login_idx` (`login_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -828,7 +800,35 @@ CREATE TABLE `td_expenses` (
 
 LOCK TABLES `td_expenses` WRITE;
 /*!40000 ALTER TABLE `td_expenses` DISABLE KEYS */;
+INSERT INTO `td_expenses` VALUES (1,'2024-03-10 18:02:50',1);
 /*!40000 ALTER TABLE `td_expenses` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `td_nonoperating_expense`
+--
+
+DROP TABLE IF EXISTS `td_nonoperating_expense`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `td_nonoperating_expense` (
+  `non_op_expense_id` int NOT NULL AUTO_INCREMENT,
+  `expense_id` int DEFAULT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  `description` varchar(45) DEFAULT NULL,
+  `amount` float DEFAULT NULL,
+  `expense_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`non_op_expense_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `td_nonoperating_expense`
+--
+
+LOCK TABLES `td_nonoperating_expense` WRITE;
+/*!40000 ALTER TABLE `td_nonoperating_expense` DISABLE KEYS */;
+/*!40000 ALTER TABLE `td_nonoperating_expense` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -862,6 +862,35 @@ LOCK TABLES `td_oculars` WRITE;
 /*!40000 ALTER TABLE `td_oculars` DISABLE KEYS */;
 INSERT INTO `td_oculars` VALUES (1,'2024-02-15 15:33:00','2024-02-01 10:00:00',1,2,1,NULL),(2,'2024-02-02 12:59:00','2024-01-30 12:00:00',3,2,0,'2024-03-02 16:07:54'),(13,'2024-02-28 08:50:00','2024-02-04 02:43:43',1,1,1,NULL),(15,'2024-07-08 13:22:00','2024-02-17 23:58:52',1,1,1,NULL),(16,'2024-07-08 13:22:00','2024-02-18 00:00:39',1,1,1,NULL),(17,'2024-07-08 13:22:00','2024-02-18 00:03:15',1,1,1,NULL),(18,'2024-07-08 13:22:00','2024-02-18 00:04:18',1,1,1,NULL),(19,'2024-07-08 13:22:00','2024-02-18 00:05:55',1,1,1,NULL),(20,'2024-12-12 23:59:00','2024-02-18 00:06:31',1,2,1,NULL),(21,'2024-02-29 17:30:00','2024-02-18 02:07:04',1,2,1,NULL),(22,'2024-03-02 10:40:00','2024-02-18 02:40:57',1,1,0,'2024-03-09 00:31:45'),(23,'2024-11-11 23:11:00','2024-02-19 23:18:35',1,1,1,NULL),(24,'2024-02-24 15:50:00','2024-02-19 23:56:47',1,2,1,NULL),(25,'2024-03-05 00:30:00','2024-02-20 00:01:38',1,2,1,NULL),(26,'2024-10-10 10:10:00','2024-02-20 00:03:30',1,1,1,NULL),(27,'2024-09-09 09:59:00','2024-02-21 02:06:19',1,1,1,NULL),(28,'2024-03-28 17:14:00','2024-03-09 01:14:38',1,1,1,'2024-03-09 01:15:05');
 /*!40000 ALTER TABLE `td_oculars` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `td_operating_expense`
+--
+
+DROP TABLE IF EXISTS `td_operating_expense`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `td_operating_expense` (
+  `op_expense_id` int NOT NULL AUTO_INCREMENT,
+  `expense_id` int NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `description` varchar(45) DEFAULT NULL,
+  `amount` float NOT NULL,
+  `expense_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`op_expense_id`),
+  KEY `fk_td_subexpenses_list_td_expenses1_idx` (`expense_id`),
+  CONSTRAINT `fk_td_subexpenses_list_td_expenses1` FOREIGN KEY (`expense_id`) REFERENCES `td_expenses` (`expense_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `td_operating_expense`
+--
+
+LOCK TABLES `td_operating_expense` WRITE;
+/*!40000 ALTER TABLE `td_operating_expense` DISABLE KEYS */;
+/*!40000 ALTER TABLE `td_operating_expense` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -933,34 +962,6 @@ LOCK TABLES `td_sales` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `td_subexpenses_list`
---
-
-DROP TABLE IF EXISTS `td_subexpenses_list`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `td_subexpenses_list` (
-  `subexpense_id` int NOT NULL,
-  `expense_id` int NOT NULL,
-  `name` varchar(45) NOT NULL,
-  `description` varchar(45) DEFAULT NULL,
-  `amount` float NOT NULL,
-  PRIMARY KEY (`subexpense_id`),
-  KEY `fk_td_subexpenses_list_td_expenses1_idx` (`expense_id`),
-  CONSTRAINT `fk_td_subexpenses_list_td_expenses1` FOREIGN KEY (`expense_id`) REFERENCES `td_expenses` (`expense_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `td_subexpenses_list`
---
-
-LOCK TABLES `td_subexpenses_list` WRITE;
-/*!40000 ALTER TABLE `td_subexpenses_list` DISABLE KEYS */;
-/*!40000 ALTER TABLE `td_subexpenses_list` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `td_warranty_claim_inspection`
 --
 
@@ -1005,4 +1006,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-03-10  1:01:54
+-- Dump completed on 2024-03-10 18:03:59
