@@ -153,16 +153,17 @@ const ProductsList = () => {
                         </div>
                         <select className="form-select" value={typeFilterOption} onChange={(e) => setTypeFilterOption(e.target.value)}>
                             <option value="">All Types</option>
-                            <option value="products">Products</option>
-                            <option value="parts">Parts</option>
-                            <option value="services">Services</option>
+                            <option value="Window Type AC">Window Type AC</option>
+                            <option value="Split Type AC">Split Type AC</option>
+                            <option value="AC Parts">Parts</option>
+                            <option value="Services">Services</option>
                         </select>
                     </div>
                 </Col>
             </Row>
 
         
-            {/*Table for page content*/}
+            {filteredProducts.length > 0 ? (
             <Card style={{ borderRadius: '20px', marginTop: '20px' }}>
                 <CardBody>
                     <Table>
@@ -212,7 +213,18 @@ const ProductsList = () => {
 
                 </CardBody>
             </Card>
-
+            ):(
+                <Card style={{ borderRadius: '20px', marginTop: '20px', textAlign: 'center' }}>
+                    <CardBody style={{ padding:'100px', color: '#014c91'}}>
+                        <h1 className="mt-3"> <FaSearch size={50} className="me-2" />No Products/Services Found  </h1>
+                        <Row className="mt-3">
+                            <Col>
+                                <AddProductModal/>
+                            </Col>
+                        </Row>
+                    </CardBody>
+                </Card>
+            )}
            
 
             

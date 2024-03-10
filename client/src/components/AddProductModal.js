@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Modal, Form,  InputGroup } from 'react-bootstrap';
 import { FaSave, FaPlus} from 'react-icons/fa';
+import axios from 'axios'
 
 const AddProductModal = () => {
     const [showModal, setShowModal] = useState(false);
+    const [validated, setValidated] = useState(false);
 
     const handleShowModal = () => {
         setShowModal(true);
@@ -14,31 +16,108 @@ const AddProductModal = () => {
         setShowModal(false);
     };
 
-    // Dummy data for ocular details
-    const ocularDetails = [
-        {   id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            location: '41B K1st St. Kamuning Quezon City NCR 1103',
-            contactNumber: '0165189598',
-            emailAddress: 'miguel_josh_perez@dlsu.edu.ph',
-            TIN: '77788899900000',
-            date: '2024-01-15',
-            time: '10:00 AM',
-            technician: 'Technician 1',
-            status: 'Scheduled'}
-      ];
+    const [formData, setFormData] = useState({
+        // new product/service data
+        unit_model: '',
+        srp: '',
+        product_hp:'',
+        is_inverter:'',
+        description:'',
+        is_active: 1,
+        type:''
+    })
 
-      const [validated, setValidated] = useState(false);
-      const handleSubmit = (event) => {
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-          event.preventDefault();
-          event.stopPropagation();
+    useEffect(() => {
+        console.log(formData)
+    },[formData])
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        let newData = { ...formData, [name]: value };
+    
+        // Reset form data based on type
+        if (name === 'type') {
+            switch (value) {
+                case 'window':
+                case 'split':
+                    newData = {
+                        unit_model: '',
+                        srp: '',
+                        product_hp: '',
+                        is_inverter: '',
+                        description: '',
+                        is_active: 1,
+                        type: value
+                    };
+                    break;
+                case 'part':
+                    newData = {
+                        unit_model: '',
+                        srp: '',
+                        product_hp: '',
+                        is_inverter: '',
+                        description: '',
+                        is_active: 1,
+                        type: value
+                    };
+                    break;
+                case 'service':
+                    newData = {
+                        unit_model: '',
+                        srp: '',
+                        product_hp: '',
+                        is_inverter: '',
+                        description: '',
+                        is_active: 1,
+                        type: value
+                    };
+                    break;
+                default:
+                    break;
+            }
         }
     
+        setFormData(newData);
+    };
+
+  
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+    
         setValidated(true);
-      };
+        if (form.checkValidity() && (formData.type === 'window' || formData.type === 'split')) {
+            try {
+                const postReponse = await axios.post('http://localhost:4000/api/postProduct', formData);
+                console.log(postReponse);
+                window.location.reload();
+            } catch (error) {
+                console.error('Error: Problem encountered when posting data', error);
+            }
+        } else if (form.checkValidity() && formData.type === 'service') {
+            try {
+                const postReponse = await axios.post('http://localhost:4000/api/postService', formData);
+                console.log(postReponse);
+                window.location.reload();
+            } catch (error) {
+                console.error('Error: Problem encountered when posting data', error);
+            }
+        } else if (form.checkValidity() && formData.type === 'part') {
+            try {
+                const postReponse = await axios.post('http://localhost:4000/api/postPart', formData);
+                console.log(postReponse);
+                window.location.reload();
+            } catch (error) {
+                console.error('Error: Problem encountered when posting data', error);
+            }
+        }
+    };
+    
       
 
     return (
@@ -61,13 +140,12 @@ const AddProductModal = () => {
                             <Col lg="5">
                                 <Form.Group controlId="type">
                                     <Form.Label>Type</Form.Label>
-                                    <Form.Control as="select" required>
+                                    <Form.Control as="select" name="type" value={formData.type} onChange={handleChange} required>
                                         <option value=""> Select </option>
-                                        <option value="1"> Window Type </option>
-                                        <option value="2"> Split Type </option>
-                                        <option value="3"> AC Parts </option>
-                                        <option value="4"> General Appliances </option>
-                                        <option value="5"> Service </option>
+                                        <option value="window"> Window Type </option>
+                                        <option value="split"> Split Type </option>
+                                        <option value="part"> AC Parts </option>
+                                        <option value="service"> Service </option>
                                     </Form.Control>
                                     <Form.Control.Feedback type="invalid">
                                         Please select type.
@@ -76,84 +154,121 @@ const AddProductModal = () => {
                             </Col>
                         </Row>
 
-                        <Row className="mt-2">
-                            <Col lg="8">
-                                <Form.Group controlId="description">
-                                    <Form.Label>Description</Form.Label>
-                                    <Form.Control type="text" name='description' required/>
-                                    <Form.Control.Feedback type="invalid">
-                                        Please provide description
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                            </Col>
-                            <Col lg="4">
-                                <Form.Group controlId="srp">
-                                    <Form.Label>SRP</Form.Label>
-                                    <InputGroup>
-                                        <InputGroup.Text> ₱ </InputGroup.Text>
-                                        <Form.Control   className="money" type="number" inputmode="numeric" min="0" 
-                                                        required onWheel={(e) => e.target.blur()}/>
-                                    </InputGroup>
-                                </Form.Group>
-                            </Col>
-                        </Row>
+                        {formData.type === "window" || formData.type === "split" ? (
+                            <Row className="mt-2">
+                               <Col lg="2">
+                                   <Form.Group controlId="inverter">
+                                       <Form.Label>Inverter Type</Form.Label>
+                                       <div>
+                                           <Form.Check
+                                               type="radio"
+                                               id="yes"
+                                               label="Yes"
+                                               name="is_inverter"
+                                               value="1"
+                                               checked={formData.is_inverter === "1"}
+                                               onChange={handleChange}
+                                               required
+                                           />
+                                           <Form.Check
+                                               type="radio"
+                                               id="no"
+                                               label="No"
+                                               name="is_inverter"
+                                               value="0"
+                                               checked={formData.is_inverter === "0"}
+                                               onChange={handleChange}
+                                               required
+                                           />
+                                       </div>
+                                       <Form.Control.Feedback type="invalid">
+                                           Please select a transportation mode.
+                                       </Form.Control.Feedback>
+                                   </Form.Group>
+                               </Col>
+                               <Col lg="3">
+                                   <Form.Group controlId="unit_model">
+                                       <Form.Label>Unit Model</Form.Label>
+                                       <Form.Control type="text" name="unit_model" value={formData.unit_model} onChange={handleChange} required />
+                                       <Form.Control.Feedback type="invalid">
+                                           Please provide unit model.
+                                       </Form.Control.Feedback>
+                                   </Form.Group>
+                               </Col>
+                               <Col lg="3">
+                                   <Form.Group controlId="hp">
+                                       <Form.Label>Horse Power</Form.Label>
+                                       <Form.Control type="number" name="product_hp" inputmode="numeric" value={formData.product_hp} onChange={handleChange} required onWheel={(e) => e.target.blur()}/>
+                                       <Form.Control.Feedback type="invalid">
+                                           Please provide horse power.
+                                       </Form.Control.Feedback>
+                                   </Form.Group>
+                               </Col>
+                               <Col lg="4">
+                                   <Form.Group controlId="srp">
+                                       <Form.Label>SRP</Form.Label>
+                                       <InputGroup>
+                                           <InputGroup.Text> ₱ </InputGroup.Text>
+                                           <Form.Control className="money" type="number" inputmode="numeric"  name="srp" min="0" value={formData.srp} onChange={handleChange} required onWheel={(e) => e.target.blur()}/>
+                                       </InputGroup>
+                                   </Form.Group>
+                               </Col>
+                           </Row>
+                        ) : formData.type === "part" ? (
+                            <Row className="mt-2">
+                                <Col lg="5">
+                                    <Form.Group controlId="description">
+                                        <Form.Label>Description</Form.Label>
+                                        <Form.Control type="text" name='description' value={formData.description} onChange={handleChange} required/>
+                                        <Form.Control.Feedback type="invalid">
+                                            Please provide description
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                </Col>
+                                <Col lg="3">
+                                    <Form.Group controlId="description">
+                                        <Form.Label>Unit Model</Form.Label>
+                                        <Form.Control type="text" name='unit_model' value={formData.unit_model} onChange={handleChange} required/>
+                                        <Form.Control.Feedback type="invalid">
+                                            Please provide description
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                </Col>
+                                <Col lg="4">
+                                    <Form.Group controlId="srp">
+                                        <Form.Label>SRP</Form.Label>
+                                        <InputGroup>
+                                            <InputGroup.Text> ₱ </InputGroup.Text>
+                                            <Form.Control className="money" type="number" inputmode="numeric"  name="srp" min="0" value={formData.srp} onChange={handleChange} required onWheel={(e) => e.target.blur()}/>
+                                        </InputGroup>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        ) : formData.type === "service" ? (
+                            <Row className="mt-2">
+                                <Col lg="8">
+                                    <Form.Group controlId="description">
+                                        <Form.Label>Description</Form.Label>
+                                        <Form.Control type="text" name='description' value={formData.description} onChange={handleChange} required/>
+                                        <Form.Control.Feedback type="invalid">
+                                            Please provide description
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                </Col>
+                                <Col lg="4">
+                                    <Form.Group controlId="srp">
+                                        <Form.Label>SRP</Form.Label>
+                                        <InputGroup>
+                                            <InputGroup.Text> ₱ </InputGroup.Text>
+                                            <Form.Control className="money" type="number" inputmode="numeric"  name="srp" min="0" value={formData.srp} onChange={handleChange} required onWheel={(e) => e.target.blur()}/>
+                                        </InputGroup>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        ) : null}
+                        
 
-                        <Row className="mt-2">
-
-                            <Col lg="2">
-                                <Form.Group controlId="inverter">
-                                    <Form.Label>Inverter Type</Form.Label>
-                                    <div>
-                                        <Form.Check
-                                            type="radio"
-                                            id="yes"
-                                            label="Yes"
-                                            name="inverter"
-                                            required
-                                        />
-                                        <Form.Check
-                                            type="radio"
-                                            id="no"
-                                            label="No"
-                                            name="inverter"
-                                            required
-                                        />
-                                    </div>
-                                    <Form.Control.Feedback type="invalid">
-                                        Please select a transportation mode.
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                            </Col>
-                            <Col lg="3">
-                                <Form.Group controlId="description">
-                                    <Form.Label>Unit Model</Form.Label>
-                                    <Form.Control type="text" name='hp' required/>
-                                    <Form.Control.Feedback type="invalid">
-                                        Please provide horse power
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                            </Col>
-                            <Col lg="3">
-                                <Form.Group controlId="description">
-                                    <Form.Label>Horse Power</Form.Label>
-                                    <Form.Control type="number" name='hp' required/>
-                                    <Form.Control.Feedback type="invalid">
-                                        Please provide horse power
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                            </Col>
-                            <Col lg="4">
-                                <Form.Group controlId="srp">
-                                    <Form.Label>SRP</Form.Label>
-                                    <InputGroup>
-                                        <InputGroup.Text> ₱ </InputGroup.Text>
-                                        <Form.Control   className="money" type="number" inputmode="numeric" min="0" 
-                                                        required onWheel={(e) => e.target.blur()}/>
-                                    </InputGroup>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-
+                        
        
                                
                     
