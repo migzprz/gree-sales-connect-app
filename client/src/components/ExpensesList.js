@@ -124,7 +124,7 @@ const ExpensesList = () => {
                                         <React.Fragment key={expense.expense_id}>
                                             <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                                 <td style={{color: '#014c91'}}>
-                                                    <Link to={`/viewexpensedetails/${expense.expense_id}`} style={{ color: '#014c91'}}>{expense.date_created}</Link>
+                                                    <Link to={`/viewexpensedetails/${expense.expense_id}`} style={{ color: '#014c91'}}>{new Date(expense.date_created).toLocaleDateString()}</Link>
                                                 </td>
                                                 <td style={{color: '#014c91'}}>{expense.login_name}</td>
                                                 <td style={{color: '#014c91'}}>{expense.totalAmount}</td>

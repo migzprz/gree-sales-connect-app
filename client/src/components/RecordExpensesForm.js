@@ -10,10 +10,12 @@ const RecordExpensesForm = () => {
 
     const [validated, setValidated] = useState(false);
     const [userId, setUserId] = useState(1);
+    const [date, setDate] = useState(new Date().toISOString().slice(0, 10) + ' 00:00:00');
     const [expenseList, setExpenseList] = useState([
         {
             type: "Operating Expense",
             is_operating: 1,
+            date: new Date().toISOString().slice(0, 10) + ' 00:00:00',
             expense: []
         },
         {
@@ -84,11 +86,6 @@ console.log(expenseList)
             <h1>Record Expenses</h1>
             <h5>Record all incurred expenses</h5>
             <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
-
-
-
-               
-            
 
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 {expenseList.map((expenseType, index) => (
@@ -262,16 +259,6 @@ console.log(expenseList)
                 </Row>
 
             </Form>
-
-
-
-
-            
-            
-            
-
-
-
 
         </div>
     );

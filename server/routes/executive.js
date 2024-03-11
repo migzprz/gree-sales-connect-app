@@ -9,7 +9,7 @@ module.exports = (query) => {
     
         try {
             // Insert main expense data into td_expenses table
-            const expense_data = await query(`INSERT INTO td_expenses (date_created, login_id) VALUES (NOW(), ${id})`);
+            const expense_data = await query(`INSERT INTO td_expenses (date_created, login_id) VALUES ('${expenseList[0].date}', ${id})`);
             const expense_id = expense_data.insertId;
     
             for (const expenseItem of expenseList) {
@@ -154,6 +154,27 @@ module.exports = (query) => {
             throw error
         }
     })
+
+   
+    router.delete('/deleteExpenses/:id', async (req, res) => {
+        try {
+            const { id } = req.params;
+    
+            // Delete from td_nonoperating_expense
+            await query('DELETE FROM td_nonoperating_expense WHERE expense_id = ?', [id]);
+    
+            // Delete from td_operating_expense
+            await query('DELETE FROM td_operating_expense WHERE expense_id = ?', [id]);
+    
+            // Delete from td_expenses
+            await query('DELETE FROM td_expenses WHERE expense_id = ?', [id]);
+    
+            res.status(200).json({ message: 'Expense deleted successfully' });
+        } catch (error) {
+            console.error('Error deleting expense:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    });
     
 
     return router;

@@ -117,6 +117,11 @@ const SaleDetails= () => {
                                     Time: <strong> 12:00 PM</strong>
                                 </Col>
                             </Row>
+                            <Row>
+                                <Col>
+                                    There are X Deliveries remaining
+                                </Col>
+                            </Row>
                             <Row className="mt-2">
                                 <Col>
                                         <CompleteServiceModal type={"delivery"}/>

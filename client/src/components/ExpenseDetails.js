@@ -7,6 +7,7 @@ import '../index.css';
 import { useParams } from 'react-router-dom';
 import AddProductModal from './AddProductModal';
 import axios from 'axios'
+import EditExpensesModal from './EditExpensesModal';
 
 const ExpenseDetails = () => {
 
@@ -67,7 +68,7 @@ const ExpenseDetails = () => {
                                     Date Recorded: <strong> {expenseData.date_created} </strong>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
-                                    {React.createElement(FaEdit, { size: 18 })}
+                                    <EditExpensesModal id={id}/>
                                 </Col>
                             </Row>
                             <Row>
