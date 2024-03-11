@@ -59,7 +59,7 @@ function App() {
                   {/* Executive Module */}
                   <Route path="/report" element={<GenerateReport/>}/> 
                   <Route path="/viewexpenses" element={<ViewExpenses/>}/>
-                  <Route path="/viewexpensedetails" element={<ViewExpenseDetails/>}/>
+                  <Route path="/viewexpensedetails/:id" element={<ViewExpenseDetails/>}/>
                   <Route path="/recordexpenses" element={<RecordExpenses/>}/>
 
                   {/* SysAd Module */}

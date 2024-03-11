@@ -1,55 +1,50 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
-import { useState, useEffect } from 'react'; 
+import { useState, useEffect} from 'react'; 
 import { FaEllipsisH, FaFilter, FaSort, FaSearch, FaEdit} from 'react-icons/fa';
 import { Row, Col, Card, CardBody, CardHeader, Table, Dropdown } from 'react-bootstrap';
 import '../index.css';
-import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import AddProductModal from './AddProductModal';
-
+import axios from 'axios'
 
 const ExpenseDetails = () => {
 
-    const [activeDropdown, setActiveDropdown] = useState(null);
+    const { id } = useParams();
+    
+    const [expenseData, setExpenseData] = useState([]);
+    const [opExpenseData, setOpExpenseData] = useState([]);
+    const [nonopExpenseData, setNonopExpenseData] = useState([]);
 
-    const handleEllipsisClick = (index) => {
-        setActiveDropdown(index === activeDropdown ? null : index);
-      };
-
-      const renderDropdown = (index) => {
-        if (index === activeDropdown) {
-          return (
-            <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-              <Dropdown.Item>Edit Details</Dropdown.Item>
-              <Dropdown.Item>Remove Product</Dropdown.Item>
-            </Dropdown.Menu>
-          );
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:4000/api/getExpenseDetails/${id}`)
+                setExpenseData(response.data[0])
+                const response2 = await axios.get(`http://localhost:4000/api/getOperatingExpenses/${id}`)
+                setOpExpenseData(response2.data)
+                const response3 = await axios.get(`http://localhost:4000/api/getNonOperatingExpenses/${id}`)
+                setNonopExpenseData(response3.data)
+            } catch (error) {
+                console.error('Error fetching data: ', error)
+            }
+            
         }
-        return null;
-      };
+        fetchData()
+    },[])
+
+    useEffect(() => {
+        console.log(expenseData)
+    },[expenseData])
+
+    useEffect(() => {
+        console.log(opExpenseData)
+    },[opExpenseData])
+
+    useEffect(() => {
+        console.log(nonopExpenseData)
+    },[nonopExpenseData])
       
-
-
-      const expenseList = [
-        {
-            type: "Operating Expenses",
-            expense: [
-                { subexpense: "Rent", description: "Office rent for the month", date: "2024-02-01", amount: 13500 },
-                { subexpense: "Salary", description: "Employee salaries for the month", date: "2024-02-15", amount: 13500 },
-                { subexpense: "Supplies", description: "Office supplies purchased", date: "2024-02-28", amount: 13500 }
-            ]
-        },
-        {
-            type: "Non-operating Expenses",
-            expense: [
-                { subexpense: "Investment Losses", description: "Losses from investment activities", date: "2024-02-10", amount: 13500 },
-                { subexpense: "Income Tax", description: "Income tax payment for the quarter", date: "2024-02-20", amount: 13500 }
-            ]
-        }
-    ];
-    
-    
-
     const formatNumber = (number) => {
         return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
@@ -69,7 +64,7 @@ const ExpenseDetails = () => {
                         <CardHeader>
                             <Row>
                                 <Col>
-                                    Date Recorded: <strong> Aug-20-2024 </strong>
+                                    Date Recorded: <strong> {expenseData.date_created} </strong>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
                                     {React.createElement(FaEdit, { size: 18 })}
@@ -77,7 +72,7 @@ const ExpenseDetails = () => {
                             </Row>
                             <Row>
                                 <Col>
-                                    Recorded by:<strong> Miguel Josh C. Perez </strong>
+                                    Recorded by:<strong> {expenseData.login_name} </strong>
                                 </Col>
                             </Row>
                         </CardHeader>
@@ -93,29 +88,48 @@ const ExpenseDetails = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {expenseList.map((expenseType, index) => (
-                                        <React.Fragment key={index}>
-                                            <tr>
-                                                <td colSpan="5" style={{color: '#014c91' }}>
-                                                    <strong>{expenseType.type}</strong>
-                                                </td>
+                                    {opExpenseData.length > 0 &&
+                                    <>
+                                        <tr>
+                                            <td colSpan="5" style={{color: '#014c91' }}>
+                                                <strong>Operating Expenses</strong>
+                                            </td>
+                                        </tr>
+                                        {opExpenseData.map((subexpense, subindex) => (
+                                            <tr key={subindex}>
+                                                <td></td>
+                                                <td style={{color: '#014c91' }}>{subexpense.expense_date}</td>
+                                                <td style={{color: '#014c91' }}>{subexpense.name}</td>
+                                                <td style={{color: '#014c91' }}>{subexpense.description}</td>
+                                                <td style={{color: '#014c91' }}>₱ {formatNumber(subexpense.amount)}</td>
                                             </tr>
-                                            {expenseType.expense.map((subexpense, subindex) => (
-                                                <tr key={subindex}>
-                                                    <td></td>
-                                                    <td style={{color: '#014c91' }}>{subexpense.date}</td>
-                                                    <td style={{color: '#014c91' }}>{subexpense.subexpense}</td>
-                                                    <td style={{color: '#014c91' }}>{subexpense.description}</td>
-                                                    <td style={{color: '#014c91' }}>₱ {formatNumber(subexpense.amount)}</td>
-                                                </tr>
-                                            ))}
-                                        </React.Fragment>
-                                    ))}
+                                        ))}
+                                    </>
+                                    }
+                                    {nonopExpenseData.length > 0 &&
+                                    <>
+                                        <tr>
+                                            <td colSpan="5" style={{color: '#014c91' }}>
+                                                <strong>Non-Operating Expenses</strong>
+                                            </td>
+                                        </tr>
+                                        {nonopExpenseData.map((subexpense, subindex) => (
+                                            <tr key={subindex}>
+                                                <td></td>
+                                                <td style={{color: '#014c91' }}>{subexpense.expense_date}</td>
+                                                <td style={{color: '#014c91' }}>{subexpense.name}</td>
+                                                <td style={{color: '#014c91' }}>{subexpense.description}</td>
+                                                <td style={{color: '#014c91' }}>₱ {formatNumber(subexpense.amount)}</td>
+                                            </tr>
+                                        ))}
+                                    </>
+                                    }
+                                       
                                     <tr>
                                         <td colSpan="4" style={{ textAlign: 'right', color: '#014c91'  }}>
                                             <strong>Total:</strong>
                                         </td>
-                                        <td style={{color: '#014c91' }}>₱ 120,000.00</td>
+                                        <td style={{color: '#014c91' }}>{expenseData.totalAmount}</td>
                                     </tr>
                                 </tbody>
                             </Table>
