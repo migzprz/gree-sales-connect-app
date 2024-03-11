@@ -11,7 +11,7 @@ import axios from 'axios';
 
 
 const QuotationList = () => {
-
+    
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [quotations, setQuotations] = useState([])
 
@@ -32,11 +32,11 @@ const QuotationList = () => {
         setActiveDropdown(index === activeDropdown ? null : index);
     };
 
-    const renderDropdown = (index) => {
+    const renderDropdown = (index, id) => {
         if (index === activeDropdown) {
             return (
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-                <Dropdown.Item><Link to={`/generateinvoice`} style={{ color: '#014c91'}}>Convert To Sale</Link></Dropdown.Item>
+                <Dropdown.Item><Link to={`/generateinvoice?id=${id}`} style={{ color: '#014c91'}}>Convert To Sale</Link></Dropdown.Item>
                 <Dropdown.Item>Cancel Quotation</Dropdown.Item>
             </Dropdown.Menu>
             );
@@ -125,7 +125,7 @@ const QuotationList = () => {
                         </thead>
                         <tbody>
                             {quotations.map((quotation, index) => (
-                                <React.Fragment key={quotation.id}>
+                                <React.Fragment key={quotation.quotation_id}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                         <td style={{color: '#014c91'}}>{quotation.quotation_id}</td>
                                         <td style={{color: '#014c91'}}>{quotation.client_name}</td>
@@ -141,7 +141,7 @@ const QuotationList = () => {
                         </div>
                         <Dropdown show={index === activeDropdown} align="start">
               
-                          {renderDropdown(index)}
+                          {renderDropdown(index, quotation.quotation_id)}
                         </Dropdown>
                       </div>
                                         </td>

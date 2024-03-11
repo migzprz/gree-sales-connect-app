@@ -5,26 +5,34 @@ import { FaSave} from 'react-icons/fa';
 import { Row, Col, Card, CardBody, Table, Dropdown, CardHeader } from 'react-bootstrap';
 import '../index.css';
 import { Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 const InvoiceDetails = () => {
+    const [searchParams] = useSearchParams()
+    const id = searchParams.get('id')
 
     const [activeDropdown, setActiveDropdown] = useState(null);
+    const [quotation, setQuotation] = useState({})
+
+    useEffect(() => {
+        console.log('parameter detected: ', id)
+    }, [id])
 
     const handleEllipsisClick = (index) => {
         setActiveDropdown(index === activeDropdown ? null : index);
-      };
+    };
 
-      const renderDropdown = (index) => {
-        if (index === activeDropdown) {
-          return (
-            <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-              <Dropdown.Item>Convert to Sale</Dropdown.Item>
-              <Dropdown.Item>Cancel Quotation</Dropdown.Item>
-            </Dropdown.Menu>
-          );
-        }
-        return null;
-      };
+    const renderDropdown = (index) => {
+    if (index === activeDropdown) {
+        return (
+        <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
+            <Dropdown.Item>Convert to Sale</Dropdown.Item>
+            <Dropdown.Item>Cancel Quotation</Dropdown.Item>
+        </Dropdown.Menu>
+        );
+    }
+    return null;
+    };
       
 
 
@@ -94,7 +102,7 @@ const InvoiceDetails = () => {
                                 <strong> SALES INVOICE</strong>
                             </Col>
                             <Col lg="4">
-                                <strong> NO. XXXX</strong>
+                                <strong> NO. #{String(id).padStart(4, '0')}</strong>
                             </Col>                        
                         </Row>
                         <Row>

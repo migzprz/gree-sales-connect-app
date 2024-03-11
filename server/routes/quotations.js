@@ -19,6 +19,38 @@ module.exports = (query) => {
         res.send(data)
     })
 
+    router.get('/getQuotationDetailsById/:id', async (req, res) => {
+        
+        const id = req.params.id
+        // getting the client info
+        const clientQuery = `SELECT q.date_created, CONCAT(cp.last_name, ", ", cp.first_name) as client_name, 
+                            CONCAT(l.addr_bldg_no, " ", l.addr_street_name, " ", b.name, ", ", m.name, ", ", l.zipcode, " ", p.name) as site_address,
+                            co.tin, co.company_name
+                            FROM td_quotations q
+                            JOIN md_quotation_clients qc ON q.quotation_client_id = qc.quotation_client_id
+                            JOIN md_clients c ON qc.client_id = c.client_id
+                            JOIN md_contactperson cp ON c.contact_person_id = cp.contact_person_id
+                            JOIN md_companies co ON c.company_id = co.company_id
+                            JOIN md_locations l ON qc.location_id = l.location_id
+                            JOIN md_provinces p ON l.addr_province_id = p.province_id
+                            JOIN md_municipalities m ON l.addr_municipality_id = m.municipality_id
+                            JOIN md_barangays b ON l.addr_barangay_id = b.barangay_id
+                            WHERE q.quotation_id = ?`
+        const clientResponse = await query(clientQuery, [id])
+
+        // getting the product info
+        
+
+        const data = {
+            client: clientResponse,
+            products: products,
+            parts: parts,
+            services: services
+        }
+
+        res.send(data)
+    })
+
     router.get('/getQuoClientIdByOcularId/:id', async (req, res) => {
         const { id } = req.params
 
