@@ -39,14 +39,25 @@ module.exports = (query) => {
         const clientResponse = await query(clientQuery, [id])
 
         // getting the product info
-        
+        const productQuery = `SELECT qp.quantity, qp.discounted_price_each*qp.quantity AS totalPrice, p.product_srp as srp, p.unit_model, 
+                                CONCAT(product_hp, ' HP ', UPPER(product_type), ' TYPE ', CASE WHEN is_inverter = 1 THEN 'INVERTER' WHEN is_inverter = 0 THEN 'NON-INVERTER' END) as article
+                                FROM md_quotation_products qp
+                                JOIN md_products p ON qp.product_id = p.product_id
+                                WHERE qp.quotation_id = ?`
+        const productResponse = await query(productQuery, [id])
+        const products = productResponse.map(obj => {
+            // Create a new object with the existing properties and the new property
+            return { ...obj, unit: 'UNIT' };
+          });
 
         const data = {
             client: clientResponse,
             products: products,
-            parts: parts,
-            services: services
+            //parts: parts,
+            //services: services
         }
+
+        console.log(data)
 
         res.send(data)
     })

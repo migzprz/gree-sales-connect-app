@@ -6,75 +6,53 @@ import { Row, Col, Card, CardBody, Table, Dropdown, CardHeader } from 'react-boo
 import '../index.css';
 import { Link } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
+import axios from 'axios'
 
 const InvoiceDetails = () => {
     const [searchParams] = useSearchParams()
     const id = searchParams.get('id')
 
     const [activeDropdown, setActiveDropdown] = useState(null);
-    const [quotation, setQuotation] = useState({})
+    const [client, setClient] = useState({})
+    const [quotation, setQuotation] = useState([])
 
     useEffect(() => {
-        console.log('parameter detected: ', id)
+        const fetchData = async () => {
+            try {
+                const res = (await axios.get(`http://localhost:4000/api/getQuotationDetailsById/${id}`)).data
+                setClient(res.client[0])
+                setQuotation(res.products)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        fetchData()
     }, [id])
+    useEffect(() => {
+        console.log(client)
+    }, [client])
+    useEffect(() => {
+        console.log(quotation)
+    }, [quotation])
 
-    const handleEllipsisClick = (index) => {
-        setActiveDropdown(index === activeDropdown ? null : index);
-    };
 
-    const renderDropdown = (index) => {
-    if (index === activeDropdown) {
-        return (
-        <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-            <Dropdown.Item>Convert to Sale</Dropdown.Item>
-            <Dropdown.Item>Cancel Quotation</Dropdown.Item>
-        </Dropdown.Menu>
-        );
-    }
-    return null;
-    };
+    // const handleEllipsisClick = (index) => {
+    //     setActiveDropdown(index === activeDropdown ? null : index);
+    // };
+
+    // const renderDropdown = (index) => {
+    // if (index === activeDropdown) {
+    //     return (
+    //     <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
+    //         <Dropdown.Item>Convert to Sale</Dropdown.Item>
+    //         <Dropdown.Item>Cancel Quotation</Dropdown.Item>
+    //     </Dropdown.Menu>
+    //     );
+    // }
+    // return null;
+    // };
       
 
-
-    const quotationList = [
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        // Add more ocular objects as needed
-    ];
 
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
@@ -107,23 +85,23 @@ const InvoiceDetails = () => {
                         </Row>
                         <Row>
                             <Col lg="8">
-                                Sold To: 
+                                Sold To: {client.client_name}
                             </Col>
                             <Col lg="4">
-                                Date:
+                                Date: {new Date(client.date_created).toLocaleString()}
                             </Col>                        
                         </Row>
                         <Row>
                             <Col lg="8">
-                                Business Style:
+                                Business Style: {client.company_name}
                             </Col>
                             <Col lg="4">
-                                TIN:
+                                TIN: {client.tin}
                             </Col>                        
                         </Row>
                         <Row>
                             <Col lg="8">
-                                Address:
+                                Address: {client.site_address}
                             </Col>                        
                         </Row>
 
@@ -138,13 +116,13 @@ const InvoiceDetails = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {quotationList.map((quotation, index) => (
-                                    <tr key={quotation.id} style={{ borderRadius: '20px', padding: '10px' }}>
-                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.id}</td>
-                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.client}</td>
-                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.company}</td>
-                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.contactNumber}</td>
-                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.dateGenerated}</td>
+                                {quotation.map((quotation, index) => (
+                                    <tr key={index} style={{ borderRadius: '20px', padding: '10px' }}>
+                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.quantity}</td>
+                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.unit}</td>
+                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.article}</td>
+                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.srp}</td>
+                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.totalPrice}</td>
                                     </tr>
                                 ))}
                                 <tr style={{ textAlign: 'center' }}>

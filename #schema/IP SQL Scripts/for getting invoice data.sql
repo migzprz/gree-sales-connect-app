@@ -23,7 +23,8 @@ WHERE q.quotation_id = 9;
 
 /** products information **/ 
 /** -- quantity, unit, articles, unit price, amount **/
-SELECT *, qp.discounted_price_each*qp.quantity AS totalPrice, p.product_srp, p.unit_model, CONCAT(product_hp, ' HP ', UPPER(product_type), ' TYPE ', CASE WHEN is_inverter = 1 THEN 'INVERTER' WHEN is_inverter = 0 THEN 'NON-INVERTER' END) as display
+/** UNSURE IF UNIT PRICE MEANS SRP FOR ONE ITEM OR SRP TOTAL FOR ITEM*QUANTITY **/
+SELECT qp.quantity, qp.discounted_price_each*qp.quantity AS totalPrice, p.product_srp, p.unit_model, CONCAT(product_hp, ' HP ', UPPER(product_type), ' TYPE ', CASE WHEN is_inverter = 1 THEN 'INVERTER' WHEN is_inverter = 0 THEN 'NON-INVERTER' END) as display
 FROM md_quotation_products qp
 JOIN md_products p ON qp.product_id = p.product_id
 WHERE qp.quotation_id = 12
