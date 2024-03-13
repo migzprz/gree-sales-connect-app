@@ -2,10 +2,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { useState, useEffect } from 'react'; 
 import { FaEllipsisH, FaFilter, FaSort, FaSearch} from 'react-icons/fa';
-import { Row, Col, Card, CardBody, Table, Dropdown } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Row, Col, Card, CardBody, Table, Dropdown, Pagination } from 'react-bootstrap';
 import '../index.css';
-import AddProductModal from './AddProductModal';
 import AddUserModal from './AddUserModal';
 import axios from 'axios'
 import EditUserModal from './EditUserModal';
@@ -39,6 +37,7 @@ const UsersList = () => {
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
+        setCurrentPage(1);
     };
 
     const handleSort = (e) => {
@@ -99,7 +98,22 @@ const UsersList = () => {
         // Format date in desired format
         return `${formattedDay}-${months[monthIndex]}-${year}`;
     }
-      
+    
+    
+    //Pagination Functionality
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(4); // Change this number as needed
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredEmployees.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+
+
 
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
@@ -149,7 +163,7 @@ const UsersList = () => {
                                 {React.createElement(FaFilter, { size: 20 })}
                             </div>  
                         </div>
-                        <select className="form-select" value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
+                        <select className="form-select" value={filterOption} onChange={(e) => {setFilterOption(e.target.value); setCurrentPage(1);}}>
                             <option value="">All Status</option>
                             <option value="1">Active</option>
                             <option value="0">Deactivated</option>
@@ -165,7 +179,7 @@ const UsersList = () => {
                                 {React.createElement(FaFilter, { size: 20 })}
                             </div>  
                         </div>
-                        <select className="form-select" value={roleFilterOption} onChange={(e) => setRoleFilterOption(e.target.value)}>
+                        <select className="form-select" value={roleFilterOption} onChange={(e) => {setRoleFilterOption(e.target.value); setCurrentPage(1);}}>
                             <option value="">All Roles</option>
                             <option value="Salesperson">Salesperson</option>
                             <option value="Aftersales Staff">Aftersales Staff</option>
@@ -193,7 +207,7 @@ const UsersList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredEmployees.map((user, index) => (
+                            {currentItems.map((user, index) => (
                                 <React.Fragment key={user.login_id}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                         <td style={{color: '#014c91'}}>{user.name}</td>
@@ -224,6 +238,17 @@ const UsersList = () => {
                     <Row className="mt-3">
                         <Col>
                             <AddUserModal/>
+                        </Col>
+                        <Col className="d-flex justify-content-end">
+                            {totalPages > 1 && (
+                                <Pagination>
+                                    {[...Array(totalPages)].map((_, index) => (
+                                        <Pagination.Item key={index + 1} active={currentPage === index + 1} onClick={() => handlePageChange(index + 1)}>
+                                            {index + 1}
+                                        </Pagination.Item>
+                                    ))}
+                                </Pagination>
+                            )}
                         </Col>
                     </Row>
 

@@ -1,11 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { useState, useEffect } from 'react'; 
-import { FaEllipsisH, FaFilter, FaSort, FaSearch, FaPlus} from 'react-icons/fa';
-import { Row, Col, Card, CardBody, CardHeader, Table, Dropdown } from 'react-bootstrap';
+import { FaFilter, FaSort, FaSearch} from 'react-icons/fa';
+import { Row, Col, Card, CardBody, Table, Pagination} from 'react-bootstrap';
 import '../index.css';
 import { Link } from 'react-router-dom';
-import AddProductModal from './AddProductModal';
 import axios from 'axios'
 
 const ExpensesList = () => {
@@ -38,6 +37,8 @@ const ExpensesList = () => {
         console.log(yearData)
     },[yearData])
 
+
+    //Navigation Functions
     const handleSort = (e) => {
         setSortOption(e.target.value);
     };
@@ -53,10 +54,46 @@ const ExpensesList = () => {
         sortedExpenses.sort((a, b) => parseFloat(b.totalAmount) - parseFloat(a.totalAmount));
     }
 
-
     const filteredExpenses = sortedExpenses.filter(expense => (
         filterOption === '' || expense.date_created.includes(filterOption)
     ));
+
+     //Price Conversion Function
+     const formatNumber = (number) => {
+        return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    //Date Conversion Function
+    function formatDate(dateString) {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        // Parse the date string to a Date object
+        const date = new Date(dateString);
+        
+        // Get day, month, and year from the date object
+        const day = date.getDate();
+        const monthIndex = date.getMonth();
+        const year = date.getFullYear();
+        
+        // Format day with leading zero if necessary
+        const formattedDay = day < 10 ? '0' + day : day;
+        
+        // Format date in desired format
+        return `${formattedDay}-${months[monthIndex]}-${year}`;
+    }
+
+    //Pagination Functionality
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(6); // Change this number as needed
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredExpenses.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil( filteredExpenses.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+     
 
 
     return (
@@ -96,7 +133,7 @@ const ExpensesList = () => {
                                 {React.createElement(FaFilter, { size: 20 })}
                             </div>  
                         </div>
-                        <select className="form-select" value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
+                        <select className="form-select" value={filterOption} onChange={(e) => {setFilterOption(e.target.value); setCurrentPage(1);}}>
                             <option value=''>All Expenses</option>   
                             {yearData.map((year, index) => (
                                  <option value={year.year}>{year.year}</option>   
@@ -109,6 +146,7 @@ const ExpensesList = () => {
         
             <Row>
                 <Col lg="6">
+                    {filteredExpenses.length > 0 ? (
                     <Card style={{ borderRadius: '20px', marginTop: '20px' }}>
                         <CardBody>
                             <Table>
@@ -120,21 +158,43 @@ const ExpensesList = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredExpenses.map((expense, index) => (
+                                    {currentItems.map((expense, index) => (
                                         <React.Fragment key={expense.expense_id}>
                                             <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                                 <td style={{color: '#014c91'}}>
-                                                    <Link to={`/viewexpensedetails/${expense.expense_id}`} style={{ color: '#014c91'}}>{new Date(expense.date_created).toLocaleDateString()}</Link>
+                                                    <Link to={`/viewexpensedetails/${expense.expense_id}`} style={{ color: '#014c91'}}>{formatDate(expense.date_created)}</Link>
                                                 </td>
                                                 <td style={{color: '#014c91'}}>{expense.login_name}</td>
-                                                <td style={{color: '#014c91'}}>{expense.totalAmount}</td>
+                                                <td style={{color: '#014c91'}}>₱ {formatNumber(expense.totalAmount)}</td>
                                             </tr>
                                         </React.Fragment>
                                     ))}
                                 </tbody>
                             </Table>
+
+                            <Row className="mt-3">
+                                <Col className="d-flex justify-content-end">
+                                    {totalPages > 1 && (
+                                        <Pagination>
+                                            {[...Array(totalPages)].map((_, index) => (
+                                                <Pagination.Item key={index + 1} active={currentPage === index + 1} onClick={() => handlePageChange(index + 1)}>
+                                                    {index + 1}
+                                                </Pagination.Item>
+                                            ))}
+                                        </Pagination>
+                                    )}
+                                </Col>
+                            </Row>
+
                         </CardBody>
                     </Card>
+                    ):(
+                        <Card style={{ borderRadius: '20px', marginTop: '20px', textAlign: 'center' }}>
+                            <CardBody style={{ padding:'100px', color: '#014c91'}}>
+                                <h1 className="mt-3"> <FaSearch size={50} className="me-2" />No Expense Record Found  </h1>
+                            </CardBody>
+                        </Card>
+                    )}
                 </Col>
             </Row>
 

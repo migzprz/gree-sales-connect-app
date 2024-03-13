@@ -1,8 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { useState, useEffect } from 'react'; 
-import { FaEllipsisH, FaFilter, FaSort, FaSearch, FaCheck} from 'react-icons/fa';
-import { Row, Col, Card, CardBody, CardHeader, Table, Dropdown } from 'react-bootstrap';
+import { FaSort, FaSearch} from 'react-icons/fa';
+import { Row, Col, Card, CardBody, Table, Pagination } from 'react-bootstrap';
 import '../index.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios'
@@ -31,6 +31,7 @@ const ClientsList = () => {
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
+        setCurrentPage(1);
     };
 
     const handleSort = (e) => {
@@ -55,6 +56,18 @@ const ClientsList = () => {
         client.contact_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
         client.email.toLowerCase().includes(searchTerm.toLowerCase())
     ));
+
+    //Pagination Functionality
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(6); // Change this number as needed
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredClients.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil( filteredClients.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
 
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
@@ -112,7 +125,7 @@ const ClientsList = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredClients.map((client, index) => (
+                                {currentItems.map((client, index) => (
                                         <React.Fragment key={client.id}>
                                             <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                                 <td style={{ color: '#014c91' }}>
@@ -127,6 +140,21 @@ const ClientsList = () => {
                                     ))}
                             </tbody>
                         </Table>
+
+                        <Row className="mt-3">
+                            <Col className="d-flex justify-content-end">
+                                {totalPages > 1 && (
+                                    <Pagination>
+                                        {[...Array(totalPages)].map((_, index) => (
+                                            <Pagination.Item key={index + 1} active={currentPage === index + 1} onClick={() => handlePageChange(index + 1)}>
+                                                {index + 1}
+                                            </Pagination.Item>
+                                        ))}
+                                    </Pagination>
+                                )}
+                            </Col>
+                        </Row>
+
                     </CardBody>
                 </Card>
             ):(

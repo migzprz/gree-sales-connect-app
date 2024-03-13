@@ -1,10 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { useState, useEffect } from 'react'; 
-import { FaEllipsisH, FaFilter, FaSort, FaSearch, FaPlus} from 'react-icons/fa';
-import { Row, Col, Card, CardBody, CardHeader, Table, Dropdown } from 'react-bootstrap';
+import { FaEllipsisH, FaFilter, FaSort, FaSearch} from 'react-icons/fa';
+import { Row, Col, Card, CardBody, Table, Dropdown, Pagination} from 'react-bootstrap';
 import '../index.css';
-import { Link } from 'react-router-dom';
 import AddProductModal from './AddProductModal';
 import axios from 'axios'
 import EditProductModal from './EditProductModal';
@@ -18,24 +17,7 @@ const ProductsList = () => {
     const [typeFilterOption, setTypeFilterOption] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
 
-    const handleEllipsisClick = (index) => {
-        setActiveDropdown(index === activeDropdown ? null : index);
-    };
-    
-
-    const renderDropdown = (index, id, type) => {
-        if (index === activeDropdown) {
-            return (
-                <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-                    <EditProductModal id={id} type={type}/>
-                    <RemoveProductModal id={id} type={type}/>
-                </Dropdown.Menu>
-            );
-        }
-        return null;
-    };
-      
-      useEffect(() => {
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('http://localhost:4000/api/getAllProducts/')
@@ -51,10 +33,27 @@ const ProductsList = () => {
         console.log(productData)
     },[productData])
 
-    //Navigation Functions
+    //Ellipsis Functions
+    const handleEllipsisClick = (index) => {
+        setActiveDropdown(index === activeDropdown ? null : index);
+    };
+    const renderDropdown = (index, id, type) => {
+        if (index === activeDropdown) {
+            return (
+                <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
+                    <EditProductModal id={id} type={type}/>
+                    <RemoveProductModal id={id} type={type}/>
+                </Dropdown.Menu>
+            );
+        }
+        return null;
+    };
 
+
+    //Navigation Functions
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
+        setCurrentPage(1);
     };
 
     const handleSort = (e) => {
@@ -76,12 +75,29 @@ const ProductsList = () => {
         sortedProducts.sort((a, b) => parseFloat(b.srp) - parseFloat(a.srp));
     }
 
-
     const filteredProducts = sortedProducts.filter(product => (
         (typeFilterOption === '' || product.type.toString() === typeFilterOption) &&
         (product.unit_model.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.description.toLowerCase().includes(searchTerm.toLowerCase()))
     ));
+    
+    //Price Conversion Function
+    const formatNumber = (number) => {
+        return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    //Pagination Functionality
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(8); // Change this number as needed
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil( filteredProducts.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+     
     
 
     return (
@@ -136,7 +152,7 @@ const ProductsList = () => {
                                 {React.createElement(FaFilter, { size: 20 })}
                             </div>  
                         </div>
-                        <select className="form-select" value={typeFilterOption} onChange={(e) => setTypeFilterOption(e.target.value)}>
+                        <select className="form-select" value={typeFilterOption} onChange={(e) => {setTypeFilterOption(e.target.value); setCurrentPage(1);}}>
                             <option value="">All Types</option>
                             <option value="Window Type AC">Window Type AC</option>
                             <option value="Split Type AC">Split Type AC</option>
@@ -162,13 +178,13 @@ const ProductsList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredProducts.map((product, index) => (
+                            {currentItems.map((product, index) => (
                                 <React.Fragment key={index}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                         <td style={{color: '#014c91'}}>{product.description}</td>
                                         <td style={{color: '#014c91'}}>{product.unit_model}</td>
                                         <td style={{color: '#014c91'}}>{product.type}</td>
-                                        <td style={{color: '#014c91'}}>{product.srp}</td>
+                                        <td style={{color: '#014c91'}}>₱ {formatNumber(product.srp)}</td>
                                         <td style={{ color: '#014c91' }}>
                                             <div style={{ position: 'relative' }}>
                                                 <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
@@ -188,6 +204,17 @@ const ProductsList = () => {
                     <Row className="mt-3">
                         <Col>
                             <AddProductModal/>
+                        </Col>
+                        <Col className="d-flex justify-content-end">
+                            {totalPages > 1 && (
+                                <Pagination>
+                                    {[...Array(totalPages)].map((_, index) => (
+                                        <Pagination.Item key={index + 1} active={currentPage === index + 1} onClick={() => handlePageChange(index + 1)}>
+                                            {index + 1}
+                                        </Pagination.Item>
+                                    ))}
+                                </Pagination>
+                            )}
                         </Col>
                     </Row>
 
