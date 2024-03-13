@@ -15,13 +15,15 @@ const InvoiceDetails = () => {
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [client, setClient] = useState({})
     const [quotation, setQuotation] = useState([])
+    const [total, setTotal] = useState(null)
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const res = (await axios.get(`http://localhost:4000/api/getQuotationDetailsById/${id}`)).data
                 setClient(res.client[0])
-                setQuotation(res.products)
+                setQuotation(res.quotation)
+                setTotal(res.total)
             } catch (error) {
                 console.log(error)
             }
@@ -141,7 +143,7 @@ const InvoiceDetails = () => {
                                         Total Sales
                                     </td>
                                     <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px'}}>
-                                    XXXXXXX
+                                    {total}
                                     </td>
                                 </tr>
                                 <tr>
@@ -152,7 +154,7 @@ const InvoiceDetails = () => {
                                         Add: VAT
                                     </td>
                                     <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px'}}>
-                                         XXXXXXX
+                                         {(total*.12)}
                                     </td>
                                 </tr>
                                 <tr>
@@ -163,7 +165,7 @@ const InvoiceDetails = () => {
                                         <strong>TOTAL AMOUNT DUE </strong>
                                     </td>
                                     <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px'}}>
-                                        XXXXXXX
+                                        {total+(total*.12)}
                                     </td>
                                 </tr>
                             </tbody>

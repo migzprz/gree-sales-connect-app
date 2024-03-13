@@ -19,7 +19,8 @@ const QuotationForm = () => {
 
   const [hasItems, setHasItems] = useState(true);
   const [validated, setValidated] = useState(false);
-  const { products } = useProducts()
+  const { products, services, parts } = useProducts()
+  const offer = { products, services, parts }
 
   const [offerData, setOfferData] = useState({})
   const [clientData, setClientData] = useState({})
@@ -60,15 +61,6 @@ const QuotationForm = () => {
 
     setValidated(true);
   };
-
-  // useEffect(() => {
-  //   console.log('tried submitting...')
-  //   if (Object.keys(offerData).length && Object.keys(clientData).length && Object.keys(termsData).length) {
-  //     console.log('submission successfull...')
-  //     handleSubmit()
-  //   }
-  // }, [offerData, clientData, termsData])
-  
 
   const handleOfferSubmission = (data) => {
     setOfferData(data)
@@ -119,7 +111,7 @@ const QuotationForm = () => {
     <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91' }}>
       <h1>Generate a New Quotation</h1>
 
-      {selectionType === 'offer' && <OfferSelection offerList={products} onOfferSubmission={handleOfferSubmission} />}
+      {selectionType === 'offer' && <OfferSelection offerList={offer} onOfferSubmission={handleOfferSubmission} />}
       {selectionType === 'client' && <ClientSelection onClientSubmission={handleClientSubmission}/>}
       {selectionType === 'terms' && <TermsAndConditions onTermsSubmission={handleGetTermsData}/>}
       {selectionType === 'download' && <PreviewQuotation offers={offerData} terms={termsData} client={clientData} POST={handleSubmit}/>}

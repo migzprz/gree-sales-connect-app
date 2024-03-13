@@ -205,7 +205,7 @@ const QuotationList = () => {
                                         <td style={{color: '#014c91'}}>{quotation.company_name}</td>
                                         <td style={{color: '#014c91'}}>{quotation.client_number}</td>
                                         <td style={{color: '#014c91'}}>{formatDate(quotation.date_created)} {new Date(quotation.date_created).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
-                                        <td style={{color: '#014c91'}}>₱ {formatNumber(quotation.totalprice)}</td>
+                                        <td style={{color: '#014c91'}}>₱ {formatNumber(quotation.totalPrice)}</td>
                                         <td style={{ color: quotation.is_cancelled === 1 ? 'red' : 'green' }}>
                                             {quotation.is_cancelled === 1 ? 'Expired' : 'Active'}
                                         </td>

@@ -163,5 +163,29 @@ module.exports = (query) => {
         }
     })
 
+    router.get('/getServices', async (req, res) => {
+        try {
+            const data = await query('SELECT * FROM md_services WHERE is_active = 1', [])
+            console.log(data)
+        
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getParts', async (req, res) => {
+        try {
+            const data = await query('SELECT * FROM md_parts WHERE is_active = 1', [])
+            console.log(data)
+        
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
     return router;
 }

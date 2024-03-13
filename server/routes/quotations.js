@@ -7,14 +7,39 @@ module.exports = (query) => {
         const data = await query(`SELECT q.quotation_id, q.date_created,
                                 CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.contact_number as client_number,
                                 co.company_name,
-                                SUM(qp.discounted_price_each*qp.quantity) AS totalprice, q.is_cancelled
+                                COALESCE(totalProducts, 0) + COALESCE(totalServices, 0) + COALESCE(totalParts, 0) AS totalPrice, q.is_cancelled
                                 FROM td_quotations q
                                 JOIN md_quotation_clients qc ON q.quotation_client_id = qc.quotation_client_id
                                 JOIN md_clients c ON qc.client_id = c.client_id
                                 JOIN md_contactperson cp ON c.contact_person_id = cp.contact_person_id
                                 JOIN md_companies co ON c.company_id = co.company_id
-                                JOIN md_quotation_products qp ON q.quotation_id = qp.quotation_id
-                                GROUP BY q.quotation_id`, [])
+                                LEFT JOIN (
+                                    SELECT
+                                        quotation_id,
+                                        SUM(discounted_price_each * quantity) AS totalProducts
+                                    FROM
+                                        md_quotation_products
+                                    GROUP BY
+                                        quotation_id
+                                ) qp ON q.quotation_id = qp.quotation_id
+                                LEFT JOIN (
+                                    SELECT
+                                        quotation_id,
+                                        SUM(discounted_price_each * quantity) AS totalServices
+                                    FROM
+                                        md_quotation_services
+                                    GROUP BY
+                                        quotation_id
+                                ) qs ON q.quotation_id = qs.quotation_id
+                                LEFT JOIN (
+                                    SELECT
+                                        quotation_id,
+                                        SUM(discounted_price_each * quantity) AS totalParts
+                                    FROM
+                                        md_quotation_parts
+                                    GROUP BY
+                                        quotation_id
+                                ) qr ON q.quotation_id = qr.quotation_id;`, [])
 
         res.send(data)
     })
@@ -39,7 +64,7 @@ module.exports = (query) => {
         const clientResponse = await query(clientQuery, [id])
 
         // getting the product info
-        const productQuery = `SELECT qp.quantity, qp.discounted_price_each*qp.quantity AS totalPrice, p.product_srp as srp, p.unit_model, 
+        const productQuery =   `SELECT qp.quantity, qp.discounted_price_each*qp.quantity AS totalPrice, p.product_srp as srp,
                                 CONCAT(product_hp, ' HP ', UPPER(product_type), ' TYPE ', CASE WHEN is_inverter = 1 THEN 'INVERTER' WHEN is_inverter = 0 THEN 'NON-INVERTER' END) as article
                                 FROM md_quotation_products qp
                                 JOIN md_products p ON qp.product_id = p.product_id
@@ -48,13 +73,39 @@ module.exports = (query) => {
         const products = productResponse.map(obj => {
             // Create a new object with the existing properties and the new property
             return { ...obj, unit: 'UNIT' };
-          });
+        });
+
+        // getting the services info
+        const servicesQuery =  `SELECT s.description as article, s.service_srp AS srp, qs.discounted_price_each*qs.quantity as totalPrice, qs.quantity
+                                FROM md_quotation_services qs
+                                JOIN md_services s ON qs.services_id = s.services_id
+                                WHERE quotation_id = ?`
+        const servicesResponse = await query(servicesQuery, [id])
+        const services = servicesResponse.map(obj => {
+            return { ...obj, unit: 'SERVICE' };
+        });
+        // getting the parts info
+        const partsQuery = `SELECT CONCAT(p.description, ' ', '(', p.name, ')') as article, p.parts_srp as srp, qp.quantity, (qp.discounted_price_each*qp.quantity) as totalPrice
+                            FROM md_quotation_parts qp
+                            JOIN md_parts p ON qp.parts_id = p.parts_id
+                            WHERE qp.quotation_id = ?`
+        const partsResponse = await query(partsQuery, [id])
+        const parts = partsResponse.map(obj => {
+            return { ...obj, unit: 'PARTS' };
+        });
+
+        const quotation = [
+            ...products,
+            ...services,
+            ...parts
+        ]
 
         const data = {
             client: clientResponse,
-            products: products,
-            //parts: parts,
-            //services: services
+            quotation: quotation,
+            total: quotation.reduce((sum, item) => {
+                return sum + item.totalPrice
+            }, 0)
         }
 
         console.log(data)
@@ -104,13 +155,29 @@ module.exports = (query) => {
             console.log('STEP 3: posting offer')
 
             //post products
-            const offer_query = 'INSERT INTO md_quotation_products (quotation_id, product_id, discounted_price_each, quantity) VALUES (?, ?, ?, ?)'
+            const offer_queryProduct = 'INSERT INTO md_quotation_products (quotation_id, product_id, discounted_price_each, quantity) VALUES (?, ?, ?, ?)'
+            const offer_queryService = 'INSERT INTO md_quotation_services (quotation_id, services_id, discounted_price_each, quantity) VALUES (?, ?, ?, ?)'
+            const offer_queryParts = 'INSERT INTO md_quotation_parts (quotation_id, parts_id, discounted_price_each, quantity) VALUES (?, ?, ?, ?)'
             offer.map(async (off, index) => {
 
                 console.log(`STEP 3.${index}: posting offer item`)
-
-                const offer_data = await query(offer_query, [quo_id, off.product_id, off.discPrice, off.quantity])
-                console.log(offer_data)
+                // determine offer type
+                const offering = off.unit
+                if (offering === 'product') {
+                    console.log('Offering is a', offering)
+                    const offer_data = await query(offer_queryProduct, [quo_id, off.product_id, off.discPrice, off.quantity])
+                    console.log(offer_data)
+                }
+                else if (offering === 'service'){
+                    console.log('Offering is a', offering)
+                    const offer_data = await query(offer_queryService, [quo_id, off.services_id, off.discPrice, off.quantity])
+                    console.log(offer_data)
+                }
+                else if (offering === 'parts'){
+                    console.log('Offering is a', offering)
+                    const offer_data = await query(offer_queryParts, [quo_id, off.parts_id, off.discPrice, off.quantity])
+                    console.log(offer_data)
+                }
             })
 
             res.status(200).json({message: `Quotation successfully posted...`})
