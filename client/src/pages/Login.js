@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';  // Import useHistory
 import { Row, Form } from 'react-bootstrap';
 import '../index.css';
 import banner from '../assets/gree_banner.png';
+import axios from 'axios';
 
 const LoginScreen = () => {
     const [username, setUsername] = useState('');
@@ -11,18 +12,23 @@ const LoginScreen = () => {
 
     const navigate = useNavigate();
 
-    const handleLogin = () => {
-        // Perform authentication logic here
-        // For simplicity, let's just log the username and password for now
-        console.log('Username:', username);
-        console.log('Password:', password);
-
-        // Check credentials (replace with your authentication logic)
-        if (username === '1' && password === '123') {
-            // Use Link to navigate to /home route
-            navigate('/home');
+    const handleLogin = async (event) => {
+        event.preventDefault();
+    
+        try {
+            const response = await axios.post('http://localhost:4000/api/login', { username, password });
+            if (response.data.message === "Login successful") {
+                navigate('/home');
+            } else {
+                alert('Incorrect username or password');
+            }
+        } catch (error) {
+            console.error('Login failed:', error.message);
+            alert('An error occurred while logging in');
         }
     };
+    
+    
 
     return (
         <div style={{ background: '#E5EDF4', color: '#014c91', minHeight: '100vh', overflowX: 'hidden' }}>

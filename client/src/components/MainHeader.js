@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
 
 const MainHeader = () => {
+
     const [showDropdown, setShowDropdown] = useState(false);
 
     const navigate = useNavigate();
@@ -12,9 +13,7 @@ const MainHeader = () => {
     };
 
     const handleLogout = () => {
-        // Implement your logout logic here
-        console.log('Logging out...');
-        navigate('/');
+        navigate('/'); // Navigate to the login page after logout
     };
 
     return (
@@ -23,7 +22,7 @@ const MainHeader = () => {
             <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', position: 'relative' }} onClick={handleDropdownToggle}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <FaUser size={20} style={{ marginRight: '5px' }} />
-                    <div style={{ marginRight: '10px' }}>Miguel Perez</div>
+                    <div style={{ marginRight: '10px' }}></div>
                 </div>
                 <span>&#9662;</span>
                 {showDropdown && (

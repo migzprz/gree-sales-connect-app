@@ -30,47 +30,45 @@ function App() {
   return (
     <>
           <BrowserRouter>
-              <Routes>
 
-                  {/* General Pages */}
-                  <Route path="/" element={<Login/>} />
-                  <Route path="/home" element={<Home/>}/>
+                <Routes>
 
-                  {/* Sales Module */}
-                  <Route path="/viewoculars" element={<ViewOculars/>}/> 
-                  <Route path="/setocular" element={<SetOcular/>}/> 
-                  <Route path="/generatequotation" element={<GenerateQuotation/>}/> 
-                  <Route path="/generatequotation/:id" element={<GenerateQuotation/>}/> 
-                  <Route path="/viewquotations" element={<ViewQuotations/>}/> 
-                  <Route path="/generateinvoice" element={<GenerateInvoice/>}/> 
-                  <Route path="/converttosale" element={<ConvertToSale/>}/> 
-                  <Route path="/viewsales" element={<ViewSales/>}/> 
-                  <Route path="/viewsaledetails" element={<ViewSaleDetails/>}/>    
-                  <Route path="/viewclients" element={<ViewClients/>}/>
-                  <Route path="/viewclientdetails/:id" element={<ViewClientDetails/>}/>
-                  <Route path="/downloadquotation" element={<DownloadQuotation/>}/>
+                    {/* General Pages */}
+                    <Route path="/" element={<Login/>} />
+                    <Route path="/home" element={<Home/>}/>
 
-                  {/* Aftersales Module */}
-                  <Route path="/viewwarranties" element={<ViewWarranties/>}/>
-                  <Route path="/viewwarrantydetails" element={<ViewWarrantyDetails/>}/>
-                  <Route path="/searchwarranty" element={<SearchWarranty/>}/>
-                  <Route path="/claimwarranty" element={<ClaimWarranty/>}/>
+                    {/* Sales Module */}
+                    <Route path="/viewoculars" element={<ViewOculars/>}/> 
+                    <Route path="/setocular" element={<SetOcular/>}/> 
+                    <Route path="/generatequotation" element={<GenerateQuotation/>}/> 
+                    <Route path="/generatequotation/:id" element={<GenerateQuotation/>}/> 
+                    <Route path="/viewquotations" element={<ViewQuotations/>}/> 
+                    <Route path="/generateinvoice" element={<GenerateInvoice/>}/> 
+                    <Route path="/converttosale" element={<ConvertToSale/>}/> 
+                    <Route path="/viewsales" element={<ViewSales/>}/> 
+                    <Route path="/viewsaledetails" element={<ViewSaleDetails/>}/>    
+                    <Route path="/viewclients" element={<ViewClients/>}/>
+                    <Route path="/viewclientdetails/:id" element={<ViewClientDetails/>}/>
+                    <Route path="/downloadquotation" element={<DownloadQuotation/>}/>
 
-                  {/* Executive Module */}
-                  <Route path="/report" element={<GenerateReport/>}/> 
-                  <Route path="/viewexpenses" element={<ViewExpenses/>}/>
-                  <Route path="/viewexpensedetails/:id" element={<ViewExpenseDetails/>}/>
-                  <Route path="/recordexpenses" element={<RecordExpenses/>}/>
+                    {/* Aftersales Module */}
+                    <Route path="/viewwarranties" element={<ViewWarranties/>}/>
+                    <Route path="/viewwarrantydetails" element={<ViewWarrantyDetails/>}/>
+                    <Route path="/searchwarranty" element={<SearchWarranty/>}/>
+                    <Route path="/claimwarranty" element={<ClaimWarranty/>}/>
 
-                  {/* SysAd Module */}
-                  <Route path="/viewproducts" element={<ViewProducts/>}/>
-                  <Route path="/viewusers" element={<ViewUsers/>}/>
-                  <Route path="/viewtechnicians" element={<ViewTechnicians/>}/>
+                    {/* Executive Module */}
+                    <Route path="/report" element={<GenerateReport/>}/> 
+                    <Route path="/viewexpenses" element={<ViewExpenses/>}/>
+                    <Route path="/viewexpensedetails/:id" element={<ViewExpenseDetails/>}/>
+                    <Route path="/recordexpenses" element={<RecordExpenses/>}/>
 
-                  
-                  
+                    {/* SysAd Module */}
+                    <Route path="/viewproducts" element={<ViewProducts/>}/>
+                    <Route path="/viewusers" element={<ViewUsers/>}/>
+                    <Route path="/viewtechnicians" element={<ViewTechnicians/>}/>
 
-              </Routes>
+                  </Routes>
           </BrowserRouter>
     </>
   );
