@@ -9,6 +9,60 @@ import axios from 'axios';
 const SaleConvertDetails = () => {
     
     const [validated, setValidated] = useState(false);
+    const [technicians, setTechnicians] = useState([])
+    const [mop, setMop] = useState([])
+    const [payment, setPayments] = useState({})
+    const [delivery, setDelivery] = useState({})
+    const [installation, setInstallation] = useState({})
+    const [services, setServices] = useState({})
+
+    useEffect(() => {
+        try {
+            const fetchdata = async () => {
+                const res = await axios.get(`http://localhost:4000/api/getModeOfPayments`)
+                const res2 = await axios.get(`http://localhost:4000/api/getTechnicians`)
+                setMop(res.data)
+                setTechnicians(res2.data)
+            }
+            fetchdata()
+        } catch (error) {
+            console.error(error)
+        }
+    }, [])
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        const pay = ['isInstallment', 'mop_id', 'amount', 'refNo']
+        const del = ['isPickup', 'deliveryDate', 'deliveryTime']
+        const ins = ['installationType', 'installationSDate', 'installationSTime', 'installationEDate', 'installationETime', 'installationTechnician']
+        const ser = ['serviceDate', 'serviceTime', 'serviceTechnician']
+
+        if (pay.includes(name)) {
+            setPayments((prev) => ({
+                ...prev,
+                [name]: value
+            }));
+        }
+        if (del.includes(name)) {
+            setDelivery((prev) => ({
+                ...prev,
+                [name]: value
+            }));
+        }
+        if (ins.includes(name)) {
+            setInstallation((prev) => ({
+                ...prev,
+                [name]: value
+            }));
+        }
+        if (ser.includes(name)) {
+            setServices((prev) => ({
+                ...prev,
+                [name]: value
+            }));
+        }
+    }
 
     const handleSubmit = async (event) => {
       const form = event.currentTarget;
@@ -21,7 +75,18 @@ const SaleConvertDetails = () => {
 
     };
 
-
+    useEffect(() => {
+        console.log(payment)
+    }, [payment])
+    useEffect(() => {
+        console.log(delivery)
+    }, [delivery])
+    useEffect(() => {
+        console.log(installation)
+    }, [installation])
+    useEffect(() => {
+        console.log(services)
+    }, [services])
 
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
@@ -45,14 +110,20 @@ const SaleConvertDetails = () => {
                                 type="radio"
                                 id="downPayment"
                                 label="Down Payment"
-                                name="paymentOption"
+                                name="isInstallment"
+                                value={1}
+                                onChange={handleChange}
+                                checked={payment.isInstallment === '1'}
                                 required
                             />
                             <Form.Check
                                 type="radio"
                                 id="fullPayment"
                                 label="Full Payment"
-                                name="paymentOption"
+                                name="isInstallment"
+                                value={0}
+                                onChange={handleChange}
+                                checked={payment.isInstallment === '0'}
                                 required
                             />
                         </div>
@@ -65,11 +136,11 @@ const SaleConvertDetails = () => {
                 <Col lg="2">
                         <Form.Group controlId="paymentMode">
                             <Form.Label>Mode of Payment</Form.Label>
-                            <Form.Control as="select" required>
-                                <option value=""> Select </option>
-                                <option value="1"> One </option>
-                                <option value="2"> Two </option>
-                                <option value="3"> Three </option>
+                            <Form.Control as="select" name='mop_id' onChange={handleChange} required>
+                                <option value=''>Select</option>
+                                {mop.map((m, index) => (
+                                    <option key={index} value={m.mop_id}>{m.name}</option>
+                                ))}
                             </Form.Control>
                             <Form.Control.Feedback type="invalid">
                                 Please choose a mode of payment.
@@ -82,8 +153,8 @@ const SaleConvertDetails = () => {
                             <Form.Label>Amount</Form.Label>
                             <InputGroup>
                                 <InputGroup.Text> ₱ </InputGroup.Text>
-                                <Form.Control   className="money" type="number" inputmode="numeric" min="0" 
-                                                required onWheel={(e) => e.target.blur()}  />
+                                <Form.Control   className="money" type="number" inputmode="numeric" min="0" name='amount' onChange={handleChange}
+                                                required onWheel={(e) => e.target.blur()} disabled={payment.isInstallment === '0'} />
                             </InputGroup>
                             <Form.Control.Feedback type="invalid">
                                 Please provide an amount.
@@ -94,7 +165,7 @@ const SaleConvertDetails = () => {
                 <Col lg="2">
                         <Form.Group controlId="paymentMode">
                             <Form.Label>Reference Number</Form.Label>
-                            <Form.Control type="text" required/>
+                            <Form.Control type="text" name='refNo'onChange={handleChange} disabled={payment.mop_id === '1'}/>
                             <Form.Control.Feedback type="invalid">
                                 Please input reference number
                             </Form.Control.Feedback>
@@ -111,14 +182,18 @@ const SaleConvertDetails = () => {
                                 type="radio"
                                 id="delivery"
                                 label="Delivery"
-                                name="transportationMode"
+                                name="isPickup"
+                                value={0}
+                                onChange={handleChange}
                                 required
                             />
                             <Form.Check
                                 type="radio"
                                 id="pickup"
                                 label="Pick Up"
-                                name="transportationMode"
+                                name="isPickup"
+                                value={1}
+                                onChange={handleChange}
                                 required
                             />
                         </div>
@@ -130,8 +205,8 @@ const SaleConvertDetails = () => {
 
                 <Col lg="2">
                     <Form.Group controlId="date">
-                        <Form.Label>Delivery Date</Form.Label>
-                        <Form.Control type="date" required/>
+                        <Form.Label>{delivery.isPickup === '1' ? 'Pickup ' : 'Delivery '} Date</Form.Label>
+                        <Form.Control type="date" name='deliveryDate' onChange={handleChange} required/>
                         <Form.Control.Feedback type="invalid">
                             Please choose a valid date.
                         </Form.Control.Feedback>
@@ -140,8 +215,8 @@ const SaleConvertDetails = () => {
 
                 <Col lg="2">
                     <Form.Group controlId="time">
-                        <Form.Label>Delivery Time</Form.Label>
-                        <Form.Control type="time" required/>
+                        <Form.Label>{delivery.isPickup === '1' ? 'Pickup ' : 'Delivery '} Time</Form.Label>
+                        <Form.Control type="time" name='deliveryTime' onChange={handleChange} required/>
                         <Form.Control.Feedback type="invalid">
                             Please choose a valid time.
                         </Form.Control.Feedback>
@@ -158,21 +233,30 @@ const SaleConvertDetails = () => {
                                 type="radio"
                                 id="yesInstall"
                                 label="One Day installation"
-                                name="forInstallation"
+                                name="installationType"
+                                value={1}
+                                onChange={handleChange}
+                                checked={installation.installationType === '1'}
                                 required
                             />
                             <Form.Check
                                 type="radio"
-                                id="noInstall"
+                                id="yesInstallMultiple"
                                 label="Multiple Days Installation"
-                                name="forInstallation"
+                                name="installationType"
+                                value={2}
+                                onChange={handleChange}
+                                checked={installation.installationType === '2'}
                                 required
                             />
                             <Form.Check
                                 type="radio"
                                 id="noInstall"
                                 label="No Installation"
-                                name="forInstallation"
+                                name="installationType"
+                                value={3}
+                                onChange={handleChange}
+                                checked={installation.installationType === '3'}
                                 required
                             />
                         </div>
@@ -185,7 +269,7 @@ const SaleConvertDetails = () => {
                 <Col lg="2">
                     <Form.Group controlId="installstartdate">
                         <Form.Label>Installation Start Date</Form.Label>
-                        <Form.Control type="date" required/>
+                        <Form.Control type="date" name='installationSDate' onChange={handleChange} required/>
                         <Form.Control.Feedback type="invalid">
                             Please choose a valid date.
                         </Form.Control.Feedback>
@@ -195,7 +279,7 @@ const SaleConvertDetails = () => {
                 <Col lg="2">
                     <Form.Group controlId="installstarttime">
                         <Form.Label>Installation Start Time</Form.Label>
-                        <Form.Control type="time" required/>
+                        <Form.Control type="time" name='installationSTime' onChange={handleChange} required/>
                         <Form.Control.Feedback type="invalid">
                             Please choose a valid time.
                         </Form.Control.Feedback>
@@ -206,9 +290,9 @@ const SaleConvertDetails = () => {
             <Row style={{ marginTop: '-30px' }}>
                 <Col lg="2"/>
                 <Col lg="2">
-                    <Form.Group controlId="installstartdate">
+                    <Form.Group controlId="installenddate">
                         <Form.Label>Installation End Date</Form.Label>
-                        <Form.Control type="date" required/>
+                        <Form.Control type="date" name='installationEDate' onChange={handleChange}/>
                         <Form.Control.Feedback type="invalid">
                             Please choose a valid date.
                         </Form.Control.Feedback>
@@ -216,9 +300,9 @@ const SaleConvertDetails = () => {
                 </Col>
 
                 <Col lg="2">
-                    <Form.Group controlId="installstarttime">
+                    <Form.Group controlId="installendtime">
                         <Form.Label>Installation End Time</Form.Label>
-                        <Form.Control type="time" required/>
+                        <Form.Control type="time" name='installationETime' onChange={handleChange} required/>
                         <Form.Control.Feedback type="invalid">
                             Please choose a valid time.
                         </Form.Control.Feedback>
@@ -228,11 +312,11 @@ const SaleConvertDetails = () => {
                 <Col lg="2">
                     <Form.Group controlId="paymentMode">
                         <Form.Label>Technician</Form.Label>
-                        <Form.Control as="select" required>
+                        <Form.Control as="select" name='installationTechnician' onChange={handleChange} required>
                             <option value=""> Select </option>
-                            <option value="1"> One </option>
-                            <option value="2"> Two </option>
-                            <option value="3"> Three </option>
+                            {technicians.map((t, index) =>(
+                                <option key={index} value={t.technician_id}>{t.complete_name}</option>
+                            ))}
                         </Form.Control>
                         <Form.Control.Feedback type="invalid">
                             Please choose a mode of payment.
@@ -247,7 +331,7 @@ const SaleConvertDetails = () => {
                 <Col lg="2">
                     <Form.Group controlId="installstartdate">
                         <Form.Label>Service Date</Form.Label>
-                        <Form.Control type="date" required/>
+                        <Form.Control type="date" name='serviceDate' onChange={handleChange} required/>
                         <Form.Control.Feedback type="invalid">
                             Please choose a valid date.
                         </Form.Control.Feedback>
@@ -257,7 +341,7 @@ const SaleConvertDetails = () => {
                 <Col lg="2">
                     <Form.Group controlId="installstarttime">
                         <Form.Label>Service Time</Form.Label>
-                        <Form.Control type="time" required/>
+                        <Form.Control type="time" name='serviceTime' onChange={handleChange} required/>
                         <Form.Control.Feedback type="invalid">
                             Please choose a valid time.
                         </Form.Control.Feedback>
@@ -267,11 +351,11 @@ const SaleConvertDetails = () => {
                 <Col lg="2">
                     <Form.Group controlId="paymentMode">
                         <Form.Label>Technician</Form.Label>
-                        <Form.Control as="select" required>
+                        <Form.Control as="select" name='serviceTechnician' onChange={handleChange} required>
                             <option value=""> Select </option>
-                            <option value="1"> One </option>
-                            <option value="2"> Two </option>
-                            <option value="3"> Three </option>
+                            {technicians.map((t, index) =>(
+                                <option key={index} value={t.technician_id}>{t.complete_name}</option>
+                            ))}
                         </Form.Control>
                         <Form.Control.Feedback type="invalid">
                             Please choose a mode of payment.

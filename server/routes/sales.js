@@ -25,10 +25,16 @@ module.exports = (query) => {
         const query = 'INSERT INTO md_sales_payments (sales_id, mop_id, is_installment, amount, date_created) VALUES (?, ?, ?, ?, ?)'
         const response = await query(query, [/** insert data here */])
         return response
-    } 
+    }
+
+    const postServices = async (data, id) => {
+        const query = ''
+        const response = await query(query, [/** insert data here */])
+        return response
+    }
 
     router.post('/convertToSale', async (req, res) => {
-        const { id, delivery, installation, sale, payment } = req.body
+        const { id, delivery, installation, services, payment } = req.body
 
         // post order: sales, delivery, installation, payment
         let step = 1 // for debugging
@@ -41,19 +47,28 @@ module.exports = (query) => {
             const salesId = salesResponse.insertId
             step++
 
-            // STEP 2: delivery
+            // STEP 2: update quotation
+
+
+            // STEP 3: delivery
             console.log('STEP 2: Attempting to post DELIVERY record...')
             const deliveryResponse = await postDelivery(delivery, salesId)
             console.log('DELIVERY SUCCESSFULL: ', deliveryResponse)
             step++ 
 
-            // STEP 3: installation
+            // STEP 4: installation
             console.log('STEP 3: Attempting to post INSTALLATION record...')
             const installationResponse = await postInstallation(installation, salesId)
             console.log('INSTALLATION SUCCESSFULL: ', installationResponse)
             step++ 
 
-            // STEP 4: payment
+            // STEP 5: services
+            console.log('STEP 3: Attempting to post INSTALLATION record...')
+            const servicesResponse = await postServices(services, salesId)
+            console.log('SERVICES SUCCESSFULL: ', servicesResponse)
+            step++ 
+
+            // STEP 6: payment
             console.log('STEP 4: Attempting to post PAYMENT record...')
             const paymentResponse = await postPayment(payment, salesId)
             console.log('PAYMENT SUCCESSFULL: ', paymentResponse)
