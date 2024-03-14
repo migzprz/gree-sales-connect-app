@@ -65,32 +65,44 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
     console.log(itemList)
 
     const handleAddToItemList = (offer) => {
+
+        // handle different offering types
+        const unit_srp = offer.unit + '_srp'
+
         // Create a new object with the offer's properties and add additional fields
         const newItem = {
         ...offer,
         quantity: 1,
-        discPrice: offer.product_srp, // Set discPrice to be the same as price initially
-        totalPrice: offer.product_srp
+        discPrice: offer[unit_srp], // Set discPrice to be the same as price initially
+        totalPrice: offer[unit_srp]
         };
+
+        console.log(newItem)
+
         // Add the new item to the itemList
         setItemList(prevItemList => [...prevItemList, newItem]);
     };
 
   // Function to calculate totals
     const calculateTotals = () => {
+
         let subtotal = 0;
         let total = 0;
         let totalDisc = 0;
     
         // Calculate subtotal and total
         itemList.forEach(item => {
-        subtotal += parseFloat(item.product_srp) * item.quantity;
+        // handle different offering types
+        const unit_srp = item.unit + '_srp'
+        subtotal += parseFloat(item[unit_srp]) * item.quantity;
         total += parseFloat(item.discPrice) * item.quantity;
         });
     
         // Calculate total discount
         totalDisc = total - subtotal;
     
+        console.log(subtotal, total, totalDisc)
+
         // Update itemListTotals state
         setItemListTotals({
         subtotal: subtotal,
@@ -109,6 +121,13 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
     const formatNumber = (number) => {
         return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
+    const formatItemList = (item) => {
+
+        // handle different offering types
+        const unit_srp = item.unit + '_srp'
+
+        return item[unit_srp].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
   
 
   return (
@@ -202,7 +221,7 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
                     
                     <Col lg="12">
                         <Row>
-                        {offerList.map((offer, index) => (
+                        {(offerList.products).map((offer, index) => (
                             <Col className="mt-3" lg="2" key={index}>
                             <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
                                 <Card.Title>{offer.display}</Card.Title>
@@ -210,6 +229,30 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
                                 {offer.unit_model} <br />
                                 <strong>₱ {formatNumber(offer.product_srp)}  </strong><br />
                                 {offer.product_type.toUpperCase()}
+                                </Card.Text>
+                            </Card>
+                            </Col>
+                        ))}
+                        {(offerList.services).map((offer, index) => (
+                            <Col className="mt-3" lg="2" key={index}>
+                            <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
+                                <Card.Title>{offer.description}</Card.Title>
+                                <Card.Text>
+                                --- <br />
+                                <strong>₱ {formatNumber(offer.service_srp)}  </strong><br />
+                                {offer.unit.toUpperCase()}
+                                </Card.Text>
+                            </Card>
+                            </Col>
+                        ))}
+                        {(offerList.parts).map((offer, index) => (
+                            <Col className="mt-3" lg="2" key={index}>
+                            <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
+                                <Card.Title>{offer.description}</Card.Title>
+                                <Card.Text>
+                                {offer.name} <br />
+                                <strong>₱ {formatNumber(offer.parts_srp)}  </strong><br />
+                                {offer.unit.toUpperCase()}
                                 </Card.Text>
                             </Card>
                             </Col>
@@ -250,10 +293,10 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
                                                                             value={item.quantity} onChange={(e) => handleItemListChange(e, index, 'quantity')} />
                                                         </Form.Group>
                                                     </td>
-                                                    <td style={{ color: '#014c91' }}>{item.display}</td>
-                                                    <td style={{ color: '#014c91' }}>{item.unit_model}</td>
+                                                    <td style={{ color: '#014c91' }}>{item.display || item.description}</td>
+                                                    <td style={{ color: '#014c91' }}>{item.unit_model || item.name}</td>
                                                     <td style={{ color: '#014c91' }}>
-                                                        ₱ {formatNumber(item.product_srp)}
+                                                        ₱ {formatItemList(item)}
                                                     </td>
                                                     <td style={{ color: '#014c91' }}>
                                                         <Form.Group controlId={`discPrice-${index}`}>
@@ -376,14 +419,38 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
 
                     <div style={{ maxHeight: '78vh', overflowY: 'auto', overflowX:'hidden' }}>
                         <Row>
-                        {offerList.map((offer, index) => (
-                            <Col className="mt-3" lg="4" key={index}>
+                        {(offerList.products).map((offer, index) => (
+                            <Col className="mt-3" lg="2" key={index}>
                             <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
                                 <Card.Title>{offer.display}</Card.Title>
                                 <Card.Text>
                                 {offer.unit_model} <br />
                                 <strong>₱ {formatNumber(offer.product_srp)}  </strong><br />
                                 {offer.product_type.toUpperCase()}
+                                </Card.Text>
+                            </Card>
+                            </Col>
+                        ))}
+                        {(offerList.services).map((offer, index) => (
+                            <Col className="mt-3" lg="2" key={index}>
+                            <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
+                                <Card.Title>{offer.description}</Card.Title>
+                                <Card.Text>
+                                --- <br />
+                                <strong>₱ {formatNumber(offer.service_srp)}  </strong><br />
+                                {offer.unit.toUpperCase()}
+                                </Card.Text>
+                            </Card>
+                            </Col>
+                        ))}
+                        {(offerList.parts).map((offer, index) => (
+                            <Col className="mt-3" lg="2" key={index}>
+                            <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
+                                <Card.Title>{offer.description}</Card.Title>
+                                <Card.Text>
+                                {offer.name} <br />
+                                <strong>₱ {formatNumber(offer.parts_srp)}  </strong><br />
+                                {offer.unit.toUpperCase()}
                                 </Card.Text>
                             </Card>
                             </Col>

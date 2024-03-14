@@ -153,9 +153,9 @@ const PreviewQuotation = ({ client, offers, terms, POST }) => {
                         {offers.map((item, index) => (
                             <tr key={index}>
                                 <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.quantity}</td>
-                                <td colSpan="2" style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.display}</td>
-                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.unit_model}</td>
-                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.product_srp}</td>
+                                <td colSpan="2" style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.display || item.description}</td>
+                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.unit_model || item.name || '--'}</td>
+                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.product_srp || item.service_srp || item.parts_srp}</td>
                                 <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.discPrice}</td>
                                 <td style={{ padding: '0', border: '1px solid black', textAlign: 'right' }}>
                                     <span style={{ float: 'left', marginLeft: '5px' }}>₱</span> 
