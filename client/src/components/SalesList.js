@@ -5,11 +5,27 @@ import { FaEllipsisH, FaFilter, FaSort, FaSearch, FaCheck, FaClock} from 'react-
 import { Row, Col, Card, CardBody, CardHeader, Table, Dropdown } from 'react-bootstrap';
 import '../index.css';
 import { Link } from 'react-router-dom';
-
+import axios from 'axios';
 
 const SalesList = () => {
 
+    const [sales, setSales] = useState([])
     const [activeDropdown, setActiveDropdown] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/api/getSales/')
+                setSales(response.data)
+            } catch (error) {
+                console.error('Error fetching data: ', error)
+            }
+        }
+        fetchData()
+    }, [])
+    useEffect(() => {
+        console.log(sales)
+    }, [sales])
 
     const handleEllipsisClick = (index) => {
         setActiveDropdown(index === activeDropdown ? null : index);
@@ -147,20 +163,29 @@ const SalesList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {quotationList.map((quotation, index) => (
-                                <React.Fragment key={quotation.id}>
+                            {sales.map((sales, index) => (
+                                <React.Fragment key={sales.sales_id}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                         <td style={{ color: '#014c91' }}>
-                                            <Link to={`/viewsaledetails`} style={{ color: '#014c91'}}>{quotation.id}</Link>
+                                            <Link to={`/viewsaledetails?id=${sales.sales_id}`} style={{ color: '#014c91'}}>{String(sales.sales_id).padStart(4, '0')}</Link>
                                         </td>
-                                        <td style={{color: '#014c91'}}>{quotation.client}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.company}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.contactNumber}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.dateGenerated}</td>
-                                        <td style={{color: '#008000'}}><FaCheck size={20}/> {quotation.dateGenerated}</td>
-                                        <td style={{color: '#DC6601'}}><FaClock size={20}/> {quotation.dateGenerated}</td>
-                                        <td style={{color: '#014c91'}}>-</td>
-                                        <td style={{color: '#014c91'}}>{quotation.status}</td>
+                                        <td style={{color: '#014c91'}}>{sales.client_name}</td>
+                                        <td style={{color: '#014c91'}}>{sales.company_name}</td>
+                                        <td style={{color: '#014c91'}}>{sales.contact_number}</td>
+                                        <td style={{color: '#014c91'}}>{sales.transportMode}</td>
+                                        <td style={{color: sales.hasDelivery && sales.allDeliveriesCompleted ? '#008000' : (sales.hasDelivery && !sales.allDeliveriesCompleted ? '#DC6601' : '')}}>
+                                            {sales.hasDelivery && sales.allDeliveriesCompleted ? (<FaCheck size={20}/>) : (sales.hasDelivery && !sales.allDeliveriesCompleted ? (<FaClock size={20}/>) : null)}
+                                            {sales.latest_delivery_date ? new Date(sales.latest_delivery_date).toLocaleString() : ''}
+                                        </td>
+                                        <td style={{color: sales.hasInstallation && sales.allInstallationsCompleted ? '#008000' : (sales.hasInstallation && !sales.allInstallationsCompleted ? '#DC6601' : '')}}>
+                                            {sales.hasInstallation && sales.allInstallationsCompleted ? (<FaCheck size={20}/>) : (sales.hasInstallation && !sales.allInstallationsCompleted ? (<FaClock size={20}/>) : null)}
+                                            {sales.latest_installation_date ? new Date(sales.latest_installation_date).toLocaleString() : ''}
+                                        </td>
+                                        <td style={{color: sales.hasService && sales.allServiceCompleted ? '#008000' : (sales.hasService && !sales.allServiceCompleted ? '#DC6601' : '')}}>
+                                            {sales.hasService && sales.allServiceCompleted ? (<FaCheck size={20}/>) : (sales.hasService && !sales.allServiceCompleted ? (<FaClock size={20}/>) : null)}
+                                            {sales.latest_service_date ? new Date(sales.latest_service_date).toLocaleString() : ''}
+                                        </td>
+                                        <td style={{color: '#014c91'}}>{sales.is_completed === 0 ? 'ONGOING' : 'COMPLETED'}</td>
                                         <td style={{ color: '#014c91' }}>
                                         <div style={{ position: 'relative' }}>
                                             <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
