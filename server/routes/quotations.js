@@ -122,6 +122,74 @@ module.exports = (query) => {
         res.send(data)
     })
 
+    router.get('/doesQuotationContainOnlyService/:id', async (req, res) => {
+        const { id } = req.params
+
+        const data = await query(`SELECT
+        CASE
+            WHEN EXISTS (
+                SELECT *
+                FROM md_quotation_products qp
+                WHERE qp.quotation_id = q.id
+            ) THEN FALSE
+            WHEN EXISTS (
+                SELECT *
+                FROM md_quotation_parts qr
+                WHERE qr.quotation_id = q.id
+            ) THEN FALSE
+            WHEN EXISTS (
+                SELECT *
+                FROM md_quotation_services qs
+                WHERE qs.quotation_id = q.id
+            ) THEN TRUE
+        END AS is_only_service,
+        COALESCE(
+            (SELECT TRUE
+             FROM md_quotation_services qs
+             WHERE qs.quotation_id = q.id
+             LIMIT 1), 
+            FALSE) AS has_service
+        FROM (SELECT ? AS id) AS q`, [id])
+
+        res.send(data)
+    })
+
+    router.get('/quotationTotalPrice/:id', async (req, res) => {
+        const { id } = req.params
+        const data = await query(`SELECT COALESCE(totalProducts, 0) + COALESCE(totalServices, 0) + COALESCE(totalParts, 0) AS totalPrice
+                                FROM td_quotations q
+                                JOIN md_quotation_clients qc ON q.quotation_client_id = qc.quotation_client_id
+                                LEFT JOIN (
+                                    SELECT
+                                        quotation_id,
+                                        SUM(discounted_price_each * quantity) AS totalProducts
+                                    FROM
+                                        md_quotation_products
+                                    GROUP BY
+                                        quotation_id
+                                ) qp ON q.quotation_id = qp.quotation_id
+                                LEFT JOIN (
+                                    SELECT
+                                        quotation_id,
+                                        SUM(discounted_price_each * quantity) AS totalServices
+                                    FROM
+                                        md_quotation_services
+                                    GROUP BY
+                                        quotation_id
+                                ) qs ON q.quotation_id = qs.quotation_id
+                                LEFT JOIN (
+                                    SELECT
+                                        quotation_id,
+                                        SUM(discounted_price_each * quantity) AS totalParts
+                                    FROM
+                                        md_quotation_parts
+                                    GROUP BY
+                                        quotation_id
+                                ) qr ON q.quotation_id = qr.quotation_id
+                                WHERE q.quotation_id = ?;`, [id])
+        res.send(data)
+    })
+
     router.post('/postQuotation', async (req, res) => {
 
         const { offer, terms, id } = req.body
