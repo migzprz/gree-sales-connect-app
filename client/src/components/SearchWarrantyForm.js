@@ -1,71 +1,35 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
-import { FaSearch, FaSort, FaFilter, FaCheck, FaClock, FaChevronRight } from 'react-icons/fa';
-import { Row, Col, Form, CardBody, Card, Table, Dropdown } from 'react-bootstrap';
-import '../index.css';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { FaSearch, FaSort, FaFilter, FaCheck, FaClock, FaChevronRight, FaChevronDown } from 'react-icons/fa';
+import { Row, Col, CardBody, Card, Table } from 'react-bootstrap';
+import axios from 'axios';
+import {Link} from 'react-router-dom'
 
 const SearchWarrantyForm = () => {
+    const [warrantySearchData, setWarrantySearchData] = useState([]);
+    const [expandedRows, setExpandedRows] = useState([]);
 
-    const [activeDropdown, setActiveDropdown] = useState(null);
-
-    const handleEllipsisClick = (index) => {
-        setActiveDropdown(index === activeDropdown ? null : index);
-      };
-
-      const renderDropdown = (index) => {
-        if (index === activeDropdown) {
-          return (
-            <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-              <Dropdown.Item>Convert to Sale</Dropdown.Item>
-              <Dropdown.Item>Cancel Quotation</Dropdown.Item>
-            </Dropdown.Menu>
-          );
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/api/getWarrantySearch/')
+                setWarrantySearchData(response.data)
+            } catch (error) {
+                console.error('Error fetching data: ', error)
+            }
         }
-        return null;
-      };
-      
+        fetchData()
+    },[])
 
-
-    const quotationList = [
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        // Add more ocular objects as needed
-    ];
+    const toggleRow = (quotationId) => {
+        setExpandedRows(prevState => {
+            if (prevState.includes(quotationId)) {
+                return prevState.filter(id => id !== quotationId);
+            } else {
+                return [...prevState, quotationId];
+            }
+        });
+    };
 
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
@@ -73,36 +37,28 @@ const SearchWarrantyForm = () => {
             <h5>Create a warranty claim by searching for an existing sale</h5>
             <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
 
-        
-           {/*Navigation Forms*/ }
-           <Row>
-                {/*Search Bar*/ }
-                <Col lg="3">
+            {/* Navigation Forms */}
+            {/* Search Bar */}
+            <Row>
+                {/* Search Bar */}
+                <Col lg="4">
                     <form>
-                        <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", borderRadius: "10px", 
-                                                                        overflow: "hidden"}} >
+                        <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", borderRadius: "10px", overflow: "hidden"}} >
                             <input type="search" className="form-control" placeholder="Search"/>
                             <button className="btn me-auto" style={{color: "white", backgroundColor: "#014c91"}}>
                                 <div style={{color: 'white'}}>
-                                    {React.createElement(FaSearch, { size: 20 })}
+                                    <FaSearch size={20} />
                                 </div>
                             </button>
                         </div>
                     </form>
                 </Col>
-                {/*Sorting Mechanism*/ }
-                <Col lg="3">
-                    <button className="btn mt-3 w-100" style={{color: "white", backgroundColor: "#014c91"}}>
-                        Advanced Search
-                    </button>
-                </Col>
-                <Col lg="3">
-                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
-                                                                    backgroundColor: "#014c91", borderRadius: "10px", 
-                                                                    overflow: "hidden"}}>
+                {/* Sorting Mechanism */}
+                <Col lg="4">
+                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", backgroundColor: "#014c91", borderRadius: "10px", overflow: "hidden"}}>
                         <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>
                             <div style={{padding: "5px", color: 'white'}}>
-                                {React.createElement(FaSort, { size: 20 })}
+                                <FaSort size={20} />
                             </div>
                         </div>
                         <select className="form-select">
@@ -111,15 +67,12 @@ const SearchWarrantyForm = () => {
                         </select>
                     </div>
                 </Col>
-    
-                {/*Filtering Mechanism*/ }
-                <Col lg="3">
-                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
-                                                                    backgroundColor: "#014c91", borderRadius: "10px",
-                                                                    overflow: "hidden"}}>
+                {/* Filtering Mechanism */}
+                <Col lg="4">
+                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", backgroundColor: "#014c91", borderRadius: "10px", overflow: "hidden"}}>
                         <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
                             <div style={{padding: "5px", color: 'white'}}>
-                                {React.createElement(FaFilter, { size: 20 })}
+                                <FaFilter size={20} />
                             </div>  
                         </div>
                         <select className="form-select">
@@ -136,7 +89,6 @@ const SearchWarrantyForm = () => {
                     <Table>
                          <thead>
                             <tr>
-                                <th style={{color: '#014c91'}}>Sale Ref. #</th>
                                 <th style={{color: '#014c91'}}>Client</th>
                                 <th style={{color: '#014c91'}}>Company</th>
                                 <th style={{color: '#014c91'}}>Contact Number</th>
@@ -148,41 +100,77 @@ const SearchWarrantyForm = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {quotationList.map((quotation, index) => (
-                                <React.Fragment key={quotation.id}>
-                                    <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                        <td style={{color: '#014c91'}}>{quotation.client}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.company}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.contactNumber}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.dateGenerated}</td>
-                                        <td style={{color: '#008000'}}><FaCheck size={20}/> {quotation.dateGenerated}</td>
-                                        <td style={{color: '#DC6601'}}><FaClock size={20}/> {quotation.dateGenerated}</td>
-                                        <td style={{color: '#014c91'}}><FaClock size={20}/> {quotation.dateGenerated}</td>
-                                        <td style={{color: '#014c91'}}>
-                                            <button className="btn w-60" style={{color: "white", backgroundColor: "#014c91"}}>
-                                                Claim Warranty
-                                            </button>
-                                        </td>
-                                        <td style={{color: '#014c91'}}> <FaChevronRight size={20} /> </td>
-                                       
+                            {[...new Set(warrantySearchData.map(item => item.quotation_id))].map((quotationId, index) => {
+                                const claimables = warrantySearchData.filter(item => item.quotation_id === quotationId);
+                                return (
+                                    <React.Fragment key={index}>
+                                        {expandedRows.includes(quotationId) ? (
+                                            <tr style={{ borderRadius: '20px', padding: '10px' }}>
+                                                <td style={{borderBottom: 'none',color: '#014c91', width:'9%'}}>{claimables[0].client_name}</td>
+                                                <td style={{borderBottom: 'none',color: '#014c91', width:'12%'}}>{claimables[0].company_name}</td>
+                                                <td style={{borderBottom: 'none',color: '#014c91'}}>{claimables[0].client_number}</td>
+                                                <td style={{borderBottom: 'none',color: '#014c91'}}>{claimables[0].email}</td>
+                                                <td style={{borderBottom: 'none',color: '#014c91', width:'15%'}}>{claimables[0].site_address}</td>
+                                                <td style={{borderBottom: 'none',color: '#014c91'}}>{claimables[0].delivery_date}</td>
+                                                <td style={{borderBottom: 'none',color: '#014c91'}}>
+                                                    <Link to={`/claimwarranty/${claimables[0].quotation_id}`} className="btn w-60" style={{ color: "white", backgroundColor: "#014c91" }}>
+                                                        Claim Warranty
+                                                    </Link>
+                                                </td>
+                                                <td style={{borderBottom: 'none',color: '#014c91'}}>
+                                                    <button className="btn w-60" style={{color: "white", backgroundColor: "#014c91"}} onClick={() => toggleRow(quotationId)}>
+                                                        {expandedRows.includes(quotationId) ? <FaChevronDown size={20} /> : <FaChevronRight size={20} />}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            <tr style={{ borderRadius: '20px', padding: '10px' }}>
+                                                <td style={{color: '#014c91', width:'9%'}}>{claimables[0].client_name}</td>
+                                                <td style={{color: '#014c91', width:'12%'}}>{claimables[0].company_name}</td>
+                                                <td style={{color: '#014c91'}}>{claimables[0].client_number}</td>
+                                                <td style={{color: '#014c91'}}>{claimables[0].email}</td>
+                                                <td style={{color: '#014c91', width:'20%'}}>{claimables[0].site_address}</td>
+                                                <td style={{color: '#014c91'}}>{claimables[0].delivery_date}</td>
+                                                <td style={{color: '#014c91'}}>
+                                                    <Link to={`/claimwarranty/${claimables[0].quotation_id}`} className="btn w-60" style={{ color: "white", backgroundColor: "#014c91" }}>
+                                                        Claim Warranty
+                                                    </Link>
+                                                </td>
+                                                <td style={{color: '#014c91'}}>
+                                                    <button className="btn w-60" style={{color: "white", backgroundColor: "#014c91"}} onClick={() => toggleRow(quotationId)}>
+                                                        {expandedRows.includes(quotationId) ? <FaChevronDown size={20} /> : <FaChevronRight size={20} />}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        )}
                                         
-                                    </tr>
-                                </React.Fragment>
-                            ))}
+                                        {expandedRows.includes(quotationId) && (
+                                            <>
+                                                <tr key={index}>
+                                                    <th colSpan="1" style={{color: '#014c91', padding: '0', border: 'none' }}>Unit Model</th>
+                                                    <th colSpan="2" style={{color: '#014c91', padding: '0', border: 'none' }}>Description</th>
+                                                    <th colSpan="2" style={{color: '#014c91', padding: '0', border: 'none' }}>Quantity</th>
+                                                </tr>
+                                                {claimables.map((claimable, index) => (
+                                                    <tr key={index}>
+                                                        <td colSpan="1" style={{color: '#014c91',padding: '0', border: 'none' }}>{index+1}.) {claimable.unit_model}</td>
+                                                        <td colSpan="2" style={{color: '#014c91', padding: '0', border: 'none' }}>{claimable.description}</td>
+                                                        <td colSpan="2" style={{color: '#014c91', padding: '0', border: 'none' }}>{claimable.totalqty}</td>
+                                                    </tr>
+                                                ))}
+                                                <tr >
+                                                    <td colSpan="8" style={{ borderTop: 'none' }}/>
+                                                </tr>
+                                            </>
+                                        )}
+
+                                    </React.Fragment>
+                                );
+                            })}
                         </tbody>
                     </Table>
                 </CardBody>
             </Card>
-       
-
-
-       
-        
-
-        
-           
-
-
         </div>
     );
 };
