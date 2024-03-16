@@ -55,7 +55,7 @@ function App() {
                     <Route path="/viewwarranties" element={<ViewWarranties/>}/>
                     <Route path="/viewwarrantydetails" element={<ViewWarrantyDetails/>}/>
                     <Route path="/searchwarranty" element={<SearchWarranty/>}/>
-                    <Route path="/claimwarranty" element={<ClaimWarranty/>}/>
+                    <Route path="/claimwarranty/:id" element={<ClaimWarranty/>}/>
 
                     {/* Executive Module */}
                     <Route path="/report" element={<GenerateReport/>}/> 

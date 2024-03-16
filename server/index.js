@@ -13,6 +13,7 @@ const Employees = require('./routes/employees')
 const Products = require('./routes/products')
 const Executive = require('./routes/executive')
 const Sales = require('./routes/sales')
+const Aftersales = require('./routes/aftersales')
 const AuthRoute = require('./routes/authRoute')
 
 app.use(cors({
@@ -80,6 +81,7 @@ app.use('/api', Employees(query));
 app.use('/api', Products(query));
 app.use('/api', Executive(query));
 app.use('/api', Sales(query));
+app.use('/api', Aftersales(query));
 app.use('/api', AuthRoute(query));
 
 app.listen(4000, () => {
