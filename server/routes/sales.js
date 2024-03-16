@@ -246,11 +246,18 @@ module.exports = (query) => {
                                 ORDER BY ss.service_date ASC`
         const serviceResponse = await query(serviceQuery, [id])
 
+        const paymentQuery = `SELECT sp.date_created,  mop.name, sp.refNo, sp.amount
+                                FROM md_sales_payment sp
+                                JOIN ref_mode_of_payment mop ON sp.mop_id = mop.mop_id
+                                WHERE sales_id = ?;`
+        const paymentResponse = await query(paymentQuery, [id])
+
         const data = {
             detail: detailsResponse,
             delivery: deliveryRespponse,
             installation: installationResponse,
-            service: serviceResponse
+            service: serviceResponse,
+            payment: paymentResponse
         }
 
         res.send(data)

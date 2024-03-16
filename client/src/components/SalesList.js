@@ -29,61 +29,19 @@ const SalesList = () => {
 
     const handleEllipsisClick = (index) => {
         setActiveDropdown(index === activeDropdown ? null : index);
-      };
+    };
 
-      const renderDropdown = (index) => {
-        if (index === activeDropdown) {
-          return (
-            <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-              <Dropdown.Item>Convert to Sale</Dropdown.Item>
-              <Dropdown.Item>Cancel Quotation</Dropdown.Item>
-            </Dropdown.Menu>
-          );
-        }
-        return null;
-      };
-      
-
-
-    const quotationList = [
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        // Add more ocular objects as needed
-    ];
+    const renderDropdown = (index) => {
+    if (index === activeDropdown) {
+        return (
+        <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
+            <Dropdown.Item>Convert to Sale</Dropdown.Item>
+            <Dropdown.Item>Cancel Quotation</Dropdown.Item>
+        </Dropdown.Menu>
+        );
+    }
+    return null;
+    };
 
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>

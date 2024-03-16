@@ -19,6 +19,7 @@ const SaleDetails= () => {
     const [deliveries, setDeliveries] = useState([])
     const [installations, setInstallations] = useState([])
     const [services, setServices] = useState([])
+    const [payments, setPayments] = useState([])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -29,20 +30,23 @@ const SaleDetails= () => {
                 setDeliveries(response.delivery)
                 setInstallations(response.installation)
                 setServices(response.service)
+                setPayments(response.payment)
             } catch (error) {
                 console.error('Error fetching data: ', error)
             }
         }
         fetchData()
     }, [])
-    useEffect(() => {
-        console.log(deliveries)
-    }, [deliveries])
 
     const [activeOption, setActiveOption] = useState('newClient');
 
     const handleOptionClick = (option) => {
         setActiveOption(option);
+    };
+
+    //Amount Conversion Function
+    const formatNumber = (number) => {
+        return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
 
     return (
@@ -248,37 +252,45 @@ const SaleDetails= () => {
                                 </Col>
                             </Row>
 
-                            <Table>
-                                    <thead>
-                                        <tr>
-                                            <th style={{color: '#014c91'}}>Date</th>
-                                            <th style={{color: '#014c91'}}>Method</th>
-                                            <th style={{color: '#014c91'}}>Ref. #</th>
-                                            <th style={{color: '#014c91'}}>Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <React.Fragment>
-                                            <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                                <td style={{color: '#014c91'}}>Jan. 24, 2024</td>
-                                                <td style={{color: '#014c91'}}>Cash</td>
-                                                <td style={{color: '#014c91'}}>2678982</td>
-                                                <td style={{color: '#014c91'}}>₱45,000.00</td>
-                                            </tr>
-
+                            {payments && payments.length > 0 ? (
+                                <>
+                                    <Table>
+                                        <thead>
                                             <tr>
-                                                <td colspan="3" style={{color: '#014c91', textAlign: 'right'}}>Total Amount Paid</td>
-                                                <td style={{color: '#014c91'}}><strong>₱45,000.00 </strong></td>
+                                                <th style={{color: '#014c91'}}>Date</th>
+                                                <th style={{color: '#014c91'}}>Method</th>
+                                                <th style={{color: '#014c91'}}>Ref. #</th>
+                                                <th style={{color: '#014c91'}}>Amount</th>
                                             </tr>
-                                            <tr>
-                                                <td colspan="3" style={{color: '#014c91', textAlign: 'right'}}>Remaining Balance</td>
-                                                <td style={{color: '#014c91'}}><strong>₱15,000.00 </strong></td>
-                                            </tr>
-                                        </React.Fragment>
-                                    </tbody>
-                            </Table>
+                                        </thead>
+                                        <tbody>
+                                            <React.Fragment>
+                                                <tr style={{ borderRadius: '20px', padding: '10px' }}>
+                                                    <td style={{color: '#014c91'}}>{new Date(payments[0].date_created).toLocaleDateString()}</td>
+                                                    <td style={{color: '#014c91'}}>{payments[0].name}</td>
+                                                    <td style={{color: '#014c91'}}>{payments[0].refNo ?? ''}</td>
+                                                    <td style={{color: '#014c91'}}>₱{formatNumber(payments[0].amount)}</td>
+                                                </tr>
 
-                        
+                                                <tr>
+                                                    <td colspan="3" style={{color: '#014c91', textAlign: 'right'}}>Total Amount Paid</td>
+                                                    <td style={{color: '#014c91'}}><strong>₱{formatNumber(payments.reduce((sum, item) => item.amount + sum, 0))} </strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3" style={{color: '#014c91', textAlign: 'right'}}>Remaining Balance</td>
+                                                    <td style={{color: '#014c91'}}><strong>₱15,000.00 </strong></td>
+                                                </tr>
+                                            </React.Fragment>
+                                        </tbody>
+                                    </Table>
+                                </>
+                            ) : (
+                                <Row>
+                                        <Col>
+                                            No Payments Made Yet
+                                        </Col>
+                                </Row>
+                            )}
 
                             
                             <Row className="mt-2">
