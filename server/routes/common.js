@@ -20,7 +20,7 @@ module.exports = (query) => {
 
     router.get('/getTechnicians', async (req, res) => {
         try {
-            const data = await query('SELECT CONCAT(last_name, ", ", first_name, " ", middle_name) as complete_name, email, contact_number, technician_id FROM md_technicians', [])
+            const data = await query('SELECT CONCAT(last_name, ", ", first_name) as complete_name, email, contact_number, technician_id FROM md_technicians', [])
             console.log(data)
         
             res.send(data)
@@ -178,6 +178,18 @@ module.exports = (query) => {
     router.get('/getParts', async (req, res) => {
         try {
             const data = await query('SELECT * FROM md_parts WHERE is_active = 1', [])
+            console.log(data)
+        
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getModeOfPayments', async (req, res) => {
+        try {
+            const data = await query('SELECT * FROM ref_mode_of_payment', [])
             console.log(data)
         
             res.send(data)

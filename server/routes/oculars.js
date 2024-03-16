@@ -62,7 +62,7 @@ module.exports = (query) => {
             const q =  `SELECT      ocular_date,
                                     CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.contact_number as contactNumber, cp.email, cp.first_name AS firstName, cp.last_name AS lastName,
                                     CONCAT(loc.addr_bldg_no, " ", loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address,
-                                    CONCAT(t.last_name, ", ", t.first_name, " ", t.middle_name) as technician_name, t.technician_id,
+                                    CONCAT(t.last_name, ", ", t.first_name) as technician_name, t.technician_id,
                                     co.company_name AS companyName, co.tin,
                                     o.ocular_id,
                                     loc.*

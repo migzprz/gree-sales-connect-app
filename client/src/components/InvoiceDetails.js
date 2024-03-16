@@ -180,7 +180,7 @@ const InvoiceDetails = () => {
                 <Row className="mt-3">
                     <Col lg="2"/>
                     <Col lg="2">
-                        <Link to="/converttosale" className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
+                        <Link to={`/converttosale?id=${id}`} className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
                         {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })}   Proceed to Sale
                         </Link>
                     </Col>

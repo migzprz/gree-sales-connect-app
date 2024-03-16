@@ -7,48 +7,37 @@ import '../index.css';
 import CompleteServiceModal from './CompleteServiceModal';
 import AddPaymentModal from './AddPaymentModal';
 import EditServiceDetailsModal from './EditServiceDetailsModal';
+import { useSearchParams } from 'react-router-dom';
+import axios from 'axios';
 
 const SaleDetails= () => {
 
-    const quotationList = [
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        {
-            id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            contactNumber: '0165189598',
-            dateGenerated: '2024-01-15',
-            totalPrice: 20000,
-            status: 'Active'
-        },
-        // Add more ocular objects as needed
-    ];
+    const [searchParams] = useSearchParams()
+    const id = searchParams.get('id')
+
+    const [detail, setDetail] = useState([])
+    const [deliveries, setDeliveries] = useState([])
+    const [installations, setInstallations] = useState([])
+    const [services, setServices] = useState([])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = (await axios.get(`http://localhost:4000/api/getSalesById/${id}`)).data
+                console.log(response)
+                setDetail(response.detail[0])
+                setDeliveries(response.delivery)
+                setInstallations(response.installation)
+                setServices(response.service)
+            } catch (error) {
+                console.error('Error fetching data: ', error)
+            }
+        }
+        fetchData()
+    }, [])
+    useEffect(() => {
+        console.log(deliveries)
+    }, [deliveries])
 
     const [activeOption, setActiveOption] = useState('newClient');
 
@@ -58,32 +47,32 @@ const SaleDetails= () => {
 
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
-            <h1>Sale Ref. #0001</h1>
+            <h1>Sale Ref. #{String(detail.sales_id).padStart(4, '0')}</h1>
             <Row>
                 <Col>
                     <Row>
                         <Col>
-                            Client: <strong>Miguel Josh C. Perez</strong>
+                            Client: <strong>{detail.client_name}</strong>
                         </Col>
                     </Row>
                     <Row>
                         <Col>
-                            Company: <strong> ABC Company</strong>
+                            Company: <strong>{detail.company_name}</strong>
                         </Col>
                     </Row>
                     <Row>
                         <Col>
-                            Contact Number: <strong> 09165189598</strong>
+                            Contact Number: <strong>{detail.contact_number}</strong>
                         </Col>
                     </Row>
                     <Row>
                         <Col>
-                            Email Address: <strong> miguel_josh_perez@dlsu.edu.ph</strong>
+                            Email Address: <strong>{detail.email}</strong>
                         </Col>
                     </Row>
                     <Row>
                         <Col>
-                            Sale Status: <strong> Ongoing</strong>
+                            Sale Status: <strong>{detail.is_completed === 0 ? 'ONGOING' : 'COMPLETED'}</strong>
                         </Col>
                     </Row>
 
@@ -107,26 +96,36 @@ const SaleDetails= () => {
                                 </Col>
                             </Row>
 
-                            <Row>
-                                <Col>
-                                    Date: <strong> Jan. 15, 2024</strong>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    Time: <strong> 12:00 PM</strong>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    There are X Deliveries remaining
-                                </Col>
-                            </Row>
-                            <Row className="mt-2">
-                                <Col>
-                                        <CompleteServiceModal type={"delivery"}/>
-                                </Col>
-                            </Row>
+                            {deliveries && deliveries.length > 0 ? (
+                                <>
+                                    <Row>
+                                        <Col>
+                                            Date: <strong>{new Date(deliveries[0].delivery_date).toLocaleDateString()}</strong>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            Time: <strong>{new Date(deliveries[0].delivery_date).toLocaleTimeString()}</strong>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            {deliveries.length > 1 ? `There ${deliveries.length-1 > 1 ? 'are' : 'is'} ${deliveries.length-1} more ${installations.length-1 > 1 ? 'deliveries' : 'delivery'} left` : null}
+                                        </Col>
+                                    </Row>
+                                    <Row className="mt-2">
+                                        <Col>
+                                                <CompleteServiceModal type={"delivery"}/>
+                                        </Col>
+                                    </Row>
+                                </>
+                            ) : (
+                                <Row>
+                                        <Col>
+                                            None
+                                        </Col>
+                                </Row>
+                            )}
                         </Card>
 
                         <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', color: '#014c91'}}>
@@ -138,37 +137,56 @@ const SaleDetails= () => {
                                         <EditServiceDetailsModal type={"installation"}/>
                                     </Col>
                                 </Row>
-                                <Row>
-                                    <Col>
-                                        Technician: <strong> Blake, Lively</strong>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        Start Date: <strong> Jan. 15, 2024</strong>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        Start Time: <strong> 12:00 PM</strong>
-                                    </Col>
-                                </Row>
-                               
-                                <Row className="mt-2">
-                                    <Col>
-                                        End Date: <strong> Jan. 15, 2024</strong>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        End Time: <strong> 12:00 PM</strong>
-                                    </Col>
-                                </Row>
-                                <Row className="mt-2">
-                                    <Col>
-                                        <CompleteServiceModal type={"installation"}/>
-                                    </Col>
-                                </Row>
+                                {installations && installations.length > 0 ? (
+                                    <>
+                                        <Row>
+                                            <Col>
+                                                Technician: <strong>{installations[0].technician_name}</strong>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col>
+                                                Start Date: <strong>{new Date(installations[0].start_installation_date).toLocaleDateString()}</strong>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col>
+                                                Start Time: <strong>{new Date(installations[0].start_installation_date).toLocaleTimeString()}</strong>
+                                            </Col>
+                                        </Row>
+                                    
+                                        {installations[0].end_installation_date ? (
+                                            <>
+                                                <Row className="mt-2">
+                                                    <Col>
+                                                        End Date: <strong>{new Date(installations[0].end_installation_date).toLocaleDateString()}</strong>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col>
+                                                        End Time: <strong>{new Date(installations[0].end_installation_date).toLocaleTimeString()}</strong>
+                                                    </Col>
+                                                </Row>
+                                            </>
+                                        ): null}
+                                        <Row>
+                                            <Col>
+                                                {installations.length > 1 ? `There ${installations.length-1 > 1 ? 'are' : 'is'} ${installations.length-1} more ${installations.length-1 > 1 ? 'installations' : 'installation'} left` : null}
+                                            </Col>
+                                        </Row>
+                                        <Row className="mt-2">
+                                            <Col>
+                                                <CompleteServiceModal type={"installation"}/>
+                                            </Col>
+                                        </Row>
+                                    </>
+                                ):(
+                                    <Row>
+                                            <Col>
+                                                None
+                                            </Col>
+                                    </Row>
+                                ) }
                         </Card>
 
                         <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', background: '#E7FFE2', color: '#008000'}}>
@@ -180,27 +198,43 @@ const SaleDetails= () => {
                                     <EditServiceDetailsModal type={"service"}/>
                                 </Col>
                             </Row>
-
-                            <Row>
-                                <Col>
-                                    Date: <strong> Jan. 15, 2024</strong>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    Time: <strong> 12:00 PM</strong>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    Technician: <strong> Blake, Lively</strong>
-                                </Col>
-                            </Row>
-                            <Row className="mt-2">
-                                    <Col>
-                                        <CompleteServiceModal type={"service"}/>
-                                    </Col>
+                            
+                            {services && services.length > 1 ? (
+                                <>
+                                    <Row>
+                                        <Col>
+                                            Date: <strong>{new Date(services[0].service_date).toLocaleDateString()}</strong>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            Time: <strong>{new Date(services[0].service_date).toLocaleTimeString()}</strong>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            Technician: <strong>{services[0].technician_name}</strong>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            {services.length > 1 ? `There ${services.length-1 > 1 ? 'are' : 'is'} ${services.length-1} more ${services.length-1 > 1 ? 'services' : 'service'} left` : null}
+                                        </Col>
+                                    </Row>
+                                    <Row className="mt-2">
+                                            <Col>
+                                                <CompleteServiceModal type={"service"}/>
+                                            </Col>
+                                    </Row>
+                                </>
+                            ) : (
+                                <Row>
+                                        <Col>
+                                            None
+                                        </Col>
                                 </Row>
+                            )}
+                            
                         </Card>
 
                     </Card>
