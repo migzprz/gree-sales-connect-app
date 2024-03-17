@@ -95,12 +95,13 @@ useEffect(() => {
                 // Update the claimed_units in formData
                 const claimedUnits = newWarrantySearchData.reduce((acc, item) => {
                     if (item.quantity > 0) {
-                        const existingUnit = acc.find(unit => unit.product_id === item.product_id);
+                        const existingUnit = acc.find(unit => unit.quotation_items_id === item.quotation_items_id);
                         if (!existingUnit) {
-                            acc.push({ product_id: item.product_id, quantity: item.quantity, issue: item.issue });
+                            acc.push({ product_id: item.product_id, quantity: item.quantity, issue: item.issue, quotation_items_id: item.quotation_items_id });
                         } else {
                             existingUnit.quantity = item.quantity;
                             existingUnit.issue = item.issue;
+                            existingUnit.product_id = item.product_id;
                         }
                     }
                     return acc;
@@ -122,12 +123,13 @@ useEffect(() => {
             // Update the claimed_units in formData
             const claimedUnits = newWarrantySearchData.reduce((acc, item) => {
                 if (item.quantity > 0) {
-                    const existingUnit = acc.find(unit => unit.product_id === item.product_id);
+                    const existingUnit = acc.find(unit => unit.quotation_items_id === item.quotation_items_id);
                     if (!existingUnit) {
-                        acc.push({ product_id: item.product_id, quantity: item.quantity, issue: item.issue });
+                        acc.push({ product_id: item.product_id, quantity: item.quantity, issue: item.issue, quotation_items_id: item.quotation_items_id });
                     } else {
                         existingUnit.quantity = item.quantity;
                         existingUnit.issue = item.issue;
+                        existingUnit.product_id = item.product_id;
                     }
                 }
                 return acc;
@@ -354,7 +356,7 @@ useEffect(() => {
                                                         <td style={{color: '#014c91'}}>{item.description}</td>
                                                         <td style={{color: '#014c91'}}>{item.unit_model}</td>
                                                         <td style={{color: '#014c91'}}>
-                                                        {formData.claimed_units.some(unit => unit.product_id === item.product_id) && (
+                                                        {formData.claimed_units.some(unit => unit.quotation_items_id === item.quotation_items_id) && (
                                                             <Form.Group controlId={`issue-${index}`}>
                                                                 <Form.Control
                                                                     type="text"
@@ -384,11 +386,6 @@ useEffect(() => {
                             </button>
                         </Col>
 
-                        <Col lg="2">
-                            <button className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}}>
-                                Cancel
-                            </button>
-                        </Col>
                     </Row>
                 </Form>
 

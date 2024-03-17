@@ -148,6 +148,7 @@ module.exports = (query) => {
 
     })
 
+ 
     router.get('/getPart/:id', async (req, res) => {
         try {
             const { id } = req.params

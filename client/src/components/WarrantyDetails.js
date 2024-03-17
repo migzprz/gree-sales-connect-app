@@ -1,29 +1,43 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { useState, useEffect } from 'react'; 
+import { Link, useParams } from 'react-router-dom';
 import { FaEdit, FaCheck, FaSearch, FaScrewdriver, FaToolbox, FaPlus, FaMoneyBillWave, FaShoppingBag} from 'react-icons/fa';
 import { Row, Col, Card, CardBody, CardHeader, Table, Form, Dropdown } from 'react-bootstrap';
 import '../index.css';
 import axios from 'axios'
+import CompleteWarrantyServiceModal from './CompleteWarrantyServiceModal';
+import EditWarrantyServiceModal from './EditWarrantyServiceModal';
+import AddWarrantyPartModal from './AddWarrantyPartModal';
+import CompleteWarrantyModal from './CompleteWarrantyModal';
 
 const WarrantyDetails= () => {
+
+
+    const { id } = useParams();
     const [warrantyData, setWarrantyData] = useState([]);
     const [claimedUnitsData, setClaimedUnitsData] = useState([]);
+    const [requestedPartsData, setRequestedPartsData] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:4000/api/getWarranty/5/')
+                const response = await axios.get(`http://localhost:4000/api/getWarranty/${id}/`)
                 setWarrantyData(response.data[0])
+                console.log(response.data[0])
 
-                const response2 = await axios.get('http://localhost:4000/api/getClaimedUnits/5/')
+                const response2 = await axios.get(`http://localhost:4000/api/getClaimedUnits/${id}/`)
                 setClaimedUnitsData(response2.data)
+
+                const response3 = await axios.get(`http://localhost:4000/api/getWarrantyRequestedParts/${id}/`)
+                setRequestedPartsData(response3.data)
             } catch (error) {
                 console.error('Error fetching data: ', error)
             }
         }
         fetchData()
     },[])
+    
     
     //Date Conversion Function
     function formatDate(dateString) {
@@ -74,11 +88,14 @@ const WarrantyDetails= () => {
                             Email Address: <strong> {warrantyData.email}</strong>
                         </Col>
                     </Row>
-                    <Row>
+                    
+                    {warrantyData.service_completed && (warrantyData.inspection_date === null || warrantyData.inspection_completed) ? (
+                    <Row className="mt-3">
                         <Col>
-                            Warranty Claim Status: <strong> {warrantyData.warranty_completed === 0 ? "Ongoing" : "Completed"}</strong>
+                            <CompleteWarrantyModal id={id}/>
                         </Col>
                     </Row>
+                    ): null}
 
                 </Col>
             </Row>
@@ -95,11 +112,7 @@ const WarrantyDetails= () => {
                                     <h3>{React.createElement(FaSearch, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Inspection</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
-                                    {warrantyData.inspection_completed ? (
-                                        <FaCheck size={18} />
-                                    ) : (
-                                        <FaEdit size={18} />
-                                    )}
+                                    <EditWarrantyServiceModal service_id={warrantyData.inspection_id} id={id} type={"inspection"} is_completed={warrantyData.inspection_completed}/>
                                 </Col>
                             </Row>
 
@@ -121,9 +134,7 @@ const WarrantyDetails= () => {
                             <Row className="mt-2">
                                 <Col>
                                     {!warrantyData.inspection_completed ? (
-                                         <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
-                                         {React.createElement(FaCheck, { size: 18, style: { marginRight: '5px' } })}   Complete Inspection
-                                         </button>
+                                         <CompleteWarrantyServiceModal service_id={warrantyData.inspection_id} id={id} type={"inspection"}/>
                                     ) : (
                                         null
                                     )}
@@ -139,11 +150,7 @@ const WarrantyDetails= () => {
                                     <h3>{React.createElement(FaToolbox, { size: 25, style: { marginRight: '5px', marginBottom: '5px' }})}Service</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
-                                    {warrantyData.service_completed ? (
-                                        <FaCheck size={18} />
-                                    ) : (
-                                        <FaEdit size={18} />
-                                    )}
+                                <EditWarrantyServiceModal service_id={warrantyData.warranty_service_id} id={id} type={"service"} is_completed={warrantyData.service_completed}/>
 
                                 </Col>
                             </Row>
@@ -166,9 +173,7 @@ const WarrantyDetails= () => {
                             <Row className="mt-2">
                                 <Col>
                                     {!warrantyData.service_completed ? (
-                                         <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
-                                         {React.createElement(FaCheck, { size: 18, style: { marginRight: '5px' } })}   Complete Service
-                                         </button>
+                                         <CompleteWarrantyServiceModal service_id={warrantyData.warranty_service_id} id={id} type={"service"}/>
                                     ) : (
                                         null
                                     )}
@@ -177,6 +182,50 @@ const WarrantyDetails= () => {
                             </Row>
                         </Card>
 
+                    </Card>
+                </Col>
+
+                <Col lg="4">
+                    <Card style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9', display: 'flex', flexDirection: 'column', height: '100%'}}>
+                        <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91', display: 'flex', flexDirection: 'column', height: '100%'}}>
+                            <Row>
+                                <Col lg="9">
+                                    <h3>{React.createElement(FaShoppingBag, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Requested Parts </h3>
+                                </Col>
+                            </Row>
+
+                            <Table>
+                                    <thead>
+                                        <tr>
+                                            <th style={{color: '#014c91'}}>Description</th>
+                                            <th style={{color: '#014c91'}}>Unit Model</th>             
+                                            <th style={{color: '#014c91'}}>Quantity</th>                         
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    
+                                        {requestedPartsData.map((part, index) => (
+                                            <React.Fragment key={part.requested_part_id}>
+                                                <tr style={{ borderRadius: '20px', padding: '10px' }}>
+                                                    <td style={{color: '#014c91'}}>{part.description}</td>
+                                                    <td style={{color: '#014c91'}}>{part.name}</td>
+                                                    <td style={{color: '#014c91'}}>{part.totalqty}</td>
+                                                </tr>
+                                            </React.Fragment>
+                                        ))}
+                                        
+                                    </tbody>
+                            </Table>
+
+                        
+
+                            
+                            <Row className="mt-2">
+                                <Col>
+                                    <AddWarrantyPartModal id={id}/>
+                                </Col>
+                            </Row>
+                        </Card>
                     </Card>
                 </Col>
 
@@ -216,40 +265,7 @@ const WarrantyDetails= () => {
                     </Card>
                 </Col>
 
-                <Col lg="4">
-                    <Card style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9', display: 'flex', flexDirection: 'column', height: '100%'}}>
-                        <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91', display: 'flex', flexDirection: 'column', height: '100%'}}>
-                            <Row>
-                                <Col lg="9">
-                                    <h3>{React.createElement(FaShoppingBag, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Requested Parts </h3>
-                                </Col>
-                            </Row>
 
-                            <Table>
-                                    <thead>
-                                        <tr>
-                                            <th style={{color: '#014c91'}}>Part Type</th>
-                                            <th style={{color: '#014c91'}}>Description</th>                                    
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        
-                                    </tbody>
-                            </Table>
-
-                        
-
-                            
-                            <Row className="mt-2">
-                                <Col>
-                                    <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
-                                        {React.createElement(FaPlus, { size: 18, style: { marginRight: '5px' } })} Add a Requested Part
-                                    </button>
-                                </Col>
-                            </Row>
-                        </Card>
-                    </Card>
-                </Col>
             </Row>
 
 

@@ -177,7 +177,7 @@ module.exports = (query) => {
 
     router.get('/getParts', async (req, res) => {
         try {
-            const data = await query('SELECT * FROM md_parts WHERE is_active = 1', [])
+            const data = await query('SELECT * FROM md_parts WHERE is_active = 1 ORDER BY description, name', [])
             console.log(data)
         
             res.send(data)

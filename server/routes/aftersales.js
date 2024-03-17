@@ -79,6 +79,7 @@ module.exports = (query) => {
             const q =  `  SELECT
                                 s.sales_id,
                                 q.quotation_id,
+                                qp.quotation_items_id,
                                 p.product_id,
                                 p.unit_model,
                                 p.product_hp,
@@ -117,6 +118,7 @@ module.exports = (query) => {
                             WHERE q.quotation_id = ?
                             GROUP BY
                                 s.sales_id,
+                                qp.quotation_items_id,
                                 q.quotation_id,
                                 p.product_id,
                                 p.unit_model,
@@ -226,6 +228,7 @@ module.exports = (query) => {
             GROUP BY
                 warranty_id
         ) ws ON w.warranty_id = ws.warranty_id
+        WHERE w.is_completed = 0
     ORDER BY
         wi.inspection_date DESC,
         ws.service_date DESC
@@ -254,6 +257,8 @@ module.exports = (query) => {
             loc.zipcode, "",
             pr.NAME)                                  AS site_address,
             w.warranty_id,
+            ws.warranty_service_id,
+            wi.inspection_id,
             wi.inspection_date,
             ws.service_date,
             ws.service_completed,
@@ -287,6 +292,7 @@ FROM   td_sales s
    JOIN td_warranty w
      ON w.quotation_id = q.quotation_id
    LEFT JOIN (SELECT t1.warranty_id,
+					 t1.inspection_id,
                      t1.technician_id AS inspection_technician,
                      t1.inspection_date,
                      t1.is_completed  AS inspection_completed
@@ -301,6 +307,7 @@ FROM   td_sales s
               ORDER  BY t1.warranty_id) wi
           ON w.warranty_id = wi.warranty_id
    LEFT JOIN (SELECT t1.warranty_id,
+					 t1.warranty_service_id,
                      t1.technician_id AS service_technician,
                      t1.service_date,
                      t1.is_completed  AS service_completed
@@ -319,7 +326,7 @@ FROM   td_sales s
      ON wi.inspection_technician = ti.technician_id
 WHERE  w.warranty_id = ?
 ORDER  BY wi.inspection_date DESC,
-      ws.service_date DESC `
+      ws.service_date DESC`
             const data = await query(q, [id])
             console.log(data)
             res.send(data)
@@ -355,6 +362,140 @@ ORDER  BY wi.inspection_date DESC,
         }
 
     })
+
+    router.patch('/changeWarrantyInspectionState/:id/:state', async (req, res) => {
+        try {
+            const values = [req.params.state, req.params.id]
+            const data = await query('UPDATE td_warranty_inspection SET is_completed = ? WHERE inspection_id = ?', values)
+            console.log(data)
+            res.status(200).json({message: `Inspection successfully updated... ${data}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to update inspection... ${error}`})
+        }
+    })
+
+    router.post('/postWarrantyInspection/', async (req, res) => {
+
+        const { data } = req.body;
+    
+        try {
+            const inspection_data = await query(`INSERT INTO td_warranty_inspection (warranty_id, inspection_date, technician_id, is_completed) VALUES ('${data.warranty_id}', '${data.date}', '${data.technician_id}', '${data.is_completed}')`);
+            res.status(200).json({ message: 'Data successfully posted' });
+        } catch (error) {
+            console.error('Error: ', error);
+            res.status(400).json({ message: `Error... Failed one or more database operations... ${error}` });
+        }
+    });
+
+    router.patch('/changeWarrantyServiceState/:id/:state', async (req, res) => {
+        try {
+            const values = [req.params.state, req.params.id]
+            const data = await query('UPDATE td_warranty_service SET is_completed = ? WHERE warranty_service_id = ?', values)
+            console.log(data)
+            res.status(200).json({message: `Service successfully updated... ${data}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to update service... ${error}`})
+        }
+    })
+
+    router.post('/postWarrantyService/', async (req, res) => {
+
+        const { data } = req.body;
+    
+        try {
+            const inspection_data = await query(`INSERT INTO td_warranty_service (warranty_id, service_date, technician_id, is_completed) VALUES ('${data.warranty_id}', '${data.date}', '${data.technician_id}', '${data.is_completed}')`);
+            res.status(200).json({ message: 'Data successfully posted' });
+        } catch (error) {
+            console.error('Error: ', error);
+            res.status(400).json({ message: `Error... Failed one or more database operations... ${error}` });
+        }
+    });
+
+    router.patch('/updateInspection', async (req, res) => {
+        const values = [req.body.date, req.body.technician_id, req.body.service_id];
+        console.log(values)
+        try {
+            const data = await query('UPDATE td_warranty_inspection SET inspection_date = ?, technician_id = ? WHERE inspection_id = ?', values)
+            console.log(data)
+            res.status(200).json({message: `Inspection successfully updated... ${data}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to update inspection... ${error}`})
+        }
+    })
+
+    router.patch('/updateService', async (req, res) => {
+        const values = [req.body.date, req.body.technician_id, req.body.service_id];
+        console.log(values)
+        try {
+            const data = await query('UPDATE td_warranty_service SET service_date = ?, technician_id = ? WHERE warranty_service_id = ?', values)
+            console.log(data)
+            res.status(200).json({message: `Service successfully updated... ${data}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to update service... ${error}`})
+        }
+    })
+
+    router.post('/postWarrantyParts/:id', async (req, res) => {
+
+        const { data } = req.body;
+        const id = req.params.id;
+    
+        try {
+            
+            for (const unit of data) {
+                const { part, quantity} = unit;
+            
+                // Insert claimed unit data into respective table
+                await query(`INSERT INTO td_warranty_requested_parts (warranty_id, part_id, quantity) 
+                                VALUES ('${id}', '${part}', '${quantity}')`);
+            }
+            
+            res.status(200).json({ message: 'Data successfully posted' });
+        } catch (error) {
+            console.error('Error: ', error);
+            res.status(400).json({ message: `Error... Failed one or more database operations... ${error}` });
+        }
+    });
+
+    router.get('/getWarrantyRequestedParts/:id', async (req, res) => {
+        try {
+            const { id } = req.params
+            const q =  `  SELECT wr.part_id, wr.totalqty, wr.warranty_id, p.description, p.name
+                            FROM (
+                                SELECT wr.part_id, SUM(wr.quantity) AS totalqty, wr.warranty_id
+                                FROM td_warranty_requested_parts wr
+                                WHERE wr.warranty_id = ?
+                                GROUP BY wr.part_id, wr.warranty_id
+                            ) AS wr
+                            JOIN md_parts p ON p.parts_id = wr.part_id;`
+            const data = await query(q, [id])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+
+    })
+
+
+    router.patch('/changeWarrantyState/:id/:state', async (req, res) => {
+        try {
+            const values = [req.params.state, req.params.id]
+            const data = await query('UPDATE td_warranty SET is_completed = ? WHERE warranty_id = ?', values)
+            console.log(data)
+            res.status(200).json({message: `Service successfully updated... ${data}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to update service... ${error}`})
+        }
+    })
+
+
 
     return router;
 }

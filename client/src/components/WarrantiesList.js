@@ -206,7 +206,7 @@ const WarrantiesList = () => {
                                 <React.Fragment key={warranty.warranty_id}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                         <td style={{color: '#014c91'}}>
-                                            <Link to={`/viewwarrantydetails`} style={{ color: '#014c91'}}>{warranty.warranty_id}</Link>
+                                            <Link to={`/viewwarrantydetails/${warranty.warranty_id}`} style={{ color: '#014c91'}}>{warranty.warranty_id}</Link>
                                         </td>
                                         <td style={{color: '#014c91'}}>{warranty.sales_id}</td>
                                         <td style={{color: '#014c91'}}>{warranty.client_name}</td>

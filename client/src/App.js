@@ -53,7 +53,7 @@ function App() {
 
                     {/* Aftersales Module */}
                     <Route path="/viewwarranties" element={<ViewWarranties/>}/>
-                    <Route path="/viewwarrantydetails" element={<ViewWarrantyDetails/>}/>
+                    <Route path="/viewwarrantydetails/:id" element={<ViewWarrantyDetails/>}/>
                     <Route path="/searchwarranty" element={<SearchWarranty/>}/>
                     <Route path="/claimwarranty/:id" element={<ClaimWarranty/>}/>
 
