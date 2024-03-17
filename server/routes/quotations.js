@@ -39,7 +39,7 @@ module.exports = (query) => {
                                         md_quotation_parts
                                     GROUP BY
                                         quotation_id
-                                ) qr ON q.quotation_id = qr.quotation_id;`, [])
+                                ) qr ON q.quotation_id = qr.quotation_id WHERE q.sales_id IS NULL;`, [])
 
         res.send(data)
     })
@@ -48,7 +48,7 @@ module.exports = (query) => {
         
         const id = req.params.id
         // getting the client info
-        const clientQuery = `SELECT q.date_created, CONCAT(cp.last_name, ", ", cp.first_name) as client_name, 
+        const clientQuery = `SELECT q.date_created, CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.contact_number,
                             CONCAT(l.addr_bldg_no, " ", l.addr_street_name, " ", b.name, ", ", m.name, ", ", l.zipcode, " ", p.name) as site_address,
                             co.tin, co.company_name
                             FROM td_quotations q
@@ -64,7 +64,7 @@ module.exports = (query) => {
         const clientResponse = await query(clientQuery, [id])
 
         // getting the product info
-        const productQuery =   `SELECT qp.quantity, qp.discounted_price_each*qp.quantity AS totalPrice, p.product_srp as srp,
+        const productQuery =   `SELECT qp.quantity, qp.discounted_price_each*qp.quantity AS totalPrice, p.product_srp as srp, p.unit_model, qp.discounted_price_each as discPrice,
                                 CONCAT(product_hp, ' HP ', UPPER(product_type), ' TYPE ', CASE WHEN is_inverter = 1 THEN 'INVERTER' WHEN is_inverter = 0 THEN 'NON-INVERTER' END) as article
                                 FROM md_quotation_products qp
                                 JOIN md_products p ON qp.product_id = p.product_id
@@ -76,7 +76,7 @@ module.exports = (query) => {
         });
 
         // getting the services info
-        const servicesQuery =  `SELECT s.description as article, s.service_srp AS srp, qs.discounted_price_each*qs.quantity as totalPrice, qs.quantity
+        const servicesQuery =  `SELECT s.description as article, s.service_srp AS srp, qs.discounted_price_each*qs.quantity as totalPrice, qs.quantity, qs.discounted_price_each as discPrice
                                 FROM md_quotation_services qs
                                 JOIN md_services s ON qs.services_id = s.services_id
                                 WHERE quotation_id = ?`
@@ -85,7 +85,7 @@ module.exports = (query) => {
             return { ...obj, unit: 'SERVICE' };
         });
         // getting the parts info
-        const partsQuery = `SELECT CONCAT(p.description, ' ', '(', p.name, ')') as article, p.parts_srp as srp, qp.quantity, (qp.discounted_price_each*qp.quantity) as totalPrice
+        const partsQuery = `SELECT CONCAT(p.description, ' ', '(', p.name, ')') as article, p.parts_srp as srp, qp.quantity, (qp.discounted_price_each*qp.quantity) as totalPrice, qp.discounted_price_each as discPrice
                             FROM md_quotation_parts qp
                             JOIN md_parts p ON qp.parts_id = p.parts_id
                             WHERE qp.quotation_id = ?`
@@ -93,6 +93,12 @@ module.exports = (query) => {
         const parts = partsResponse.map(obj => {
             return { ...obj, unit: 'PARTS' };
         });
+
+        const termsQuery = `SELECT t.*
+                            FROM td_quotations q
+                            JOIN md_tnc t ON q.tnc_id = t.tnc_id
+                            WHERE q.quotation_id = ?`
+        const termsResponse = await query(termsQuery, [id])
 
         const quotation = [
             ...products,
@@ -105,7 +111,8 @@ module.exports = (query) => {
             quotation: quotation,
             total: quotation.reduce((sum, item) => {
                 return sum + item.totalPrice
-            }, 0)
+            }, 0),
+            term: termsResponse
         }
 
         console.log(data)
@@ -192,7 +199,7 @@ module.exports = (query) => {
 
     router.post('/postQuotation', async (req, res) => {
 
-        const { offer, terms, id } = req.body
+        const { offer, terms, id, sales_id } = req.body
 
         try {
             
@@ -213,9 +220,18 @@ module.exports = (query) => {
             console.log('STEP 2: posting quotation')
 
             // post quotation -> get id 
-            const quo_query = 'INSERT INTO td_quotations (date_created, login_id, tnc_id, is_cancelled, quotation_client_id) VALUES (NOW(), 1, ?, 0, ?)'
-            const quo_data = await query(quo_query, [tnc_id, id])
-            const quo_id = quo_data.insertId
+            let quo_id, quo_data
+            if (sales_id) {
+                console.log('STEP 2.1: sales id detected')
+                const quo_query = 'INSERT INTO td_quotations (date_created, login_id, tnc_id, is_cancelled, quotation_client_id, sales_id) VALUES (NOW(), 1, ?, 0, ?, ?)'
+                quo_data = await query(quo_query, [tnc_id, id, sales_id])
+                quo_id = quo_data.insertId
+            } else {
+                console.log('STEP 2.1: creating new quotations')
+                const quo_query = 'INSERT INTO td_quotations (date_created, login_id, tnc_id, is_cancelled, quotation_client_id) VALUES (NOW(), 1, ?, 0, ?)'
+                quo_data = await query(quo_query, [tnc_id, id])
+                quo_id = quo_data.insertId
+            }
 
             console.log(quo_data)
 
@@ -248,7 +264,7 @@ module.exports = (query) => {
                 }
             })
 
-            res.status(200).json({message: `Quotation successfully posted...`})
+            res.status(200).json({message: `Quotation successfully posted...`, quotation_id: quo_id})
         } catch (error) {
             res.status(400).json({message: `Error... Failed to post quotation... ${error}`})
         }

@@ -11,8 +11,9 @@ import jsPDF from 'jspdf';
 import useAddressString from '../hooks/useAddressString';
 import { Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { MdArrowBack } from "react-icons/md";
 
-const PreviewQuotation = ({ client, offers, terms, POST }) => {
+const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
 
     const navigate = useNavigate()
 
@@ -51,12 +52,17 @@ const PreviewQuotation = ({ client, offers, terms, POST }) => {
 
     const handleSubmit = () => {
         if (checkDl) { downloadPDF() }
-        POST()
+        if (type !== 'view') { POST() }
     }
 
-    const handleCheckboxChange = () => [
+    const handleCheckboxChange = () => {
         setCheckDl((prev) => (!prev))
-    ]
+    }
+
+    const handleBack = () => {
+        navigate(-1)
+    }
+
     
     // Get price sum of all products selected
     useEffect(() => {
@@ -116,21 +122,25 @@ const PreviewQuotation = ({ client, offers, terms, POST }) => {
                         <tr>
                             <td colSpan="7" style={{ padding: '0', border: 'none', color: 'white', background: '#082464'}}><strong>{'\u00A0'} BILL TO</strong></td>
                         </tr>
-                        <tr>
-                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Name: {client.returningClientFirstName ? client.returningClientFirstName + ' ' + client.returningClientLastName : client.firstName + ' ' + client.lastName}</td> 
-                        </tr>
-                        <tr>
-                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Company Name/Buidling: {client.returningClientCompanyName ? client.returningClientCompanyName : client.companyName}</td> 
-                        </tr>
-                        <tr>
-                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Street Address: {client.site_address ? client.site_address : ''}</td> 
-                        </tr>
-                        <tr>
-                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Delivery Address: {client.site_address ? client.site_address : ''}</td> 
-                        </tr>
-                        <tr>
-                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Phone: {client.returningClientContactNumber ? client.returningClientContactNumber : client.contactNumber}</td> 
-                        </tr>
+                        {client ? (
+                            <>
+                                <tr>
+                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Name: {client.client_name || client.returningClientFirstName ? client.returningClientFirstName + ' ' + client.returningClientLastName : client.firstName + ' ' + client.lastName}</td> 
+                                </tr>
+                                <tr>
+                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Company Name/Buidling: {client.company_name || client.returningClientCompanyName ? client.returningClientCompanyName : client.companyName}</td> 
+                                </tr>
+                                <tr>
+                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Street Address: {client.site_address ? client.site_address : ''}</td> 
+                                </tr>
+                                <tr>
+                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Delivery Address: {client.site_address ? client.site_address : ''}</td> 
+                                </tr>
+                                <tr>
+                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Phone: {client.contact_number || client.returningClientContactNumber ? client.returningClientContactNumber : client.contactNumber}</td> 
+                                </tr>
+                            </>
+                        ): null}
                         <tr>
                             <td style={{ padding: '0', border: '1px solid white', color: 'white', background: '#082464', textAlign: 'center', verticalAlign: 'middle'}}>QTY</td> 
                             <td colSpan="2" style={{ padding: '0', border: '1px solid white', color: 'white', background: '#082464', textAlign: 'center', verticalAlign: 'middle'}}>DESCRIPTION</td>
@@ -153,9 +163,9 @@ const PreviewQuotation = ({ client, offers, terms, POST }) => {
                         {offers.map((item, index) => (
                             <tr key={index}>
                                 <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.quantity}</td>
-                                <td colSpan="2" style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.display || item.description}</td>
+                                <td colSpan="2" style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.display || item.description || item.article}</td>
                                 <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.unit_model || item.name || '--'}</td>
-                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.product_srp || item.service_srp || item.parts_srp}</td>
+                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.srp || item.product_srp || item.service_srp || item.parts_srp}</td>
                                 <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.discPrice}</td>
                                 <td style={{ padding: '0', border: '1px solid black', textAlign: 'right' }}>
                                     <span style={{ float: 'left', marginLeft: '5px' }}>₱</span> 
@@ -436,6 +446,11 @@ const PreviewQuotation = ({ client, offers, terms, POST }) => {
                 )}
             
             </button>
+            {type === 'view' ? (
+                <button className="mt-4 btn w-40" onClick={handleBack} disabled={(loader)} style={{color: "white", backgroundColor: "#014c91"}}>
+                    <span> {React.createElement(MdArrowBack, { size: 18, style: { marginRight: '5px' } })}  Back </span>
+                </button>
+            ) : null}
             <Form><Form.Check type='checkbox' id='downloadCheckbox' label='Download Form as PDF?' onClick={handleCheckboxChange} checked={checkDl}/></Form>
         </div>
     );

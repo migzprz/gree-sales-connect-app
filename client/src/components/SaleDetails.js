@@ -2,12 +2,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { useState, useEffect } from 'react'; 
 import { FaEdit, FaUserTie, FaCheck, FaTruck, FaScrewdriver, FaToolbox, FaPlus, FaMoneyBillWave, FaShoppingBag} from 'react-icons/fa';
+import { FaMagnifyingGlass } from "react-icons/fa6";
 import { Row, Col, Card, CardBody, CardHeader, Table, Form, Dropdown } from 'react-bootstrap';
 import '../index.css';
 import CompleteServiceModal from './CompleteServiceModal';
 import AddPaymentModal from './AddPaymentModal';
 import EditServiceDetailsModal from './EditServiceDetailsModal';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
 
 const SaleDetails= () => {
@@ -20,6 +21,7 @@ const SaleDetails= () => {
     const [installations, setInstallations] = useState([])
     const [services, setServices] = useState([])
     const [payments, setPayments] = useState([])
+    const [quotations, setQuotations] = useState([])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -31,6 +33,7 @@ const SaleDetails= () => {
                 setInstallations(response.installation)
                 setServices(response.service)
                 setPayments(response.payment)
+                setQuotations(response.quotation)
             } catch (error) {
                 console.error('Error fetching data: ', error)
             }
@@ -88,9 +91,9 @@ const SaleDetails= () => {
 
             <Row>
                 <Col lg="3">
-                    <Card style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9'}}>
+                    <Card style={{padding: '15px', borderRadius: '20px', background: '#CCDBE9'}}>
 
-                        <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91'}}>
+                        <Card style={{padding: '15px', borderRadius: '20px', color: deliveries.length > 0 ? '#014c91' : '#008000', background: deliveries.length > 0 ? '' : '#E7FFE2' }}>
                             <Row>
                                 <Col lg="9">
                                     <h3>{React.createElement(FaTruck, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Delivery</h3>
@@ -119,7 +122,7 @@ const SaleDetails= () => {
                                     </Row>
                                     <Row className="mt-2">
                                         <Col>
-                                                <CompleteServiceModal type={"delivery"}/>
+                                                <CompleteServiceModal type={"delivery"} id={deliveries[0].delivery_id} refId={String(detail.sales_id).padStart(4, '0')}/>
                                         </Col>
                                     </Row>
                                 </>
@@ -132,7 +135,7 @@ const SaleDetails= () => {
                             )}
                         </Card>
 
-                        <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', color: '#014c91'}}>
+                        <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', color: installations.length > 0 ? '#014c91' : '#008000', background: installations.length > 0 ? '' : '#E7FFE2'}}>
                                 <Row>
                                     <Col lg="9">
                                         <h3>{React.createElement(FaScrewdriver, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Installation</h3>
@@ -180,7 +183,7 @@ const SaleDetails= () => {
                                         </Row>
                                         <Row className="mt-2">
                                             <Col>
-                                                <CompleteServiceModal type={"installation"}/>
+                                                <CompleteServiceModal type={"installation"} id={installations[0].installation_id} refId={String(detail.sales_id).padStart(4, '0')}/>
                                             </Col>
                                         </Row>
                                     </>
@@ -193,7 +196,7 @@ const SaleDetails= () => {
                                 ) }
                         </Card>
 
-                        <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', background: '#E7FFE2', color: '#008000'}}>
+                        <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', color: services.length > 0 ? '#014c91' : '#008000', background: services.length > 0 ? '' : '#E7FFE2'}}>
                             <Row>
                                 <Col lg="9">
                                     <h3>{React.createElement(FaToolbox, { size: 25, style: { marginRight: '5px', marginBottom: '5px' }})}Service</h3>
@@ -203,7 +206,7 @@ const SaleDetails= () => {
                                 </Col>
                             </Row>
                             
-                            {services && services.length > 1 ? (
+                            {services && services.length > 0 ? (
                                 <>
                                     <Row>
                                         <Col>
@@ -227,7 +230,7 @@ const SaleDetails= () => {
                                     </Row>
                                     <Row className="mt-2">
                                             <Col>
-                                                <CompleteServiceModal type={"service"}/>
+                                                <CompleteServiceModal type={"service"} id={services[0].service_schedule_id} refId={String(detail.sales_id).padStart(4, '0')}/>
                                             </Col>
                                     </Row>
                                 </>
@@ -265,20 +268,25 @@ const SaleDetails= () => {
                                         </thead>
                                         <tbody>
                                             <React.Fragment>
-                                                <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                                    <td style={{color: '#014c91'}}>{new Date(payments[0].date_created).toLocaleDateString()}</td>
-                                                    <td style={{color: '#014c91'}}>{payments[0].name}</td>
-                                                    <td style={{color: '#014c91'}}>{payments[0].refNo ?? ''}</td>
-                                                    <td style={{color: '#014c91'}}>₱{formatNumber(payments[0].amount)}</td>
-                                                </tr>
+                                                {payments && payments.map((p, i) => (
+                                                    <tr style={{ borderRadius: '20px', padding: '10px' }} key={i}>
+                                                        <td style={{color: '#014c91'}}>{new Date(p.date_created).toLocaleDateString()}</td>
+                                                        <td style={{color: '#014c91'}}>{p.name}</td>
+                                                        <td style={{color: '#014c91'}}>{p.refNo ?? ''}</td>
+                                                        <td style={{color: '#014c91'}}>₱{formatNumber(p.amount)}</td>
+                                                    </tr>
+                                                ))}
 
                                                 <tr>
-                                                    <td colspan="3" style={{color: '#014c91', textAlign: 'right'}}>Total Amount Paid</td>
+                                                    <td colSpan="3" style={{color: '#014c91', textAlign: 'right'}}>Total Amount Paid</td>
                                                     <td style={{color: '#014c91'}}><strong>₱{formatNumber(payments.reduce((sum, item) => item.amount + sum, 0))} </strong></td>
                                                 </tr>
                                                 <tr>
-                                                    <td colspan="3" style={{color: '#014c91', textAlign: 'right'}}>Remaining Balance</td>
-                                                    <td style={{color: '#014c91'}}><strong>₱15,000.00 </strong></td>
+                                                    <td colSpan="3" style={{color: '#014c91', textAlign: 'right'}}>Remaining Balance</td>
+                                                    <td style={{color: '#014c91'}}>
+                                                        <strong>
+                                                            ₱{quotations ? formatNumber((quotations.reduce((sum, q) => sum + q.totalPrice, 0) * 1.12) - payments.reduce((sum, p) => sum + p.amount, 0)) : null}
+                                                        </strong></td>
                                                 </tr>
                                             </React.Fragment>
                                         </tbody>
@@ -295,7 +303,7 @@ const SaleDetails= () => {
                             
                             <Row className="mt-2">
                                 <Col>
-                                    <AddPaymentModal/>
+                                    <AddPaymentModal id={id}/>
                                 </Col>
                             </Row>
                         </Card>
@@ -316,21 +324,47 @@ const SaleDetails= () => {
                                             <th style={{color: '#014c91'}}>Date</th>
                                             <th style={{color: '#014c91'}}>Quotation</th>
                                             <th style={{color: '#014c91'}}>Invoice</th>
-                                            <th style={{color: '#014c91'}}>Purchase Order</th>
+                                            {/* <th style={{color: '#014c91'}}></th> *Purchase Order */}
                                             <th style={{color: '#014c91'}}>Total Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <React.Fragment>
+                                            {quotations && quotations.map((q) => (
+                                                <tr style={{ borderRadius: '20px', padding: '10px' }}>
+                                                    <td style={{color: '#014c91'}}>{new Date(q.date_created).toLocaleDateString()}</td>
+                                                    <td style={{color: '#014c91'}}>
+                                                        <Link to={`/generatequotation/${q.quotation_id}?type=view`}>
+                                                            <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
+                                                                {React.createElement(FaMagnifyingGlass, { size: 18, style: { marginRight: '5px' } })}   View
+                                                            </button>
+                                                        </Link>
+                                                    </td>
+                                                    <td style={{color: '#014c91'}}>
+                                                        <Link to={`/generateinvoice?id=${q.quotation_id}&type=view`}>
+                                                            <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
+                                                                {React.createElement(FaMagnifyingGlass, { size: 18, style: { marginRight: '5px' } })}   View
+                                                            </button>
+                                                        </Link>
+                                                    </td>
+                                                    {/* <td /> */}
+                                                    {/* <td style={{color: '#014c91'}}>
+                                                        <Link to={`/generatequotation?sales=${id}`}>
+                                                            <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
+                                                                {React.createElement(FaMagnifyingGlass, { size: 18, style: { marginRight: '5px' } })}   View
+                                                            </button>
+                                                        </Link>
+                                                    </td> */}
+                                                    <td style={{color: '#014c91'}}>₱{formatNumber(q.totalPrice * 1.12)}</td>
+                                                </tr>
+                                            ))}
                                             <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                                <td style={{color: '#014c91'}}>Jan. 24, 2024</td>
-                                                <td style={{color: '#014c91'}}>#0001</td>
-                                                <td style={{color: '#014c91'}}>#0001</td>
-                                                <td style={{color: '#014c91'}}>#0001</td>
-                                                <td style={{color: '#014c91'}}>₱60,000.00</td>
+                                                <td style={{color: '#014c91'}}></td>
+                                                <td style={{color: '#014c91'}}></td>
+                                                {/* <td style={{color: '#014c91'}}></td> */}
+                                                <td style={{color: '#014c91'}}><strong>GRAND TOTAL</strong></td>
+                                                <td style={{color: '#014c91'}}><strong>₱{formatNumber((quotations.reduce((sum, q) => sum + q.totalPrice, 0)*1.12))}</strong></td>
                                             </tr>
-
-                                        
                                         </React.Fragment>
                                     </tbody>
                             </Table>
@@ -340,9 +374,11 @@ const SaleDetails= () => {
                             
                             <Row className="mt-2">
                                 <Col>
-                                    <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
-                                        {React.createElement(FaPlus, { size: 18, style: { marginRight: '5px' } })}   Add Purchase
-                                    </button>
+                                    <Link to={`/generatequotation?sales=${id}`}>
+                                        <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
+                                            {React.createElement(FaPlus, { size: 18, style: { marginRight: '5px' } })}   Add Purchase
+                                        </button>
+                                    </Link>
                                 </Col>
                             </Row>
                         </Card>

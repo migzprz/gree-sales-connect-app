@@ -10,12 +10,34 @@ import useProducts from '../hooks/useProducts';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PreviewQuotation from './PreviewQuotation';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 const QuotationForm = () => {
 
   const navigate = useNavigate()
   const { id } = useParams();
+
+
+  const [searchParams] = useSearchParams()
+  const salesId = searchParams.get('sales')
+  const type = searchParams.get('type')
+
+  useEffect(() => {
+    if (type === 'view') {
+      const fetchData = async () => {
+        try {
+            const res = (await axios.get(`http://localhost:4000/api/getQuotationDetailsById/${id}`)).data
+            setClientData((res.client)[0])
+            setOfferData(res.quotation)
+            setTermsData(res.term[0])
+            setSelectionType('download')
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    fetchData()
+    }
+  }, [type])
 
   const [hasItems, setHasItems] = useState(true);
   const [validated, setValidated] = useState(false);
@@ -39,6 +61,12 @@ const QuotationForm = () => {
         const response = await axios.get(`http://localhost:4000/api/getQuoClientIdByOcularId/${id}`);
 
         client_id = response.data[0].quotation_client_id
+      }
+      else if (salesId) {
+        console.log('Adding additional quotation for existing sales record, searching quotation client id')
+        const response = await axios.get(`http://localhost:4000/api/getQuoClientIdBySalesId/${salesId}`);
+
+        client_id = response.data[0].quotation_client_id
       } else {
         console.log('Posting new client data...')
         const response = await axios.post('http://localhost:4000/api/postOcular/0', clientData)
@@ -48,12 +76,18 @@ const QuotationForm = () => {
       const data = {
         offer: offerData,
         terms: termsData,
-        id: client_id
+        id: client_id,
+        sales_id: salesId
       }
-
+      
       const postReponse = await axios.post('http://localhost:4000/api/postQuotation/', data)
       console.log(postReponse)
-      navigate('/viewquotations')
+
+      if (salesId) {
+        navigate(`/generateinvoice?id=${postReponse.data.quotation_id}&type=add&sales=${salesId}`)
+      } else {
+        navigate('/viewquotations')
+      }
 
     } catch (error) {
       console.error('Error: Problem encountered when posting data', error)
@@ -64,7 +98,7 @@ const QuotationForm = () => {
 
   const handleOfferSubmission = (data) => {
     setOfferData(data)
-    id ? setSelectionType('terms') : setSelectionType('client')
+    id || salesId ? setSelectionType('terms') : setSelectionType('client')
   };
 
   const handleClientSubmission = (data) => {
@@ -114,7 +148,7 @@ const QuotationForm = () => {
       {selectionType === 'offer' && <OfferSelection offerList={offer} onOfferSubmission={handleOfferSubmission} />}
       {selectionType === 'client' && <ClientSelection onClientSubmission={handleClientSubmission}/>}
       {selectionType === 'terms' && <TermsAndConditions onTermsSubmission={handleGetTermsData}/>}
-      {selectionType === 'download' && <PreviewQuotation offers={offerData} terms={termsData} client={clientData} POST={handleSubmit}/>}
+      {selectionType === 'download' && <PreviewQuotation offers={offerData} terms={termsData} client={clientData} POST={handleSubmit} type={type}/>}
 
     </div>
   );

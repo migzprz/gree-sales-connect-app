@@ -57,20 +57,29 @@ module.exports = (query) => {
         return response
     }
 
-    router.post('/convertToSale', async (req, res) => {
-        const { id, delivery, installation, services, payment } = req.body
+    router.post('/convertToSale/:type', async (req, res) => {
+        const { id, delivery, installation, services, payment, sales } = req.body
+        const { type } = req.params
         
         // post order: sales, delivery, installation, payment
         let step = 1 // for debugging
         try {
             // STEP 1: sales (for converting a quotation to a sale NOT for adding a quotation to a sale)
             // to account for adding a quotation to a sale, reference an existing id
-            console.log('STEP 1: Attempting to post SALES record...')
-            const salesQuery = 'INSERT INTO td_sales (date_created, login_id, main_quotation_id, is_completed) VALUES (NOW(), ?, ?, ?)'
-            const salesResponse = await query(salesQuery, [1, id, 0])
-            console.log('SALES SUCCESSFULL: ', salesResponse)
-            const salesId = salesResponse.insertId
-            step++
+            let salesId
+            if (type === 'add') {
+                console.log('STEP 1: Adding to existing sales record, skipping sales record generation step...')
+                salesId = sales
+                step++
+            } else {
+                console.log('STEP 1: Attempting to post SALES record...')
+                const salesQuery = 'INSERT INTO td_sales (date_created, login_id, main_quotation_id, is_completed) VALUES (NOW(), ?, ?, ?)'
+                console.log(id)
+                const salesResponse = await query(salesQuery, [1, id, 0])
+                console.log('SALES SUCCESSFULL: ', salesResponse)
+                salesId = salesResponse.insertId
+                step++
+            }
 
             // STEP 2: update quotation
             console.log('STEP 2: Attempting to UPDATE QUOTATION record...')
@@ -110,12 +119,14 @@ module.exports = (query) => {
             step++ 
 
             console.log('Completed ', step, ' steps out of 7')
+            res.status(200).json({message: 'Completed '+step+' steps out of 7'})
         } catch (error) {
             console.error(error)
             res.status(400).json({message: `Error... Failed to post at step ${step}.`, error: error})
         }
     })
 
+    /** Return a list of sales summaries */
     router.get('/getSales', async (req, res) => {
         const salesQuery = `SELECT 
         s.sales_id,
@@ -220,7 +231,7 @@ module.exports = (query) => {
                             WHERE s.sales_id = ?`
         const detailsResponse = await query(detailsQuery, [id])
 
-        const deliveryQuery = `SELECT d.delivery_date
+        const deliveryQuery = `SELECT d.delivery_date, d.delivery_id
                                 FROM td_quotations q
                                 JOIN md_deliveries d ON q.quotation_id = d.quotation_id
                                 WHERE q.sales_id = ?
@@ -228,7 +239,7 @@ module.exports = (query) => {
                                 ORDER BY d.delivery_date ASC`
         const deliveryRespponse = await query(deliveryQuery, [id])
 
-        const installationQuery = `SELECT i.start_installation_date, i.end_installation_date, CONCAT(t.last_name, ", ", t.first_name) as technician_name
+        const installationQuery = `SELECT i.installation_id, i.start_installation_date, i.end_installation_date, CONCAT(t.last_name, ", ", t.first_name) as technician_name
                                     FROM td_quotations q
                                     JOIN md_installations i ON q.quotation_id = i.quotation_id
                                     JOIN md_technicians t ON i.technician_id = t.technician_id
@@ -237,7 +248,7 @@ module.exports = (query) => {
                                     ORDER BY i.start_installation_date ASC`
         const installationResponse = await query(installationQuery, [id])
 
-        const serviceQuery = `SELECT ss.service_date, CONCAT(t.last_name, ", ", t.first_name) as technician_name
+        const serviceQuery = `SELECT ss.service_schedule_id, ss.service_date, CONCAT(t.last_name, ", ", t.first_name) as technician_name
                                 FROM td_quotations q
                                 JOIN md_service_schedules ss ON q.quotation_id = ss.quotation_id
                                 JOIN md_technicians t ON ss.technician_id = t.technician_id
@@ -246,22 +257,113 @@ module.exports = (query) => {
                                 ORDER BY ss.service_date ASC`
         const serviceResponse = await query(serviceQuery, [id])
 
-        const paymentQuery = `SELECT sp.date_created,  mop.name, sp.refNo, sp.amount
+        const paymentQuery = `SELECT sp.sales_payment_id, sp.date_created,  mop.name, sp.refNo, sp.amount
                                 FROM md_sales_payment sp
                                 JOIN ref_mode_of_payment mop ON sp.mop_id = mop.mop_id
-                                WHERE sales_id = ?;`
+                                WHERE sales_id = ? ORDER BY sp.date_created;`
         const paymentResponse = await query(paymentQuery, [id])
+
+        const quotationsQuery = `SELECT q.quotation_id, q.date_created,
+                                COALESCE(totalProducts, 0) + COALESCE(totalServices, 0) + COALESCE(totalParts, 0) AS totalPrice
+                                FROM td_quotations q
+                                LEFT JOIN (
+                                    SELECT
+                                        quotation_id,
+                                        SUM(discounted_price_each * quantity) AS totalProducts
+                                    FROM
+                                        md_quotation_products
+                                    GROUP BY
+                                        quotation_id
+                                ) qp ON q.quotation_id = qp.quotation_id
+                                LEFT JOIN (
+                                    SELECT
+                                        quotation_id,
+                                        SUM(discounted_price_each * quantity) AS totalServices
+                                    FROM
+                                        md_quotation_services
+                                    GROUP BY
+                                        quotation_id
+                                ) qs ON q.quotation_id = qs.quotation_id
+                                LEFT JOIN (
+                                    SELECT
+                                        quotation_id,
+                                        SUM(discounted_price_each * quantity) AS totalParts
+                                    FROM
+                                        md_quotation_parts
+                                    GROUP BY
+                                        quotation_id
+                                ) qr ON q.quotation_id = qr.quotation_id WHERE q.sales_id = ? ORDER BY date_created;`
+        const quotationsResponse = await query(quotationsQuery, [id])
 
         const data = {
             detail: detailsResponse,
             delivery: deliveryRespponse,
             installation: installationResponse,
             service: serviceResponse,
-            payment: paymentResponse
+            payment: paymentResponse,
+            quotation: quotationsResponse
         }
 
         res.send(data)
 
+    })
+
+    /** Mark a particular sales detail record (delivery, installation, service schedule) as completed */
+    /**
+     * Takes @param {Integer} id which cooresponds to the sales detail id of a particular record 
+     */
+    router.patch('/completeDelivery/:id', async (req, res) => {
+        try {
+            const upQ = 'UPDATE md_deliveries SET is_delivered = 1 WHERE delivery_id = ?'
+            const response = await query(upQ, [req.params.id])
+            res.status(200).json({message: 'Successfully completed delivery', response: response})
+        } catch (error) {
+            res.status(400).json({message: `Error... Failed to patch`, error: error})
+        }
+    })
+
+    router.patch('/completeInstallation/:id', async (req, res) => {
+        try {
+            const upQ = 'UPDATE md_installations SET is_installed = 1 WHERE installation_id = ?'
+            const response = await query(upQ, [req.params.id])
+            res.status(200).json({message: 'Successfully completed installation', response: response}) 
+        } catch (error) {
+            res.status(400).json({message: `Error... Failed to patch`, error: error})
+        }
+    })
+
+    router.patch('/completeService/:id', async (req, res) => {
+        try {
+            const upQ = 'UPDATE md_service_schedules SET is_completed = 1 WHERE service_schedule_id = ?'
+            const response = await query(upQ, [req.params.id])
+            res.status(200).json({message: 'Successfully completed service', response: response}) 
+        } catch (error) {
+            res.status(400).json({message: `Error... Failed to patch`, error: error})
+        }
+    })
+
+    router.post('/newPayment/:id', async (req, res) => {
+        try {
+            const { id, mop_id, amount, refNo } = req.body
+            const pQ = 'INSERT INTO md_sales_payment (sales_id, mop_id, is_installment, amount, date_created, refNo) VALUES (?, ?, 0, ?, NOW(), ?)'
+            const response = await query(pQ, [id, mop_id, amount, refNo])
+            res.status(200).json({message: 'Successfully posted new payment', response: response}) 
+        } catch (error) {
+            console.error(error)
+            res.status(400).json({message: `Error... Failed to post new payment`, error: error})
+        }
+    })
+
+    router.get('/getQuoClientIdBySalesId/:id', async (req, res) => {
+        const { id } = req.params
+
+        const q = `SELECT qc.quotation_client_id
+                    FROM td_sales s
+                    JOIN td_quotations q ON s.main_quotation_id = q.quotation_id
+                    JOIN md_quotation_clients qc ON q.quotation_client_id = qc.quotation_client_id
+                    WHERE s.sales_id = ?;`
+        const response = await query(q, [id])
+        res.send(response)
     })
 
     return router

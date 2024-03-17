@@ -1,46 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Modal, Form,  InputGroup } from 'react-bootstrap';
 import { FaSave, FaPlus} from 'react-icons/fa';
+import axios from 'axios';
 
-const AddPaymentModal = () => {
+const AddPaymentModal = ({ id }) => {
     const [showModal, setShowModal] = useState(false);
-
-    const handleShowModal = () => {
-        setShowModal(true);
-    };
+    const handleShowModal = () => { setShowModal(true) };
 
     const handleCloseModal = () => {
         setValidated(false); 
         setShowModal(false);
     };
 
-    // Dummy data for ocular details
-    const ocularDetails = [
-        {   id: 1,
-            client: 'Client 1',
-            company: 'Company 1',
-            location: '41B K1st St. Kamuning Quezon City NCR 1103',
-            contactNumber: '0165189598',
-            emailAddress: 'miguel_josh_perez@dlsu.edu.ph',
-            TIN: '77788899900000',
-            date: '2024-01-15',
-            time: '10:00 AM',
-            technician: 'Technician 1',
-            status: 'Scheduled'}
-      ];
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name]: value
+        }));
+    };
 
-      const [validated, setValidated] = useState(false);
-      const handleSubmit = (event) => {
+    const [formData, setFormData] = useState({
+        mop_id: null,
+        amount: null,
+        refNo: null
+    })
+    useEffect(() => {
+        console.log(formData)
+    }, [formData])
+
+    const [validated, setValidated] = useState(false);
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-    
-        setValidated(true);
-      };
-      
 
+        if (form.checkValidity() === true) {
+            try {
+                const data = {
+                    ...formData, id: id
+                }
+                const res = await axios.post(`http://localhost:4000/api/newPayment/${id}`, data)
+                console.log(res)
+                window.location.reload()
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        
+
+        setValidated(true);
+    };
+
+    const [mop, setMop] = useState([])
+    useEffect(() => {
+        try {
+            const fetchdata = async () => {
+                const res = await axios.get(`http://localhost:4000/api/getModeOfPayments`)
+                setMop(res.data)
+            }
+            fetchdata()
+        } catch (error) {
+            console.error(error)
+        }
+    }, [])
+      
+    
     return (
         <div>
 
@@ -61,11 +86,11 @@ const AddPaymentModal = () => {
                             <Col lg="4">
                                     <Form.Group controlId="paymentMode">
                                         <Form.Label>Mode of Payment</Form.Label>
-                                        <Form.Control as="select" required>
+                                        <Form.Control as="select" name='mop_id' onChange={handleChange} required>
                                             <option value=""> Select </option>
-                                            <option value="1"> One </option>
-                                            <option value="2"> Two </option>
-                                            <option value="3"> Three </option>
+                                            {mop.map((m, i) => (
+                                                <option key={i} value={m.mop_id}>{m.name}</option>
+                                            ))}
                                         </Form.Control>
                                         <Form.Control.Feedback type="invalid">
                                             Please choose a mode of payment.
@@ -78,8 +103,8 @@ const AddPaymentModal = () => {
                                         <Form.Label>Amount</Form.Label>
                                         <InputGroup>
                                             <InputGroup.Text> ₱ </InputGroup.Text>
-                                            <Form.Control   className="money" type="number" inputmode="numeric" min="0" 
-                                                            required onWheel={(e) => e.target.blur()}  />
+                                            <Form.Control   className="money" type="number" inputMode="numeric" min="0" 
+                                                            required onWheel={(e) => e.target.blur()} name='amount' onChange={handleChange} />
                                         </InputGroup>
                                         <Form.Control.Feedback type="invalid">
                                             Please provide an amount.
@@ -88,13 +113,17 @@ const AddPaymentModal = () => {
                             </Col>
 
                             <Col lg="4">
-                                    <Form.Group controlId="paymentMode">
-                                        <Form.Label>Reference Number</Form.Label>
-                                        <Form.Control type="text" required/>
-                                        <Form.Control.Feedback type="invalid">
-                                            Please input reference number
-                                        </Form.Control.Feedback>
-                                    </Form.Group>
+                                    {formData.mop_id !== '1' ? (
+                                        <>
+                                            <Form.Group controlId="paymentMode">
+                                                <Form.Label>Reference Number</Form.Label>
+                                                <Form.Control type="text" name='refNo' onChange={handleChange} required/>
+                                                <Form.Control.Feedback type="invalid">
+                                                    Please input reference number
+                                                </Form.Control.Feedback>
+                                            </Form.Group>
+                                        </>
+                                    ) : null}
                             </Col>   
                         </Row>
 
