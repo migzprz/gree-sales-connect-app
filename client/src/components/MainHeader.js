@@ -21,7 +21,7 @@ const MainHeader = () => {
             <div style={{ fontSize: '28px', fontWeight: 'bold' }}>GreeSales Connect</div>
             <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', position: 'relative' }} onClick={handleDropdownToggle}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <FaUser size={20} style={{ marginRight: '5px' }} />
+                    <FaUser size={20} style={{ marginRight: '5px' }} /> User
                     <div style={{ marginRight: '10px' }}></div>
                 </div>
                 <span>&#9662;</span>

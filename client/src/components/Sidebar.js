@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {  FaBars, FaHome, FaEye, FaScroll, FaBriefcase, FaChevronRight, FaChevronDown, FaChartLine,
           FaMoneyCheckAlt, FaUsers, FaUserTie, FaTag, FaShieldAlt} from 'react-icons/fa';
 import GreeLogo from '../assets/gree_logo.png';
@@ -7,19 +7,39 @@ import { Link, useParams } from 'react-router-dom';
 const Sidebar = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
+  const [menuItem, setMenuItem] = useState([]);
 
-  const menuItem = [
-    { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
-    { name: 'Oculars', icon: FaEye, link: '', submenuNames: ['Manage Oculars', 'Set Ocular'], submenuLinks: ['/viewoculars', '/setocular']},
-    { name: 'Quotations', icon: FaScroll, link: '', submenuNames: ['Manage Quotations', 'Generate Quotation', 'Test Download'], submenuLinks: ['/viewquotations','/generatequotation', '/downloadquotation'] },
-    { name: 'Sales', icon: FaBriefcase, link: '/viewsales', submenuNames: [], submenuLinks: []},
-    { name: 'Clients', icon: FaUserTie, link: '/viewclients', submenuNames: [], submenuLinks: [] },
-    { name: 'Products', icon: FaTag, link: '/viewproducts', submenuNames: [], submenuLinks: []},
-    { name: 'Employees', icon: FaUsers, link: '', submenuNames: ['Manage System Users', 'Manage Technicians'], submenuLinks: ['/viewusers', '/viewtechnicians']},
-    { name: 'Expenses', icon: FaMoneyCheckAlt, link: '', submenuNames: ['Manage Expenses', 'Record Expenses'], submenuLinks: ['/viewexpenses', '/recordexpenses']},
-    { name: 'Reports', icon: FaChartLine, link: '/report', submenuNames: [], submenuLinks: []},
-    { name: 'Warranties', icon: FaShieldAlt, link: '', submenuNames: ['Manage Warranties', 'Set Warranty'], submenuLinks: ['/viewwarranties', '/searchwarranty']}
-  ];
+  const [userType, setUserType] = useState(1)
+
+  useEffect(() => {
+  if(userType === 1){
+    setMenuItem([
+      { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
+      { name: 'Oculars', icon: FaEye, link: '', submenuNames: ['Manage Oculars', 'Set Ocular'], submenuLinks: ['/viewoculars', '/setocular']},
+      { name: 'Quotations', icon: FaScroll, link: '', submenuNames: ['Manage Quotations', 'Generate Quotation', 'Test Download'], submenuLinks: ['/viewquotations','/generatequotation', '/downloadquotation'] },
+      { name: 'Sales', icon: FaBriefcase, link: '/viewsales', submenuNames: [], submenuLinks: []},
+      { name: 'Clients', icon: FaUserTie, link: '/viewclients', submenuNames: [], submenuLinks: [] }
+    ])
+  } else if(userType === 2){
+    setMenuItem([
+      { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
+      { name: 'Warranties', icon: FaShieldAlt, link: '', submenuNames: ['Manage Warranties', 'Set Warranty'], submenuLinks: ['/viewwarranties', '/searchwarranty']}
+    ])
+  } else if(userType === 3){
+    setMenuItem([
+      { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
+      { name: 'Expenses', icon: FaMoneyCheckAlt, link: '', submenuNames: ['Manage Expenses', 'Record Expenses'], submenuLinks: ['/viewexpenses', '/recordexpenses']},
+      { name: 'Reports', icon: FaChartLine, link: '/report', submenuNames: [], submenuLinks: []}
+    ])
+  } else {
+    setMenuItem([
+      { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
+      { name: 'Products', icon: FaTag, link: '/viewproducts', submenuNames: [], submenuLinks: []},
+      { name: 'Employees', icon: FaUsers, link: '', submenuNames: ['Manage System Users', 'Manage Technicians'], submenuLinks: ['/viewusers', '/viewtechnicians']}
+    ])
+  }
+}, [userType]);
+
 
   const [expandedMenuIndex, setExpandedMenuIndex] = useState(null);
   const toggleSubMenu = (index) => setExpandedMenuIndex(expandedMenuIndex === index ? null : index);
