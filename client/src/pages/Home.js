@@ -1,6 +1,6 @@
 import MainHeader from "../components/MainHeader"
 import OcularList from "../components/OcularList";
-import SalesDashboard from "../components/SalesDashboard";
+import Dashboard from "../components/Dashboard";
 import Sidebar from "../components/Sidebar";
 import '../index.css';
 
@@ -10,7 +10,7 @@ const Home = () => {
             <MainHeader/>
             <div style={{ display: 'flex' }}>
                 <Sidebar />
-                <SalesDashboard/>
+                <Dashboard/>
             </div>
         </>
 

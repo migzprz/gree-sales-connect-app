@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState } from 'react';
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer, XAxis, YAxis, CartesianGrid, LineChart, Line  } from 'recharts';
 import { Row, Col, Card, CardBody, Table } from 'react-bootstrap';
-import '../index.css';
+import { FaFilter, FaSort, FaSearch} from 'react-icons/fa';
 
 const SalesDashboard = () => {
 
@@ -23,11 +23,75 @@ const SalesDashboard = () => {
     const [quotationLinesVisibility, setquotationLinesVisibility] = useState({quotation: true});
     
     return (
-        <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
-            <h1>Sales Dashboard</h1>
-            <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
+        <>
+            <Row className="mb-3">
+                <Col lg="3">
+                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
+                                                                    backgroundColor: "#014c91", borderRadius: "10px",
+                                                                    overflow: "hidden"}}>
+                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
+                            <div style={{padding: "5px", color: 'white'}}>
+                                {React.createElement(FaFilter, { size: 20 })}
+                            </div>  
+                        </div>
+                        <select className="form-select">
+                            <option value="">2024</option>
+                        </select>
 
-            <Row className="mt-4">
+                    </div>
+                </Col>
+                <Col lg="3">
+                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
+                                                                    backgroundColor: "#014c91", borderRadius: "10px",
+                                                                    overflow: "hidden"}}>
+                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
+                            <div style={{padding: "5px", color: 'white'}}>
+                                {React.createElement(FaFilter, { size: 20 })}
+                            </div>  
+                        </div>
+                        <select className="form-select">
+                            <option value="">All Months</option>
+                        </select>
+
+                    </div>
+                </Col>
+            </Row>
+
+            <Row>
+                <Col lg="3">
+                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
+                        <CardBody>
+                             <h5>Total Oculars Scheduled</h5>
+                             <h1 style={{fontSize:'48px'}}> 21</h1>
+                        </CardBody>
+                    </Card>
+                </Col>
+                <Col lg="3">
+                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
+                        <CardBody>
+                             <h5>Total Quotations Generated</h5>
+                             <h1 style={{fontSize:'48px'}}> 45</h1>
+                        </CardBody>
+                    </Card>
+                </Col>
+                <Col lg="3">
+                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
+                        <CardBody>
+                             <h5>Total Sale Orders Made</h5>
+                             <h1 style={{fontSize:'48px'}}> 32</h1>
+                        </CardBody>
+                    </Card>
+                </Col>
+                <Col lg="3">
+                    <Card style={{color: '#014c91', overflow: 'hidden', height: '100%'}}>
+                        <CardBody>
+                             <h5>Total Revenue Generated</h5>
+                             <h1 style={{fontSize:'40px'}}> ₱ 1,023,000.00</h1>
+                        </CardBody>
+                    </Card>
+                </Col>
+            </Row>
+            <Row className="mt-3">
                 <Col lg="6">
                     <Card style={{color: '#014c91', overflow: 'hidden'}}>
                         <CardBody className="mb-5">
@@ -73,32 +137,8 @@ const SalesDashboard = () => {
             </Row>
 
 
-            <Row className="mt-4">
-                <Col lg="12">
-                    <Card style={{color: '#014c91'}}>
-                        <CardBody>
-                            <h2>Clients</h2>
-                        </CardBody>
-                    </Card>
-                </Col>
-            </Row>
-
-
-            <Row className="mt-4">
-                <Col lg="12">
-                    <Card style={{color: '#014c91'}}>
-                        <CardBody>
-                            <h2>Sales</h2>
-                        </CardBody>
-                    </Card>
-                </Col>
-            </Row>
             
-
-            
-
-
-        </div>
+        </>
     );
 };
 
