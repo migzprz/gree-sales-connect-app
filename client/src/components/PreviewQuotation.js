@@ -77,6 +77,11 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
     useEffect(() => {
         console.log('Total Price: ', totalSum)
     }, [totalSum])
+
+    //Amount Conversion Function
+    const formatNumber = (number) => {
+        return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
     
     
     return (
@@ -165,11 +170,11 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
                                 <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.quantity}</td>
                                 <td colSpan="2" style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.display || item.description || item.article}</td>
                                 <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.unit_model || item.name || '--'}</td>
-                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.srp || item.product_srp || item.service_srp || item.parts_srp}</td>
-                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.discPrice}</td>
+                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{(item.srp || item.product_srp || item.service_srp || item.parts_srp) ? formatNumber(item.srp || item.product_srp || item.service_srp || item.parts_srp) : '0.00'}</td>
+                                <td style={{ padding: '0', border: '1px solid black', textAlign: 'center' }}>{item.discPrice ? formatNumber(item.discPrice) : '0.00'}</td>
                                 <td style={{ padding: '0', border: '1px solid black', textAlign: 'right' }}>
                                     <span style={{ float: 'left', marginLeft: '5px' }}>₱</span> 
-                                    <span style={{ marginRight: '5px' }}>{Number(item.quantity)*item.discPrice}</span>
+                                    <span style={{ marginRight: '5px' }}>{(item.quantity && item.discPrice) ? formatNumber(Number(item.quantity) * item.discPrice) : '0.00'}</span>
                                 </td>
                             </tr>
                         ))}
@@ -178,7 +183,7 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
                             <td style={{ padding: '0', border: 'none', textAlign: 'right' }}>SUBTOTAL:</td>
                             <td style={{ padding: '0', border: 'none', borderBottom: '2px solid black', textAlign: 'right' }}>
                                 <span style={{ float: 'left', marginLeft: '5px' }}>₱</span> 
-                                <span style={{ marginRight: '5px' }}>{totalSum}</span>
+                                <span style={{ marginRight: '5px' }}>{totalSum ? formatNumber(totalSum) : '0.00'}</span>
                             </td>
                         </tr>
 
@@ -191,7 +196,7 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
                             <td colSpan="2" style={{ padding: '0', border: '1px solid black', textAlign: 'center', color: 'red' }}>TOTAL AMOUNT:</td>
                             <td colSpan="2" style={{ padding: '0', border: '1px solid black', background:'#ffc404', textAlign: 'right' }}>
                                 <span style={{ float: 'left', marginLeft: '5px' }}>₱</span> 
-                                <span style={{ marginRight: '5px' }}>{totalSum}</span>
+                                <span style={{ marginRight: '5px' }}>{totalSum ? formatNumber(totalSum) : '0.00'}</span>
                             </td>
                         </tr>
 

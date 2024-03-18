@@ -99,7 +99,12 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
         });
     
         // Calculate total discount
-        totalDisc = total - subtotal;
+        if ((total - subtotal) === 0) {
+            totalDisc = total - subtotal;
+        } else {
+            totalDisc = (total - subtotal)*-1;
+        }
+        
     
         console.log(subtotal, total, totalDisc)
 
@@ -332,7 +337,7 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
                                                         </tr>
                                                         <tr>
                                                             <td style={{border: 'none', background: '#E5EDF4', color: '#014c91' }}> Total Discount </td>
-                                                            <td style={{border: 'none', background: '#E5EDF4', color: '#014c91' }}> (₱ {formatNumber(itemListTotals.totalDisc*-1)})</td>
+                                                            <td style={{border: 'none', background: '#E5EDF4', color: '#014c91' }}> (₱ {formatNumber(itemListTotals.totalDisc)})</td>
                                                         </tr>
                                                         <tr>
                                                             <td style={{border: 'none', background: '#E5EDF4', color: '#014c91' }}> <strong> Total </strong> </td>

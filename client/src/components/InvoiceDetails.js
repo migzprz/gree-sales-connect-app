@@ -48,6 +48,30 @@ const InvoiceDetails = () => {
         console.log(quotation)
     }, [quotation])
 
+    //Amount Conversion Function
+    const formatNumber = (number) => {
+        return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    //Date Conversion Function
+    function formatDate(dateString) {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        // Parse the date string to a Date object
+        const date = new Date(dateString);
+        
+        // Get day, month, and year from the date object
+        const day = date.getDate();
+        const monthIndex = date.getMonth();
+        const year = date.getFullYear();
+        
+        // Format day with leading zero if necessary
+        const formattedDay = day < 10 ? '0' + day : day;
+        
+        // Format date in desired format
+        return `${formattedDay}-${months[monthIndex]}-${year}`;
+    }
+
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
             <h1>Invoice Details</h1>
@@ -58,7 +82,7 @@ const InvoiceDetails = () => {
             
             {/*Invoice*/}
             <Row>
-                <Col lg="6">
+                <Col lg="8">
 
                 <Card style={{ borderRadius: '20px', marginTop: '20px',color: '#014c91'  }}>
                     <CardHeader style={{ textAlign: 'center'}} >
@@ -82,7 +106,7 @@ const InvoiceDetails = () => {
                                 Sold To: {client.client_name}
                             </Col>
                             <Col lg="4">
-                                Date: {new Date(client.date_created).toLocaleString()}
+                                Date: {formatDate(new Date(client.date_created))} {new Date(client.date_created).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                             </Col>                        
                         </Row>
                         <Row>
@@ -115,8 +139,8 @@ const InvoiceDetails = () => {
                                         <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.quantity}</td>
                                         <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.unit}</td>
                                         <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.article}</td>
-                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.srp}</td>
-                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.totalPrice}</td>
+                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>₱ {formatNumber(quotation.srp)}</td>
+                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>₱ {formatNumber(quotation.totalPrice)}</td>
                                     </tr>
                                 ))}
                                 <tr style={{ textAlign: 'center' }}>
@@ -135,7 +159,7 @@ const InvoiceDetails = () => {
                                         Total Sales
                                     </td>
                                     <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px'}}>
-                                    {total}
+                                    ₱ {total ? formatNumber(total): '0.00'}
                                     </td>
                                 </tr>
                                 <tr>
@@ -146,7 +170,7 @@ const InvoiceDetails = () => {
                                         Add: VAT
                                     </td>
                                     <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px'}}>
-                                         {(total*.12)}
+                                    ₱ {total ? formatNumber(total*.12): '0.00'}
                                     </td>
                                 </tr>
                                 <tr>
@@ -157,7 +181,7 @@ const InvoiceDetails = () => {
                                         <strong>TOTAL AMOUNT DUE </strong>
                                     </td>
                                     <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px'}}>
-                                        {total+(total*.12)}
+                                    ₱ {total ? formatNumber(total+(total*.12)): '0.00'}
                                     </td>
                                 </tr>
                             </tbody>
@@ -170,7 +194,7 @@ const InvoiceDetails = () => {
                 </Col>
             </Row>
                 <Row className="mt-3">
-                    <Col lg="2"/>
+                    <Col lg="4"/>
                     {type !== 'view' ? (
                         <Col lg="2">
                             <Link to={`/converttosale?id=${id}${type === 'add' ? `&type=add&sales=${sales}` : ''}`} className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>

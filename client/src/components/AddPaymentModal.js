@@ -137,7 +137,7 @@ const AddPaymentModal = ({ id }) => {
                             {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })} Save Payment
                             </button>
 
-                            <button className="btn" onClick={handleCloseModal} style={{color: "white", backgroundColor: "#6c757d"}}>
+                            <button className="btn" onClick={(e) => { e.preventDefault(); handleCloseModal(); }} style={{color: "white", backgroundColor: "#6c757d"}}>
                             Cancel
                             </button>
 

@@ -42,7 +42,26 @@ const SalesList = () => {
     }
     return null;
     };
-
+    
+     //Date Conversion Function
+     function formatDate(dateString) {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        // Parse the date string to a Date object
+        const date = new Date(dateString);
+        
+        // Get day, month, and year from the date object
+        const day = date.getDate();
+        const monthIndex = date.getMonth();
+        const year = date.getFullYear();
+        
+        // Format day with leading zero if necessary
+        const formattedDay = day < 10 ? '0' + day : day;
+        
+        // Format date in desired format
+        return `${formattedDay}-${months[monthIndex]}-${year}`;
+    }
+    
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
             <h1>Manage Sales</h1>
@@ -93,7 +112,7 @@ const SalesList = () => {
                             </div>  
                         </div>
                         <select className="form-select">
-                            <option value="">All Quotations</option>
+                            <option value="">All Sales</option>
                             <option value="1">Active</option>
                             <option value="0">Expired</option>
                         </select>
@@ -116,8 +135,6 @@ const SalesList = () => {
                                 <th style={{color: '#014c91'}}>Transport Schedule</th>
                                 <th style={{color: '#014c91'}}>Installation Schedule</th>
                                 <th style={{color: '#014c91'}}>Service Schedule</th>
-                                <th style={{color: '#014c91'}}>Status</th>
-                                <th style={{color: '#014c91'}}></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -130,30 +147,35 @@ const SalesList = () => {
                                         <td style={{color: '#014c91'}}>{sales.client_name}</td>
                                         <td style={{color: '#014c91'}}>{sales.company_name}</td>
                                         <td style={{color: '#014c91'}}>{sales.contact_number}</td>
-                                        <td style={{color: '#014c91'}}>{sales.transportMode}</td>
+                                        <td style={{color: '#014c91'}}>{sales.transportMode === 'DELIVERY' ? "Delivery" : "Pick Up"}</td>
                                         <td style={{color: sales.hasDelivery && sales.allDeliveriesCompleted ? '#008000' : (sales.hasDelivery && !sales.allDeliveriesCompleted ? '#DC6601' : '')}}>
-                                            {sales.hasDelivery && sales.allDeliveriesCompleted ? (<FaCheck size={20}/>) : (sales.hasDelivery && !sales.allDeliveriesCompleted ? (<FaClock size={20}/>) : null)}
-                                            {sales.latest_delivery_date ? new Date(sales.latest_delivery_date).toLocaleString() : ''}
+                                            {sales.hasDelivery && sales.allDeliveriesCompleted ? (<FaCheck size={20} className="me-1"/>) : (sales.hasDelivery && !sales.allDeliveriesCompleted ? (<FaClock size={20} className="me-1"/>) : null)}
+                                            {sales.latest_delivery_date ? (
+                                                <>
+                                                    {formatDate(new Date(sales.latest_delivery_date))}{' '}
+                                                    {new Date(sales.latest_delivery_date).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
+                                                </>
+                                            ) : ''}
+
                                         </td>
                                         <td style={{color: sales.hasInstallation && sales.allInstallationsCompleted ? '#008000' : (sales.hasInstallation && !sales.allInstallationsCompleted ? '#DC6601' : '')}}>
-                                            {sales.hasInstallation && sales.allInstallationsCompleted ? (<FaCheck size={20}/>) : (sales.hasInstallation && !sales.allInstallationsCompleted ? (<FaClock size={20}/>) : null)}
-                                            {sales.latest_installation_date ? new Date(sales.latest_installation_date).toLocaleString() : ''}
+                                            {sales.hasInstallation && sales.allInstallationsCompleted ? (<FaCheck size={20} className="me-1"/>) : (sales.hasInstallation && !sales.allInstallationsCompleted ? (<FaClock size={20} className="me-1"/>) : null)}
+                                            {sales.latest_installation_date ? (
+                                                <>
+                                                    {formatDate(new Date(sales.latest_installation_date))}{' '}
+                                                    {new Date(sales.latest_installation_date).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
+                                                </>
+                                            ) : ''}
                                         </td>
-                                        <td style={{color: sales.hasService && sales.allServiceCompleted ? '#008000' : (sales.hasService && !sales.allServiceCompleted ? '#DC6601' : '')}}>
-                                            {sales.hasService && sales.allServiceCompleted ? (<FaCheck size={20}/>) : (sales.hasService && !sales.allServiceCompleted ? (<FaClock size={20}/>) : null)}
-                                            {sales.latest_service_date ? new Date(sales.latest_service_date).toLocaleString() : ''}
-                                        </td>
-                                        <td style={{color: '#014c91'}}>{sales.is_completed === 0 ? 'ONGOING' : 'COMPLETED'}</td>
-                                        <td style={{ color: '#014c91' }}>
-                                        <div style={{ position: 'relative' }}>
-                                            <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
-                                            <FaEllipsisH size={20} />
-                                            </div>
-                                            <Dropdown show={index === activeDropdown} align="start">
-                                
-                                            {renderDropdown(index)}
-                                            </Dropdown>
-                                        </div>
+                                        <td style={{color: sales.hasService && sales.allServiceCompleted ? '#008000' : (sales.hasService && !sales.allServiceCompleted ? '#DC6601' : '#014c91')}}>
+                                            {sales.hasService && sales.allServiceCompleted ? (<FaCheck size={20} className="me-1"/>) : (sales.hasService && !sales.allServiceCompleted ? (<FaClock size={20} className="me-1"/>) : 'No Scheduled Service ')}
+                                            {sales.latest_service_date ? (
+                                                <>
+                                                    {formatDate(new Date(sales.latest_service_date))}{' '}
+                                                    {new Date(sales.latest_service_date).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
+                                                </>
+                                            ) : ''}
+                                            
                                         </td>
                                     </tr>
                                 </React.Fragment>

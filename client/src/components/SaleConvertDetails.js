@@ -329,7 +329,7 @@ const SaleConvertDetails = () => {
                         </Col>
                     </Row>
 
-                    <Row style={{ marginTop: '-30px' }}>
+                    <Row>
                         <Col lg="2"/>
                         {installation.installationType === '2' ? (
                             <>

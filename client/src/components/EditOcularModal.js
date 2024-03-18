@@ -74,37 +74,38 @@ const EditOcularModal = ({ id }) => {
             event.stopPropagation();
             return
         }
-        
-        try {
-            var output = editData
-            // add ocular_date to editData
-            if (output.date && output.time) {
-                console.log('case 1 reached')
-                output = {
-                    ...output,
-                    ocular_date: editData.date+'T'+editData.time,
-                    date: '',
-                    time: '',
+        if (form.checkValidity()) {
+            try {
+                var output = editData
+                // add ocular_date to editData
+                if (output.date && output.time) {
+                    console.log('case 1 reached')
+                    output = {
+                        ...output,
+                        ocular_date: editData.date+'T'+editData.time,
+                        date: '',
+                        time: '',
+                    }
                 }
-            }
-            else if ((!output.date && output.time) || (output.date && !output.time)){
-                console.log('case 2 reached')
-                output = {
-                    ...output,
-                    ocular_date: (editData.date ? editData.date : record.ocular_date.split('T')[0]) + (editData.time ? 'T'+editData.time : 'T'+record.ocular_date.split('T')[1]),
-                    date: '',
-                    time: '',
+                else if ((!output.date && output.time) || (output.date && !output.time)){
+                    console.log('case 2 reached')
+                    output = {
+                        ...output,
+                        ocular_date: (editData.date ? editData.date : record.ocular_date.split('T')[0]) + (editData.time ? 'T'+editData.time : 'T'+record.ocular_date.split('T')[1]),
+                        date: '',
+                        time: '',
+                    }
                 }
-            }
 
-            console.log('record vs edit: ', record, output)
-            const updateResponse = axios.patch(`http://localhost:4000/api/editOcularById/${id}`, output) 
-            console.log(updateResponse)
-            setShowModal(false)  
-        } catch (error) {
-            console.log(error)
+                console.log('record vs edit: ', record, output)
+                const updateResponse = axios.patch(`http://localhost:4000/api/editOcularById/${id}`, output) 
+                console.log(updateResponse)
+                setShowModal(false)  
+            } catch (error) {
+                console.log(error)
+            }
+            setValidated(true);
         }
-        setValidated(true);
     };
       
     const handleChange = (e) => {
@@ -345,7 +346,7 @@ const EditOcularModal = ({ id }) => {
                             {React.createElement(FaEdit, { size: 18, style: { marginRight: '5px' } })} Edit
                             </button>
 
-                            <button className="btn" onClick={handleCloseModal} style={{color: "white", backgroundColor: "#6c757d"}}>
+                            <button className="btn" onClick={(e) => { e.preventDefault(); handleCloseModal(); }} style={{color: "white", backgroundColor: "#6c757d"}}>
                             Cancel
                             </button>
 

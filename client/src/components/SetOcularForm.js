@@ -123,14 +123,15 @@ const SetOcularForm = () => {
       }
 
       console.log(data)
-
-      try {
-        const postReponse = await axios.post('http://localhost:4000/api/postOcular/1', data)
-        console.log(postReponse)
-        navigate('/viewoculars')
-      } catch (error) {
-        console.error('Error: Problem encountered when posting data', error)
-      }
+      if (form.checkValidity()) {
+        try {
+            const postReponse = await axios.post('http://localhost:4000/api/postOcular/1', data)
+            console.log(postReponse)
+            navigate('/viewoculars')
+        } catch (error) {
+            console.error('Error: Problem encountered when posting data', error)
+        }
+     }
 
 
     };

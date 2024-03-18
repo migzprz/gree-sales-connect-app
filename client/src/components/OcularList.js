@@ -170,9 +170,9 @@ const OcularList = () => {
                             </div>  
                         </div>
                         <select className="form-select" value={filterOption} onChange={(e) => {setFilterOption(e.target.value); setCurrentPage(1);}}>
-                            <option value="">All Technicians</option>
+                            <option value="">All Oculars</option>
                             {ocularData && [...new Set(ocularData.map(item => item.technician_name))].map((technician, index) => (
-                                <option key={index} value={technician}>{technician}</option>
+                                <option key={index} value={technician}>Assigned to {technician}</option>
                             ))}
                         </select>
 
