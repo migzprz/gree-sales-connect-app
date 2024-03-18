@@ -285,7 +285,7 @@ const SaleDetails= () => {
                                                     <td colSpan="3" style={{color: '#014c91', textAlign: 'right'}}>Remaining Balance</td>
                                                     <td style={{color: '#014c91'}}>
                                                         <strong>
-                                                            ₱{quotations ? formatNumber((quotations.reduce((sum, q) => sum + q.totalPrice, 0) * 1.12) - payments.reduce((sum, p) => sum + p.amount, 0)) : null}
+                                                            ₱{quotations ? formatNumber(quotations.reduce((sum, q) => sum + q.totalPrice, 0) - payments.reduce((sum, p) => sum + p.amount, 0)) : null}
                                                         </strong></td>
                                                 </tr>
                                             </React.Fragment>
@@ -324,7 +324,7 @@ const SaleDetails= () => {
                                             <th style={{color: '#014c91'}}>Date</th>
                                             <th style={{color: '#014c91'}}>Quotation</th>
                                             <th style={{color: '#014c91'}}>Invoice</th>
-                                            {/* <th style={{color: '#014c91'}}></th> *Purchase Order */}
+                                            <th style={{color: '#014c91'}}>Purchase Order</th>
                                             <th style={{color: '#014c91'}}>Total Amount</th>
                                         </tr>
                                     </thead>
@@ -348,22 +348,22 @@ const SaleDetails= () => {
                                                         </Link>
                                                     </td>
                                                     {/* <td /> */}
-                                                    {/* <td style={{color: '#014c91'}}>
-                                                        <Link to={`/generatequotation?sales=${id}`}>
+                                                    <td style={{color: '#014c91'}}>
+                                                        <Link to={`/generatequotation/${q.quotation_id}?type=view`}>
                                                             <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
                                                                 {React.createElement(FaMagnifyingGlass, { size: 18, style: { marginRight: '5px' } })}   View
                                                             </button>
                                                         </Link>
-                                                    </td> */}
-                                                    <td style={{color: '#014c91'}}>₱{formatNumber(q.totalPrice * 1.12)}</td>
+                                                    </td>
+                                                    <td style={{color: '#014c91'}}>₱{formatNumber(q.totalPrice)}</td>
                                                 </tr>
                                             ))}
                                             <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                                 <td style={{color: '#014c91'}}></td>
                                                 <td style={{color: '#014c91'}}></td>
-                                                {/* <td style={{color: '#014c91'}}></td> */}
+                                                <td style={{color: '#014c91'}}></td>
                                                 <td style={{color: '#014c91'}}><strong>GRAND TOTAL</strong></td>
-                                                <td style={{color: '#014c91'}}><strong>₱{formatNumber((quotations.reduce((sum, q) => sum + q.totalPrice, 0)*1.12))}</strong></td>
+                                                <td style={{color: '#014c91'}}><strong>₱{formatNumber(quotations.reduce((sum, q) => sum + q.totalPrice, 0))}</strong></td>
                                             </tr>
                                         </React.Fragment>
                                     </tbody>

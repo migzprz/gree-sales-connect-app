@@ -22,7 +22,6 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
     const [loader, setLoader] = useState(false);
     const [totalSum, setTotalSum] = useState(null)
     const [checkDl, setCheckDl] = useState(true)
-    //const [address, setAddress] = useAddressString(client)
 
     const downloadPDF = () => {
       const capture1 = document.querySelector('.quotation-file');
@@ -445,18 +444,21 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
             <button className="mt-4 btn w-40" onClick={handleSubmit} disabled={(loader)} style={{color: "white", backgroundColor: "#014c91"}}>
                 
                 {!loader?(
-                    <span> {React.createElement(FaDownload, { size: 18, style: { marginRight: '5px' } })}  Submit Forms </span>
+                    <span> {React.createElement(FaDownload, { size: 18, style: { marginRight: '5px' } })}  {type && type === 'view' ? 'Download' : 'Submit' } Forms </span>
                 ):(
                   <span> <Spinner animation="border" size="sm" />  Downloading </span>
                 )}
             
             </button>
             {type === 'view' ? (
-                <button className="mt-4 btn w-40" onClick={handleBack} disabled={(loader)} style={{color: "white", backgroundColor: "#014c91"}}>
-                    <span> {React.createElement(MdArrowBack, { size: 18, style: { marginRight: '5px' } })}  Back </span>
-                </button>
-            ) : null}
-            <Form><Form.Check type='checkbox' id='downloadCheckbox' label='Download Form as PDF?' onClick={handleCheckboxChange} checked={checkDl}/></Form>
+                <>
+                    <button className="mt-4 btn w-40" onClick={handleBack} disabled={(loader)} style={{color: "white", backgroundColor: "#014c91"}}>
+                        <span> {React.createElement(MdArrowBack, { size: 18, style: { marginRight: '5px' } })}  Back </span>
+                    </button>
+                    
+                </>
+            ) : (<Form><Form.Check type='checkbox' id='downloadCheckbox' label='Download Form as PDF?' onClick={handleCheckboxChange} checked={checkDl}/></Form>)}
+            
         </div>
     );
 };

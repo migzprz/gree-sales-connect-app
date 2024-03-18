@@ -6,6 +6,7 @@ import { Row, Col, Card, CardBody, Table, Dropdown, Pagination} from 'react-boot
 import { Link } from 'react-router-dom';
 import '../index.css';
 import axios from 'axios';
+import CancelQuotationModal from './CancelQuotationModal';
 
 
 const QuotationList = () => {
@@ -21,6 +22,8 @@ const QuotationList = () => {
             try {
                 const response = await axios.get('http://localhost:4000/api/getQuotations/')
                 setQuotations(response.data)
+                // checkExpiry(response.data)
+                
             } catch (error) {
                 console.error('Error fetching data: ', error)
             }
@@ -28,7 +31,25 @@ const QuotationList = () => {
         fetchData()
     }, [])
 
+    const checkExpiry = async (list) => {
+        list.forEach(async data => {
+            const currDate = new Date()
+            const dateCreated = new Date(data.date_created)
+            dateCreated.setDate(dateCreated.getDate() + 7);
 
+            if (currDate >= dateCreated && data.is_cancelled === 0) {
+                console.log('quotation record ', String(data.quotation_id).padStart(4, '0'), ' expired. Patching database' )
+                try {
+                    const res = await axios.patch(`http://localhost:4000/api/cancelQuotation/${data.quotation_id}`)
+                } catch (error) {
+                    console.log(error)
+                }
+            } else { console.log('record has not expired' ) }
+        });
+        window.location.reload()
+
+        // TODO: add feature to only run this function once a day
+    }
     //Ellipsis Functions
     const handleEllipsisClick = (index) => {
         setActiveDropdown(index === activeDropdown ? null : index);
@@ -39,7 +60,7 @@ const QuotationList = () => {
             return (
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
                 <Dropdown.Item><Link to={`/generateinvoice?id=${id}`} style={{ color: '#014c91'}}>Convert To Sale</Link></Dropdown.Item>
-                <Dropdown.Item>Cancel Quotation</Dropdown.Item>
+                <CancelQuotationModal id={id}/>
             </Dropdown.Menu>
             );
         }
@@ -200,7 +221,7 @@ const QuotationList = () => {
                             {currentItems.map((quotation, index) => (
                                 <React.Fragment key={quotation.quotation_id}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                        <td style={{color: '#014c91'}}>{quotation.quotation_id}</td>
+                                        <td style={{color: '#014c91'}}><Link to={`/generatequotation/${quotation.quotation_id}?type=view`}>#{String(quotation.quotation_id).padStart(4, '0')}</Link></td>
                                         <td style={{color: '#014c91'}}>{quotation.client_name}</td>
                                         <td style={{color: '#014c91'}}>{quotation.company_name}</td>
                                         <td style={{color: '#014c91'}}>{quotation.client_number}</td>
@@ -210,15 +231,16 @@ const QuotationList = () => {
                                             {quotation.is_cancelled === 1 ? 'Expired' : 'Active'}
                                         </td>
                                         <td style={{ color: '#014c91' }}>
-                                        <div style={{ position: 'relative' }}>
-                        <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
-                          <FaEllipsisH size={20} />
-                        </div>
-                        <Dropdown show={index === activeDropdown} align="start">
-              
-                          {renderDropdown(index, quotation.quotation_id)}
-                        </Dropdown>
-                      </div>
+                                            {quotation.is_cancelled === 0 ? (
+                                                <div style={{ position: 'relative' }}>
+                                                    <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
+                                                        <FaEllipsisH size={20} />
+                                                    </div>
+                                                    <Dropdown show={index === activeDropdown} align="start">
+                                                        {renderDropdown(index, quotation.quotation_id)}
+                                                    </Dropdown>
+                                                </div>
+                                            ) : null}
                                         </td>
                                     </tr>
                                 </React.Fragment>

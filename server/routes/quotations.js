@@ -39,7 +39,9 @@ module.exports = (query) => {
                                         md_quotation_parts
                                     GROUP BY
                                         quotation_id
-                                ) qr ON q.quotation_id = qr.quotation_id WHERE q.sales_id IS NULL;`, [])
+                                ) qr ON q.quotation_id = qr.quotation_id 
+                                WHERE q.sales_id IS NULL
+                                ORDER BY q.is_cancelled ASC;`, [])
 
         res.send(data)
     })
@@ -270,5 +272,15 @@ module.exports = (query) => {
         }
     })
 
+    router.patch('/cancelQuotation/:id', async (req, res) => {
+        try {
+            const { id } = req.params
+            const q = 'UPDATE td_quotations SET is_cancelled = 1, date_cancelled = NOW() WHERE quotation_id = ?'
+            const response = await query(q, [id])
+            res.status(200).json({message: 'Quotation cancelled successfully', response: response})
+        } catch (error) {
+            res.status(400).json({message: `Error... Failed to cancell quotation... ${error}`})
+        }
+    })
     return router
 }

@@ -159,7 +159,7 @@ const InvoiceDetails = () => {
                                         Total Sales
                                     </td>
                                     <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px'}}>
-                                    ₱ {total ? formatNumber(total): '0.00'}
+                                    ₱ {total ? formatNumber(total - (quotation.reduce((sum, q) => q.totalPrice + sum, 0))*.12): '0.00'}
                                     </td>
                                 </tr>
                                 <tr>
@@ -181,7 +181,7 @@ const InvoiceDetails = () => {
                                         <strong>TOTAL AMOUNT DUE </strong>
                                     </td>
                                     <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px'}}>
-                                    ₱ {total ? formatNumber(total+(total*.12)): '0.00'}
+                                    ₱ {total ? formatNumber(total): '0.00'}
                                     </td>
                                 </tr>
                             </tbody>
