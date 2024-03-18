@@ -277,7 +277,7 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
                                             <thead>
                                                 <tr>
                                                     <th style={{color: '#014c91', width: '10%'}}>Quantity</th>
-                                                    <th style={{color: '#014c91'}}>Description</th>
+                                                    <th style={{color: '#014c91', width: '20%'}}>Description</th>
                                                     <th style={{color: '#014c91'}}>Unit Model</th>
                                                     <th style={{color: '#014c91'}}>SRP</th>
                                                     <th style={{color: '#014c91'}}>Discounted Price</th>
@@ -332,7 +332,7 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
                                                         </tr>
                                                         <tr>
                                                             <td style={{border: 'none', background: '#E5EDF4', color: '#014c91' }}> Total Discount </td>
-                                                            <td style={{border: 'none', background: '#E5EDF4', color: '#014c91' }}> (₱ {formatNumber(itemListTotals.totalDisc)})</td>
+                                                            <td style={{border: 'none', background: '#E5EDF4', color: '#014c91' }}> (₱ {formatNumber(itemListTotals.totalDisc*-1)})</td>
                                                         </tr>
                                                         <tr>
                                                             <td style={{border: 'none', background: '#E5EDF4', color: '#014c91' }}> <strong> Total </strong> </td>
@@ -420,7 +420,7 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
                     <div style={{ maxHeight: '78vh', overflowY: 'auto', overflowX:'hidden' }}>
                         <Row>
                         {(offerList.products).map((offer, index) => (
-                            <Col className="mt-3" lg="2" key={index}>
+                            <Col className="mt-3" lg="4" key={index}>
                             <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
                                 <Card.Title>{offer.display}</Card.Title>
                                 <Card.Text>
@@ -432,7 +432,7 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
                             </Col>
                         ))}
                         {(offerList.services).map((offer, index) => (
-                            <Col className="mt-3" lg="2" key={index}>
+                            <Col className="mt-3" lg="4" key={index}>
                             <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
                                 <Card.Title>{offer.description}</Card.Title>
                                 <Card.Text>
@@ -444,7 +444,7 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
                             </Col>
                         ))}
                         {(offerList.parts).map((offer, index) => (
-                            <Col className="mt-3" lg="2" key={index}>
+                            <Col className="mt-3" lg="4" key={index}>
                             <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
                                 <Card.Title>{offer.description}</Card.Title>
                                 <Card.Text>

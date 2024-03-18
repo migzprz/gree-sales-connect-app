@@ -16,7 +16,7 @@ const Sidebar = ({ children }) => {
     setMenuItem([
       { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
       { name: 'Oculars', icon: FaEye, link: '', submenuNames: ['Manage Oculars', 'Set Ocular'], submenuLinks: ['/viewoculars', '/setocular']},
-      { name: 'Quotations', icon: FaScroll, link: '', submenuNames: ['Manage Quotations', 'Generate Quotation', 'Test Download'], submenuLinks: ['/viewquotations','/generatequotation', '/downloadquotation'] },
+      { name: 'Quotations', icon: FaScroll, link: '', submenuNames: ['Manage Quotations', 'Generate Quotation'], submenuLinks: ['/viewquotations','/generatequotation'] },
       { name: 'Sales', icon: FaBriefcase, link: '/viewsales', submenuNames: [], submenuLinks: []},
       { name: 'Clients', icon: FaUserTie, link: '/viewclients', submenuNames: [], submenuLinks: [] }
     ])
