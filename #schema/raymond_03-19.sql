@@ -61,7 +61,7 @@ CREATE TABLE `md_clients` (
   KEY `fk_md_clients_md_contactperson1_idx` (`contact_person_id`),
   CONSTRAINT `fk_md_clients_md_companies1` FOREIGN KEY (`company_id`) REFERENCES `md_companies` (`company_id`) ON DELETE CASCADE,
   CONSTRAINT `fk_md_clients_md_contactperson1` FOREIGN KEY (`contact_person_id`) REFERENCES `md_contactperson` (`contact_person_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +70,7 @@ CREATE TABLE `md_clients` (
 
 LOCK TABLES `md_clients` WRITE;
 /*!40000 ALTER TABLE `md_clients` DISABLE KEYS */;
-INSERT INTO `md_clients` VALUES (1,1,1),(2,1,3),(3,2,2),(14,14,14),(32,31,31),(33,33,33),(35,35,35),(36,36,36),(37,37,37),(38,38,38);
+INSERT INTO `md_clients` VALUES (1,1,1),(2,1,3),(3,2,2),(14,14,14),(31,32,32),(32,31,31),(33,33,33),(34,34,34),(35,35,35),(36,36,36),(37,37,37);
 /*!40000 ALTER TABLE `md_clients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,7 +86,7 @@ CREATE TABLE `md_companies` (
   `company_name` varchar(45) NOT NULL,
   `tin` varchar(45) NOT NULL,
   PRIMARY KEY (`company_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +95,7 @@ CREATE TABLE `md_companies` (
 
 LOCK TABLES `md_companies` WRITE;
 /*!40000 ALTER TABLE `md_companies` DISABLE KEYS */;
-INSERT INTO `md_companies` VALUES (1,'De La Salle University - Manila','000-754-732-000'),(2,'SM Development Corporation','000-432-333-000'),(3,'Ayala Corporation','000-353-667-000'),(14,'JG Summit Holdings, Inc.','000-232-555-000'),(20,'Nestle Corporation','000-322-677-000'),(21,'ABS-CBN','000-555-322-000'),(22,'ANTA Sports','000-345-988-000'),(23,'Music Inc.','000-444-555-000'),(24,'GMA TV','000-555-444-000'),(26,'TV-5','000-111-333-000'),(31,'ABS-CBN','000-322-677-000'),(33,'MN+LA','000-564-999-000'),(35,'Deloitte Inc.','345-666-432-000'),(36,'Company A','123-234-555-666'),(37,'Universal Robina Corporation','456-666-443-234'),(38,'University of the Philippines','435-666-075-921');
+INSERT INTO `md_companies` VALUES (1,'De La Salle University - Manila','000-754-732-000'),(2,'SM Development Corporation','000-432-333-000'),(3,'Ayala Corporation','000-353-667-000'),(14,'JG Summit Holdings, Inc.','000-232-555-000'),(20,'Nestle Corporation','000-322-677-000'),(21,'ABS-CBN','000-555-322-000'),(22,'ANTA Sports','000-345-988-000'),(23,'Music Inc.','000-444-555-000'),(24,'GMA TV','000-555-444-000'),(26,'TV-5','000-111-333-000'),(27,'TV-5','000-111-333-000'),(28,'TV-5','000-111-333-000'),(29,'TV-5','000-111-333-000'),(30,'TV-5','000-111-333-000'),(31,'ABS-CBN','000-322-677-000'),(32,'ABS-CBN','000-322-677-000'),(33,'MN+LA','000-564-999-000'),(34,'MN+LA','000-564-999-000'),(35,'Deloitte Inc.','345-666-432-000'),(36,'Company A','123-234-555-666'),(37,'BOK Chicken','234-664-786-223');
 /*!40000 ALTER TABLE `md_companies` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -114,7 +114,7 @@ CREATE TABLE `md_contactperson` (
   `contact_number` varchar(45) NOT NULL,
   `tin` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`contact_person_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,7 +123,7 @@ CREATE TABLE `md_contactperson` (
 
 LOCK TABLES `md_contactperson` WRITE;
 /*!40000 ALTER TABLE `md_contactperson` DISABLE KEYS */;
-INSERT INTO `md_contactperson` VALUES (1,'Henry','Sy','henry.sy@gmail.com','09231568244','000-754-544-000'),(2,'Enrique','Razon','enrique.razon@dlsu.edu.ph','09567338512','000-234-456-000'),(3,'Jaime','Zobel de Ayala','jaime.ayala@gmail.com','09885478321','000-123-456-000'),(14,'Lance','Gokongwei','lance.gokongwei@gmail.com','09546337866',NULL),(20,'Vice','Ganda','vice.ganda@gmail.com','09225677432',NULL),(21,'Boy','Abunda','boy.abunda@gmail.com','09675553411',NULL),(22,'Manny','Pacquiao','pacquiao@gmail.com','09674544855',NULL),(23,'Lea','Salonga','salonga@gmail.com','09555437821',NULL),(24,'Anne','Curtis','curtis.anne@gmail.com','09567734122',NULL),(26,'Gerald','Anderson','gerald.anderson@gmail.com','0944457683',NULL),(27,'Gerald','Anderson','gerald.anderson@gmail.com','0944457683',NULL),(28,'Gerald','Anderson','gerald.anderson@gmail.com','0944457683',NULL),(29,'Gerald','Anderson','gerald.anderson@gmail.com','0944457683',NULL),(30,'Gerald','Anderson','gerald.anderson@gmail.com','0944457683',NULL),(31,'Gerald','Anderson','gerald.anderson@gmail.com','09456664332',NULL),(32,'Gerald','Anderson','gerald.anderson@gmail.com','09456664332',NULL),(33,'Liza','Soberano','liza.soberano@gmail.com','09564733221',NULL),(34,'Liza','Soberano','liza.soberano@gmail.com','09564733221',NULL),(35,'Richard','Yap','richard.yap@gmail.com','0952757432',NULL),(36,'Kathryn','Bernardo','kathryn@gmail.com','0967655543',NULL),(37,'Nora','Aunor','nora.aunor@gmail.com','09567432122',NULL),(38,'John Lloyd','Cruz','jl.cruz@gmail.com','0956433411',NULL);
+INSERT INTO `md_contactperson` VALUES (1,'Henry','Sy','henry.sy@gmail.com','09231568244','000-754-544-000'),(2,'Enrique','Razon','enrique.razon@dlsu.edu.ph','09567338512','000-234-456-000'),(3,'Jaime','Zobel de Ayala','jaime.ayala@gmail.com','09885478321','000-123-456-000'),(14,'Lance','Gokongwei','lance.gokongwei@gmail.com','09546337866',NULL),(20,'Vice','Ganda','vice.ganda@gmail.com','09225677432',NULL),(21,'Boy','Abunda','boy.abunda@gmail.com','09675553411',NULL),(22,'Manny','Pacquiao','pacquiao@gmail.com','09674544855',NULL),(23,'Lea','Salonga','salonga@gmail.com','09555437821',NULL),(24,'Anne','Curtis','curtis.anne@gmail.com','09567734122',NULL),(26,'Gerald','Anderson','gerald.anderson@gmail.com','0944457683',NULL),(27,'Gerald','Anderson','gerald.anderson@gmail.com','0944457683',NULL),(28,'Gerald','Anderson','gerald.anderson@gmail.com','0944457683',NULL),(29,'Gerald','Anderson','gerald.anderson@gmail.com','0944457683',NULL),(30,'Gerald','Anderson','gerald.anderson@gmail.com','0944457683',NULL),(31,'Gerald','Anderson','gerald.anderson@gmail.com','09456664332',NULL),(32,'Gerald','Anderson','gerald.anderson@gmail.com','09456664332',NULL),(33,'Liza','Soberano','liza.soberano@gmail.com','09564733221',NULL),(34,'Liza','Soberano','liza.soberano@gmail.com','09564733221',NULL),(35,'Richard','Yap','richard.yap@gmail.com','0952757432',NULL),(36,'Kathryn','Bernardo','kathryn@gmail.com','0967655543',NULL),(37,'Nadine','Lustre','nadine.lustre@gmail.com','09564738221',NULL);
 /*!40000 ALTER TABLE `md_contactperson` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -135,17 +135,16 @@ DROP TABLE IF EXISTS `md_deliveries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `md_deliveries` (
-  `delivery_id` int NOT NULL,
-  `sales_id` int NOT NULL,
+  `delivery_id` int NOT NULL AUTO_INCREMENT,
+  `quotation_id` int NOT NULL,
   `is_pickup` tinyint NOT NULL,
-  `delivery_date_start` datetime NOT NULL,
-  `delivery_date_end` datetime DEFAULT NULL,
+  `delivery_date` datetime NOT NULL,
   `is_delivered` tinyint NOT NULL,
   `comments` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`delivery_id`),
-  KEY `fk_md_deliveries_td_sales1_idx` (`sales_id`),
-  CONSTRAINT `fk_md_deliveries_td_sales1` FOREIGN KEY (`sales_id`) REFERENCES `td_sales` (`sales_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `fk_md_deliveries_td_sales1_idx` (`quotation_id`),
+  CONSTRAINT `fk_md_deliveries_td_sales1` FOREIGN KEY (`quotation_id`) REFERENCES `td_quotations` (`quotation_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -154,6 +153,7 @@ CREATE TABLE `md_deliveries` (
 
 LOCK TABLES `md_deliveries` WRITE;
 /*!40000 ALTER TABLE `md_deliveries` DISABLE KEYS */;
+INSERT INTO `md_deliveries` VALUES (3,25,1,'2024-03-16 11:57:00',1,NULL),(7,29,0,'2024-03-31 12:05:00',1,NULL),(8,25,0,'2024-03-17 13:12:00',1,NULL),(9,31,0,'2024-03-19 12:58:00',0,NULL),(10,32,0,'2024-04-01 15:22:00',1,NULL),(11,33,0,'2024-03-19 03:27:00',0,NULL),(12,34,0,'2024-04-02 03:30:00',1,NULL),(13,35,0,'2024-04-03 15:32:00',0,NULL),(14,35,0,'2024-04-03 15:32:00',0,NULL);
 /*!40000 ALTER TABLE `md_deliveries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -165,21 +165,18 @@ DROP TABLE IF EXISTS `md_installations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `md_installations` (
-  `installation_id` int NOT NULL,
-  `sales_id` int NOT NULL,
+  `installation_id` int NOT NULL AUTO_INCREMENT,
+  `quotation_id` int NOT NULL,
   `start_installation_date` datetime NOT NULL,
   `end_installation_date` datetime DEFAULT NULL,
   `is_installed` tinyint NOT NULL,
   `technician_id` int NOT NULL,
-  `quotation_service_id` int DEFAULT NULL,
   PRIMARY KEY (`installation_id`),
-  KEY `fk_md_installations_td_sales1_idx` (`sales_id`),
+  KEY `fk_md_installations_td_sales1_idx` (`quotation_id`),
   KEY `fk_md_installations_md_technicians1_idx` (`technician_id`),
-  KEY `fk_md_installations_md_quotation_services_idx` (`quotation_service_id`),
-  CONSTRAINT `fk_md_installations_md_quotation_services` FOREIGN KEY (`quotation_service_id`) REFERENCES `md_quotation_services` (`quotation_services_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_md_installations_md_technicians1` FOREIGN KEY (`technician_id`) REFERENCES `md_technicians` (`technician_id`),
-  CONSTRAINT `fk_md_installations_td_sales1` FOREIGN KEY (`sales_id`) REFERENCES `td_sales` (`sales_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `fk_md_installations_td_sales1` FOREIGN KEY (`quotation_id`) REFERENCES `td_quotations` (`quotation_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -188,6 +185,7 @@ CREATE TABLE `md_installations` (
 
 LOCK TABLES `md_installations` WRITE;
 /*!40000 ALTER TABLE `md_installations` DISABLE KEYS */;
+INSERT INTO `md_installations` VALUES (3,25,'2024-03-17 10:58:00','2024-03-23 11:57:00',1,3),(6,29,'2024-03-31 12:05:00',NULL,1,3),(7,25,'2024-03-17 13:13:00',NULL,1,3),(8,31,'2024-03-19 00:58:00',NULL,0,2),(9,32,'2024-04-01 03:22:00',NULL,1,3),(10,33,'2024-03-19 06:25:00',NULL,0,2),(11,34,'2024-04-02 03:29:00',NULL,0,2),(12,35,'2024-04-04 19:30:00',NULL,0,1);
 /*!40000 ALTER TABLE `md_installations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -216,7 +214,7 @@ CREATE TABLE `md_locations` (
   CONSTRAINT `fk_md_locations_md_municipalities1` FOREIGN KEY (`addr_municipality_id`) REFERENCES `md_municipalities` (`municipality_id`),
   CONSTRAINT `fk_md_locations_md_provinces1` FOREIGN KEY (`addr_province_id`) REFERENCES `md_provinces` (`province_id`),
   CONSTRAINT `fk_md_locations_md_regions1` FOREIGN KEY (`addr_region_id`) REFERENCES `md_regions` (`region_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -225,7 +223,7 @@ CREATE TABLE `md_locations` (
 
 LOCK TABLES `md_locations` WRITE;
 /*!40000 ALTER TABLE `md_locations` DISABLE KEYS */;
-INSERT INTO `md_locations` VALUES (1,37059,1366,1,1,'32nd St. cor 11th Ave.','501','1634'),(2,36795,1361,1,1,'Courtyard Dr.','655','1226'),(13,36033,1350,1,1,'Taft Avenue','2401','0922'),(15,36304,1353,1,1,'Kalayaan St.','100','1222'),(16,36304,1353,1,1,'Kalayaan St.','100','1222'),(17,36304,1353,1,1,'Kalayaan St.','100','1222'),(18,36286,1352,1,1,'Palm Ave.','511','2111'),(19,36776,1361,1,1,'Pillilia St.','688','5678'),(20,37059,1366,1,1,'Pandesal St.','700','5000'),(21,36469,1354,1,1,'Bagumbayan Ave.','416','2344'),(22,36381,1354,1,1,'Wrestlers St.','101','2444'),(23,23584,892,41,10,'Musical Ave.','100','5000'),(24,36382,1354,1,1,'Calabasa St.','800','2000'),(25,36285,1352,1,1,'1111','1111','1111'),(26,36476,1355,1,1,'Dulo Rd.','9999','9999'),(27,36476,1355,1,1,'Dulo Rd.','9999','9999'),(28,36476,1355,1,1,'Dulo Rd.','9999','9999'),(29,36476,1355,1,1,'Dulo Rd.','9999','9999'),(30,36476,1355,1,1,'Dulo Rd.','9999','9999'),(31,37671,1410,69,2,'5555','5555','5555'),(32,37671,1410,69,2,'5555','5555','5555'),(33,37671,1410,69,2,'5555','5555','5555'),(34,36786,1361,1,1,'Dulo Rd.','9999','9999'),(35,36786,1361,1,1,'Dulo Rd.','9999','9999'),(36,36368,1354,1,1,'Barong Avenue','500','9021'),(37,36368,1354,1,1,'Barong Avenue','500','9021'),(38,36258,1351,1,1,'Tela Rd.','800','8565'),(39,36258,1351,1,1,'Tela Rd.','800','8565'),(40,36287,1352,1,1,'JP Rizal','9999','1222'),(41,36287,1352,1,1,'JP Rizal','9999','1222'),(42,36778,1361,1,1,'End Road','8000','8000'),(43,36778,1361,1,1,'End Road','8000','8000'),(44,36778,1361,1,1,'End Road','8000','8000'),(45,844,37,3,3,'Jollibee St.','87000','8700'),(46,308,13,2,3,'Jollibee St.','87000','5609'),(47,37685,1411,69,2,'Anton Drive','5000','1234'),(48,1732,71,4,3,'2304 Avenue','5000','2344'),(49,36782,1361,1,1,'4444 Rd.','4444','4444'),(50,36795,1361,1,1,'Armosolo St.','500B','3455'),(51,35367,1350,1,1,'Street Rd.','3A','1235'),(52,36790,1361,1,1,'Del Rosario','10B','1200'),(53,36490,1355,1,1,'Armosolo St.','20A','1222'),(54,36285,1352,1,1,'Sulok Ave.','50C','1243'),(55,36790,1361,1,1,'Poblacion St','30J','1110'),(56,36286,1352,1,1,'Xiao','104','2000'),(57,15196,595,30,8,'Balete Drive','20A Amaya Complex','2810');
+INSERT INTO `md_locations` VALUES (1,37059,1366,1,1,'32nd St. cor 11th Ave.','501','1634'),(2,36795,1361,1,1,'Courtyard Dr.','655','1226'),(13,36033,1350,1,1,'Taft Avenue','2401','0922'),(15,36304,1353,1,1,'Kalayaan St.','100','1222'),(16,36304,1353,1,1,'Kalayaan St.','100','1222'),(17,36304,1353,1,1,'Kalayaan St.','100','1222'),(18,36286,1352,1,1,'Palm Ave.','511','2111'),(19,36776,1361,1,1,'Pillilia St.','688','5678'),(20,37059,1366,1,1,'Pandesal St.','700','5000'),(21,36469,1354,1,1,'Bagumbayan Ave.','416','2344'),(22,36381,1354,1,1,'Wrestlers St.','101','2444'),(23,23584,892,41,10,'Musical Ave.','100','5000'),(24,36382,1354,1,1,'Calabasa St.','800','2000'),(25,36285,1352,1,1,'1111','1111','1111'),(26,36476,1355,1,1,'Dulo Rd.','9999','9999'),(27,36476,1355,1,1,'Dulo Rd.','9999','9999'),(28,36476,1355,1,1,'Dulo Rd.','9999','9999'),(29,36476,1355,1,1,'Dulo Rd.','9999','9999'),(30,36476,1355,1,1,'Dulo Rd.','9999','9999'),(31,37671,1410,69,2,'5555','5555','5555'),(32,37671,1410,69,2,'5555','5555','5555'),(33,37671,1410,69,2,'5555','5555','5555'),(34,36786,1361,1,1,'Dulo Rd.','9999','9999'),(35,36786,1361,1,1,'Dulo Rd.','9999','9999'),(36,36368,1354,1,1,'Barong Avenue','500','9021'),(37,36368,1354,1,1,'Barong Avenue','500','9021'),(38,36258,1351,1,1,'Tela Rd.','800','8565'),(39,36258,1351,1,1,'Tela Rd.','800','8565'),(40,36287,1352,1,1,'JP Rizal','9999','1222'),(41,36287,1352,1,1,'JP Rizal','9999','1222'),(42,36778,1361,1,1,'End Road','8000','8000'),(43,36778,1361,1,1,'End Road','8000','8000'),(44,36778,1361,1,1,'End Road','8000','8000'),(45,844,37,3,3,'Jollibee St.','87000','8700'),(46,308,13,2,3,'Jollibee St.','87000','5609'),(47,37685,1411,69,2,'Anton Drive','5000','1234'),(48,1732,71,4,3,'2304 Avenue','5000','2344'),(49,36782,1361,1,1,'4444 Rd.','4444','4444'),(50,36795,1361,1,1,'Armosolo St.','500B','3455'),(51,35367,1350,1,1,'Street Rd.','3A','1235'),(52,12938,499,24,7,'K1st St','41B','1103'),(53,36259,1351,1,1,'Armosolo St.','50C','2344'),(54,36781,1361,1,1,'Lego St.','50A','1233'),(55,36775,1361,1,1,'King St.','50C','1234'),(56,36797,1361,1,1,'King St.','50C','1233'),(57,35362,1350,1,1,'King St.','50C','1000'),(58,36256,1351,1,1,'King St.','50C','1200'),(59,36800,1361,1,1,'Palm Ave.','10A','1288');
 /*!40000 ALTER TABLE `md_locations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -392,7 +390,7 @@ CREATE TABLE `md_quotation_clients` (
   KEY `fk_md_quotation_clients_md_clients1_idx` (`client_id`),
   KEY `fk_md_quotation_clients_md_locations1_idx` (`location_id`),
   CONSTRAINT `fk_md_quotation_clients_md_locations1` FOREIGN KEY (`location_id`) REFERENCES `md_locations` (`location_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -401,7 +399,7 @@ CREATE TABLE `md_quotation_clients` (
 
 LOCK TABLES `md_quotation_clients` WRITE;
 /*!40000 ALTER TABLE `md_quotation_clients` DISABLE KEYS */;
-INSERT INTO `md_quotation_clients` VALUES (1,1,1,1),(2,2,2,2),(3,3,13,13),(4,14,17,20),(5,20,18,21),(6,3,19,22),(7,3,20,23),(8,21,21,24),(9,22,22,25),(21,2,34,NULL),(22,2,35,NULL),(23,31,36,NULL),(24,32,37,NULL),(25,33,38,NULL),(26,34,39,NULL),(27,14,41,NULL),(28,14,40,NULL),(29,3,43,NULL),(30,3,42,NULL),(31,3,44,NULL),(32,3,45,NULL),(33,33,46,NULL),(34,31,47,NULL),(35,34,48,NULL),(36,1,49,NULL),(37,35,50,NULL),(38,36,51,28),(39,37,52,NULL),(40,37,53,NULL),(41,37,54,NULL),(42,37,55,NULL),(43,37,56,NULL),(44,38,57,NULL);
+INSERT INTO `md_quotation_clients` VALUES (1,1,1,1),(2,2,2,2),(3,3,13,13),(4,14,17,20),(5,20,18,21),(6,3,19,22),(7,3,20,23),(8,21,21,24),(9,22,22,25),(10,23,23,26),(21,2,34,NULL),(22,2,35,NULL),(23,31,36,NULL),(24,32,37,NULL),(25,33,38,NULL),(26,34,39,NULL),(27,14,41,NULL),(28,14,40,NULL),(29,3,43,NULL),(30,3,42,NULL),(31,3,44,NULL),(32,3,45,NULL),(33,33,46,NULL),(34,31,47,NULL),(35,34,48,NULL),(36,1,49,NULL),(37,35,50,NULL),(38,36,51,28),(39,33,52,29),(40,35,53,NULL),(41,35,54,NULL),(42,35,55,NULL),(43,35,56,NULL),(44,35,57,NULL),(45,35,58,NULL),(46,37,59,30);
 /*!40000 ALTER TABLE `md_quotation_clients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -423,7 +421,7 @@ CREATE TABLE `md_quotation_parts` (
   KEY `fk_md_quotation_parts_md_parts1_idx` (`parts_id`),
   CONSTRAINT `fk_md_quotation_parts_md_parts1` FOREIGN KEY (`parts_id`) REFERENCES `md_parts` (`parts_id`),
   CONSTRAINT `fk_md_quotation_parts_td_quotations1` FOREIGN KEY (`quotation_id`) REFERENCES `td_quotations` (`quotation_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -432,7 +430,7 @@ CREATE TABLE `md_quotation_parts` (
 
 LOCK TABLES `md_quotation_parts` WRITE;
 /*!40000 ALTER TABLE `md_quotation_parts` DISABLE KEYS */;
-INSERT INTO `md_quotation_parts` VALUES (1,25,5,1,1000),(2,26,2,1,10000),(3,27,3,2,9500),(4,28,5,1,1000),(5,28,3,2,10000),(6,29,4,1,9500);
+INSERT INTO `md_quotation_parts` VALUES (1,32,2,1,11000);
 /*!40000 ALTER TABLE `md_quotation_parts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -448,13 +446,14 @@ CREATE TABLE `md_quotation_products` (
   `quotation_id` int NOT NULL,
   `product_id` int NOT NULL,
   `discounted_price_each` float DEFAULT NULL,
+  `serial_no` varchar(45) DEFAULT NULL,
   `quantity` int DEFAULT NULL,
   PRIMARY KEY (`quotation_items_id`),
   KEY `fk_md_quotation_products_td_quotations1_idx` (`quotation_id`),
   KEY `fk_md_quotation_products_md_products1_idx` (`product_id`),
   CONSTRAINT `fk_md_quotation_products_md_products1` FOREIGN KEY (`product_id`) REFERENCES `md_products` (`product_id`),
   CONSTRAINT `fk_md_quotation_products_td_quotations1` FOREIGN KEY (`quotation_id`) REFERENCES `td_quotations` (`quotation_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -463,7 +462,7 @@ CREATE TABLE `md_quotation_products` (
 
 LOCK TABLES `md_quotation_products` WRITE;
 /*!40000 ALTER TABLE `md_quotation_products` DISABLE KEYS */;
-INSERT INTO `md_quotation_products` VALUES (1,11,5,43000,5),(2,12,8,20000,1),(3,12,1,25990,1),(4,12,2,17990,1),(5,13,4,16000,1),(6,13,8,19000,1),(7,13,8,20000,1),(8,14,4,16000,1),(9,14,8,19000,1),(10,14,8,20000,1),(11,15,1,25990,3),(12,16,6,30000,4),(13,16,1,25990,1),(14,16,2,17990,1),(15,16,8,20000,1),(16,16,9,45000,1),(17,17,9,40000,5),(18,17,1,25990,1),(19,17,9,45000,1),(20,17,4,16750,2),(21,18,1,25990,1),(22,18,2,17990,1),(23,18,2,17990,1),(24,18,8,20000,1),(25,19,1,25000,4),(26,19,9,4000,4),(27,19,8,20000,1),(28,19,4,16750,1),(29,19,2,17990,1),(30,20,7,27000,1),(31,20,1,20000,5),(32,20,9,45000,1),(33,20,4,16750,1),(34,21,8,20000,1),(35,21,9,45000,1),(36,21,9,45000,4),(37,22,9,45000,3),(38,22,1,25000,4),(39,22,4,16750,1),(40,23,9,45000,1),(41,23,1,25990,1),(42,26,2,17000,1),(43,27,9,40000,5),(44,27,1,25000,1),(45,28,1,25000,5),(46,28,2,17000,5),(47,29,9,40000,3);
+INSERT INTO `md_quotation_products` VALUES (1,11,5,43000,NULL,5),(2,12,8,20000,NULL,1),(3,12,1,25990,NULL,1),(4,12,2,17990,NULL,1),(5,13,4,16000,NULL,1),(6,13,8,19000,NULL,1),(7,13,8,20000,NULL,1),(8,14,4,16000,NULL,1),(9,14,8,19000,NULL,1),(10,14,8,20000,NULL,1),(11,15,1,25990,NULL,3),(12,16,6,30000,NULL,4),(13,16,1,25990,NULL,1),(14,16,2,17990,NULL,1),(15,16,8,20000,NULL,1),(16,16,9,45000,NULL,1),(17,17,9,40000,NULL,5),(18,17,1,25990,NULL,1),(19,17,9,45000,NULL,1),(20,17,4,16750,NULL,2),(21,18,1,25990,NULL,1),(22,18,2,17990,NULL,1),(23,18,2,17990,NULL,1),(24,18,8,20000,NULL,1),(25,19,1,25000,NULL,4),(26,19,9,4000,NULL,4),(27,19,8,20000,NULL,1),(28,19,4,16750,NULL,1),(29,19,2,17990,NULL,1),(30,20,7,27000,NULL,1),(31,20,1,20000,NULL,5),(32,20,9,45000,NULL,1),(33,20,4,16750,NULL,1),(34,21,8,20000,NULL,1),(35,21,9,45000,NULL,1),(36,21,9,45000,NULL,4),(37,22,9,45000,NULL,3),(38,22,1,25000,NULL,4),(39,22,4,16750,NULL,1),(40,23,9,45000,NULL,1),(41,23,1,25990,NULL,1),(42,24,2,17000,NULL,1),(43,25,1,25000,NULL,2),(44,26,9,40000,NULL,1),(45,27,9,40000,NULL,1),(46,28,9,40000,NULL,1),(47,29,9,40000,NULL,1),(48,30,9,40000,NULL,1),(49,31,11,9500,NULL,1),(50,32,1,25000,NULL,5),(51,32,4,16750,NULL,1),(52,33,7,25000,NULL,5),(53,33,9,40000,NULL,5),(54,33,1,24000,NULL,5),(55,34,7,26500,NULL,1),(56,35,7,25000,NULL,5);
 /*!40000 ALTER TABLE `md_quotation_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -479,13 +478,13 @@ CREATE TABLE `md_quotation_services` (
   `quotation_id` int NOT NULL,
   `services_id` int NOT NULL,
   `discounted_price_each` float DEFAULT NULL,
-  `quantity` int DEFAULT NULL,
+  `quantity` int NOT NULL,
   PRIMARY KEY (`quotation_services_id`),
   KEY `fk_md_quotation_services_td_quotations1_idx` (`quotation_id`),
   KEY `fk_md_quotation_services_md_services1_idx` (`services_id`),
   CONSTRAINT `fk_md_quotation_services_md_services1` FOREIGN KEY (`services_id`) REFERENCES `md_services` (`services_id`),
   CONSTRAINT `fk_md_quotation_services_td_quotations1` FOREIGN KEY (`quotation_id`) REFERENCES `td_quotations` (`quotation_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -494,7 +493,7 @@ CREATE TABLE `md_quotation_services` (
 
 LOCK TABLES `md_quotation_services` WRITE;
 /*!40000 ALTER TABLE `md_quotation_services` DISABLE KEYS */;
-INSERT INTO `md_quotation_services` VALUES (1,26,1,600,1),(2,27,2,100,1),(3,28,2,500,1),(4,28,1,500,1),(5,29,2,500,1);
+INSERT INTO `md_quotation_services` VALUES (1,24,2,600,1),(2,25,1,1000,1),(3,32,2,600,1),(4,34,2,600,1);
 /*!40000 ALTER TABLE `md_quotation_services` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -537,12 +536,13 @@ CREATE TABLE `md_sales_payment` (
   `is_installment` tinyint NOT NULL,
   `amount` float NOT NULL,
   `date_created` datetime NOT NULL,
+  `refNo` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`sales_payment_id`),
   KEY `fk_md_sales_payment_td_sales1_idx` (`sales_id`),
   KEY `fk_md_sales_payment_ref_mode_of_payment1_idx` (`mop_id`),
   CONSTRAINT `fk_md_sales_payment_ref_mode_of_payment1` FOREIGN KEY (`mop_id`) REFERENCES `ref_mode_of_payment` (`mop_id`),
   CONSTRAINT `fk_md_sales_payment_td_sales1` FOREIGN KEY (`sales_id`) REFERENCES `td_sales` (`sales_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -551,7 +551,39 @@ CREATE TABLE `md_sales_payment` (
 
 LOCK TABLES `md_sales_payment` WRITE;
 /*!40000 ALTER TABLE `md_sales_payment` DISABLE KEYS */;
+INSERT INTO `md_sales_payment` VALUES (2,7,2,1,25500,'2024-03-15 22:58:16','12345667'),(3,11,1,0,40000,'2024-03-16 00:03:15',NULL),(4,12,1,1,25500,'2024-03-16 00:13:25',NULL),(5,12,1,0,5000,'2024-03-17 22:12:30',NULL),(6,12,3,0,5000,'2024-03-17 22:12:38','23094850'),(7,12,1,0,9500,'2024-03-18 00:57:28',NULL),(8,12,2,0,15000,'2024-03-18 01:53:42','10293485'),(9,13,1,1,76675,'2024-03-18 03:21:17',NULL),(10,14,1,0,445000,'2024-03-18 03:25:16',NULL),(11,15,1,0,27100,'2024-03-18 03:27:39',NULL),(12,15,1,1,62500,'2024-03-18 03:30:46',NULL),(13,15,1,0,9600,'2024-03-18 03:32:25',NULL),(14,15,1,0,1152,'2024-03-18 03:32:37',NULL),(15,15,3,0,1748,'2024-03-18 23:31:26','1748234'),(16,15,3,0,15000,'2024-03-18 23:32:41','2103948');
 /*!40000 ALTER TABLE `md_sales_payment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `md_service_schedules`
+--
+
+DROP TABLE IF EXISTS `md_service_schedules`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `md_service_schedules` (
+  `service_schedule_id` int NOT NULL AUTO_INCREMENT,
+  `quotation_id` int NOT NULL,
+  `service_date` datetime NOT NULL,
+  `is_completed` tinyint NOT NULL,
+  `technician_id` int NOT NULL,
+  PRIMARY KEY (`service_schedule_id`),
+  KEY `fk_md_service_schedules_td_quotation1_idx` (`quotation_id`),
+  KEY `fk_md_service_schedules_md_technicians1_idx` (`technician_id`),
+  CONSTRAINT `fk_md_service_schedules_md_technicians1` FOREIGN KEY (`technician_id`) REFERENCES `md_technicians` (`technician_id`),
+  CONSTRAINT `fk_md_service_schedules_td_quotation1` FOREIGN KEY (`quotation_id`) REFERENCES `td_quotations` (`quotation_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `md_service_schedules`
+--
+
+LOCK TABLES `md_service_schedules` WRITE;
+/*!40000 ALTER TABLE `md_service_schedules` DISABLE KEYS */;
+INSERT INTO `md_service_schedules` VALUES (3,25,'2024-03-25 00:58:00',1,1),(4,25,'2024-03-17 01:13:00',1,1),(5,32,'2024-04-01 18:21:00',1,1),(6,34,'2024-03-19 06:27:00',1,2);
+/*!40000 ALTER TABLE `md_service_schedules` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -606,7 +638,7 @@ CREATE TABLE `md_technicians` (
 
 LOCK TABLES `md_technicians` WRITE;
 /*!40000 ALTER TABLE `md_technicians` DISABLE KEYS */;
-INSERT INTO `md_technicians` VALUES (1,'Zara','Zayne','Black','zara.black@gmail.com','09235567481','2024-03-02 16:07:54',1),(2,'Ivan','William','Carlson','ivan.carlson@gmail.com','09343588295','2024-03-02 16:07:54',1),(3,'Michael',NULL,'Jordan','mjordan@gmail.com','09165189898','2024-03-10 02:24:27',1);
+INSERT INTO `md_technicians` VALUES (1,'Zara','Zayne','Black','zara.black@gmail.com','09235567481','2024-03-02 16:07:54',1),(2,'Ivan','William','Carlson','ivan.carlson@gmail.com','09343588295','2024-03-02 16:07:54',1),(3,'Michael',NULL,'Jordan','mjordan@gmail.com','09165189898','2024-03-10 02:24:27',0);
 /*!40000 ALTER TABLE `md_technicians` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -639,7 +671,7 @@ CREATE TABLE `md_tnc` (
   `D12` varchar(200) DEFAULT NULL,
   `E` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`tnc_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -648,91 +680,8 @@ CREATE TABLE `md_tnc` (
 
 LOCK TABLES `md_tnc` WRITE;
 /*!40000 ALTER TABLE `md_tnc` DISABLE KEYS */;
-INSERT INTO `md_tnc` VALUES (1,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(2,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(3,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(4,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(5,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(6,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(7,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(8,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','9000','php per feet on the 1.0hp-1.5hp Wall Mounted Type','5000','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(9,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','999','php per feet on the 1.0hp-1.5hp Wall Mounted Type','999','php per feet for 2.0hp-2.5hp Wall Mounted Type','999','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','999','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','For any other concerns contact Miguel josh C. Perez'),(10,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(11,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','500','php per feet on the 1.0hp-1.5hp Wall Mounted Type','300','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(12,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Ten (10) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','300','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','500','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well. Contact Miguel Perez for more information.'),(13,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(14,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(15,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(16,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','300','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(17,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(18,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','300','php per feet for 2.0hp-2.5hp Wall Mounted Type','450','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(19,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(20,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(21,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(22,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(23,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','300','php per feet on the 1.0hp-1.5hp Wall Mounted Type','250','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well');
+INSERT INTO `md_tnc` VALUES (1,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(2,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(3,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(4,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(5,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(6,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(7,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(8,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','9000','php per feet on the 1.0hp-1.5hp Wall Mounted Type','5000','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(9,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','999','php per feet on the 1.0hp-1.5hp Wall Mounted Type','999','php per feet for 2.0hp-2.5hp Wall Mounted Type','999','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','999','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','For any other concerns contact Miguel josh C. Perez'),(10,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(11,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','500','php per feet on the 1.0hp-1.5hp Wall Mounted Type','300','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(12,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Ten (10) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','300','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','500','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well. Contact Miguel Perez for more information.'),(13,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(14,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(15,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(16,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','300','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(17,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(18,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(19,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','300','php per feet on the 1.0hp-1.5hp Wall Mounted Type','350','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','500','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(20,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(21,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(22,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(23,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(24,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(25,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(26,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','300','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(27,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(28,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well'),(29,'First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables','One (1) year from the date of start-up on units with factory defects.','Five (5) years warranty on the Compressor','No warranty claims unless units are fully paid by the client.','Warranty: Warranty for workmanship within a period of three (3) months.','Work Schedule: To be arranged after receipt of down-payment.','i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.','ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and','iii. Plans, Permits and other licenses.','In Excess of 10 feet piping to be charged:','350','php per feet on the 1.0hp-1.5hp Wall Mounted Type','400','php per feet for 2.0hp-2.5hp Wall Mounted Type','500','php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type','550','php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.','*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well');
 /*!40000 ALTER TABLE `md_tnc` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `md_warranty_parts`
---
-
-DROP TABLE IF EXISTS `md_warranty_parts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `md_warranty_parts` (
-  `warranty_parts_id` int NOT NULL,
-  `warranty_id` int NOT NULL,
-  `parts_id` int NOT NULL,
-  `quantity` int NOT NULL,
-  PRIMARY KEY (`warranty_parts_id`),
-  KEY `fk_md_warranty_parts_td_warranty_claim_inspection1_idx` (`warranty_id`),
-  KEY `fk_md_warranty_parts_md_parts1_idx` (`parts_id`),
-  CONSTRAINT `fk_md_warranty_parts_md_parts1` FOREIGN KEY (`parts_id`) REFERENCES `md_parts` (`parts_id`),
-  CONSTRAINT `fk_md_warranty_parts_td_warranty_claim_inspection1` FOREIGN KEY (`warranty_id`) REFERENCES `td_warranty_claim_inspection` (`warranty_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `md_warranty_parts`
---
-
-LOCK TABLES `md_warranty_parts` WRITE;
-/*!40000 ALTER TABLE `md_warranty_parts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `md_warranty_parts` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `md_warranty_service_items`
---
-
-DROP TABLE IF EXISTS `md_warranty_service_items`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `md_warranty_service_items` (
-  `warranty_service_id` int NOT NULL,
-  `quotation_product_id` int NOT NULL,
-  PRIMARY KEY (`warranty_service_id`,`quotation_product_id`),
-  KEY `fk_md_warranty_service_items_md_quotation_products_idx` (`quotation_product_id`),
-  CONSTRAINT `fk_md_warranty_service_items_md_quotation_products` FOREIGN KEY (`quotation_product_id`) REFERENCES `md_quotation_products` (`quotation_items_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_md_warranty_service_items_md_warranty_services1` FOREIGN KEY (`warranty_service_id`) REFERENCES `md_warranty_services` (`w_services_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `md_warranty_service_items`
---
-
-LOCK TABLES `md_warranty_service_items` WRITE;
-/*!40000 ALTER TABLE `md_warranty_service_items` DISABLE KEYS */;
-/*!40000 ALTER TABLE `md_warranty_service_items` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `md_warranty_services`
---
-
-DROP TABLE IF EXISTS `md_warranty_services`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `md_warranty_services` (
-  `w_services_id` int NOT NULL,
-  `warranty_id` int NOT NULL,
-  `technician_id` int NOT NULL,
-  `service_date` datetime NOT NULL,
-  `is_repair` tinyint NOT NULL,
-  PRIMARY KEY (`w_services_id`),
-  KEY `fk_md_warranty_services_td_warranty_claim_inspection1_idx` (`warranty_id`),
-  CONSTRAINT `fk_md_warranty_services_td_warranty_claim_inspection1` FOREIGN KEY (`warranty_id`) REFERENCES `td_warranty_claim_inspection` (`warranty_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `md_warranty_services`
---
-
-LOCK TABLES `md_warranty_services` WRITE;
-/*!40000 ALTER TABLE `md_warranty_services` DISABLE KEYS */;
-/*!40000 ALTER TABLE `md_warranty_services` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -755,7 +704,31 @@ CREATE TABLE `ref_mode_of_payment` (
 
 LOCK TABLES `ref_mode_of_payment` WRITE;
 /*!40000 ALTER TABLE `ref_mode_of_payment` DISABLE KEYS */;
+INSERT INTO `ref_mode_of_payment` VALUES (1,'Cash'),(2,'Card'),(3,'E-Wallet');
 /*!40000 ALTER TABLE `ref_mode_of_payment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ref_mode_of_transportation`
+--
+
+DROP TABLE IF EXISTS `ref_mode_of_transportation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ref_mode_of_transportation` (
+  `mot_id` int NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`mot_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ref_mode_of_transportation`
+--
+
+LOCK TABLES `ref_mode_of_transportation` WRITE;
+/*!40000 ALTER TABLE `ref_mode_of_transportation` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ref_mode_of_transportation` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -771,7 +744,7 @@ CREATE TABLE `td_expenses` (
   `login_id` int NOT NULL,
   PRIMARY KEY (`expense_id`),
   KEY `fk_td_expenses_md_login_idx` (`login_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -780,7 +753,7 @@ CREATE TABLE `td_expenses` (
 
 LOCK TABLES `td_expenses` WRITE;
 /*!40000 ALTER TABLE `td_expenses` DISABLE KEYS */;
-INSERT INTO `td_expenses` VALUES (1,'2024-03-10 18:02:50',1);
+INSERT INTO `td_expenses` VALUES (1,'2024-03-10 18:02:50',1),(2,'2024-03-11 00:00:00',1),(3,'2024-03-13 00:00:00',1),(4,'2023-12-13 00:00:00',1);
 /*!40000 ALTER TABLE `td_expenses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -801,7 +774,7 @@ CREATE TABLE `td_nonoperating_expense` (
   PRIMARY KEY (`non_op_expense_id`),
   KEY `FK_td_expenses_td_nonop_expenses_idx` (`expense_id`),
   CONSTRAINT `FK_td_expenses_td_nonop_expenses` FOREIGN KEY (`expense_id`) REFERENCES `td_expenses` (`expense_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -810,6 +783,7 @@ CREATE TABLE `td_nonoperating_expense` (
 
 LOCK TABLES `td_nonoperating_expense` WRITE;
 /*!40000 ALTER TABLE `td_nonoperating_expense` DISABLE KEYS */;
+INSERT INTO `td_nonoperating_expense` VALUES (1,2,'Transportation','delivery expenses',2500,'2024-03-07 00:00:00'),(2,3,'Rent','June Rent',23000,'2024-03-07 00:00:00'),(3,3,'Transportation','training seminar',22000,'2024-03-06 00:00:00'),(4,3,'Delivery Services','for client A',22000,'2024-03-07 00:00:00');
 /*!40000 ALTER TABLE `td_nonoperating_expense` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -833,7 +807,7 @@ CREATE TABLE `td_oculars` (
   KEY `fk_td_oculars_md_technicians1_idx` (`technician_id`),
   CONSTRAINT `fk_td_oculars_md_login1` FOREIGN KEY (`login_id`) REFERENCES `md_login` (`login_id`),
   CONSTRAINT `fk_td_oculars_md_technicians1` FOREIGN KEY (`technician_id`) REFERENCES `md_technicians` (`technician_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -842,7 +816,7 @@ CREATE TABLE `td_oculars` (
 
 LOCK TABLES `td_oculars` WRITE;
 /*!40000 ALTER TABLE `td_oculars` DISABLE KEYS */;
-INSERT INTO `td_oculars` VALUES (1,'2024-02-15 15:33:00','2024-02-01 10:00:00',1,2,1,NULL),(2,'2024-02-02 12:59:00','2024-01-30 12:00:00',3,2,0,'2024-03-02 16:07:54'),(13,'2024-02-28 08:50:00','2024-02-04 02:43:43',1,1,1,NULL),(15,'2024-07-08 13:22:00','2024-02-17 23:58:52',1,1,1,NULL),(16,'2024-07-08 13:22:00','2024-02-18 00:00:39',1,1,1,NULL),(17,'2024-07-08 13:22:00','2024-02-18 00:03:15',1,1,1,NULL),(18,'2024-07-08 13:22:00','2024-02-18 00:04:18',1,1,1,NULL),(19,'2024-07-08 13:22:00','2024-02-18 00:05:55',1,1,1,NULL),(20,'2024-12-12 23:59:00','2024-02-18 00:06:31',1,2,1,NULL),(21,'2024-02-29 17:30:00','2024-02-18 02:07:04',1,2,1,NULL),(22,'2024-03-02 10:40:00','2024-02-18 02:40:57',1,1,0,'2024-03-09 00:31:45'),(23,'2024-11-11 23:11:00','2024-02-19 23:18:35',1,1,1,NULL),(24,'2024-02-24 15:50:00','2024-02-19 23:56:47',1,2,1,NULL),(25,'2024-03-05 00:30:00','2024-02-20 00:01:38',1,2,1,NULL),(26,'2024-10-10 10:10:00','2024-02-20 00:03:30',1,1,1,NULL),(27,'2024-09-09 09:59:00','2024-02-21 02:06:19',1,1,1,NULL),(28,'2024-03-28 17:14:00','2024-03-09 01:14:38',1,1,1,'2024-03-09 01:15:05');
+INSERT INTO `td_oculars` VALUES (1,'2024-02-15 15:33:00','2024-02-01 10:00:00',1,2,1,NULL),(2,'2024-02-02 12:59:00','2024-01-30 12:00:00',3,2,0,'2024-03-02 16:07:54'),(13,'2024-02-28 08:50:00','2024-02-04 02:43:43',1,1,1,NULL),(15,'2024-07-08 13:22:00','2024-02-17 23:58:52',1,1,1,NULL),(16,'2024-07-08 13:22:00','2024-02-18 00:00:39',1,1,1,NULL),(17,'2024-07-08 13:22:00','2024-02-18 00:03:15',1,1,1,NULL),(18,'2024-07-08 13:22:00','2024-02-18 00:04:18',1,1,1,NULL),(19,'2024-07-08 13:22:00','2024-02-18 00:05:55',1,1,1,NULL),(20,'2024-12-12 23:59:00','2024-02-18 00:06:31',1,2,1,NULL),(21,'2024-02-29 17:30:00','2024-02-18 02:07:04',1,2,1,NULL),(22,'2024-03-02 10:40:00','2024-02-18 02:40:57',1,1,0,'2024-03-09 00:31:45'),(23,'2024-11-11 23:11:00','2024-02-19 23:18:35',1,1,1,NULL),(24,'2024-02-24 15:50:00','2024-02-19 23:56:47',1,2,1,NULL),(25,'2024-03-05 00:30:00','2024-02-20 00:01:38',1,2,1,NULL),(26,'2024-10-10 10:10:00','2024-02-20 00:03:30',1,1,1,NULL),(27,'2024-09-09 09:59:00','2024-02-21 02:06:19',1,1,1,NULL),(28,'2024-03-28 17:14:00','2024-03-09 01:14:38',1,1,1,'2024-03-09 01:15:05'),(29,'2024-03-06 12:01:00','2024-03-13 12:58:56',1,2,1,NULL),(30,'2024-03-19 05:11:00','2024-03-18 03:11:51',1,3,1,NULL);
 /*!40000 ALTER TABLE `td_oculars` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -863,7 +837,7 @@ CREATE TABLE `td_operating_expense` (
   PRIMARY KEY (`op_expense_id`),
   KEY `fk_td_subexpenses_list_td_expenses1_idx` (`expense_id`),
   CONSTRAINT `fk_td_subexpenses_list_td_expenses1` FOREIGN KEY (`expense_id`) REFERENCES `td_expenses` (`expense_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -872,6 +846,7 @@ CREATE TABLE `td_operating_expense` (
 
 LOCK TABLES `td_operating_expense` WRITE;
 /*!40000 ALTER TABLE `td_operating_expense` DISABLE KEYS */;
+INSERT INTO `td_operating_expense` VALUES (1,2,'Food','food items for party',3000,'2024-03-06 00:00:00'),(2,3,'Food','June Food',23000,'2024-03-08 00:00:00'),(3,4,'Food','Xmas party',12000,'2024-03-08 00:00:00');
 /*!40000 ALTER TABLE `td_operating_expense` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -888,16 +863,17 @@ CREATE TABLE `td_quotations` (
   `login_id` int DEFAULT NULL,
   `tnc_id` int DEFAULT NULL,
   `sales_id` int DEFAULT NULL,
-  `is_cancelled` tinyint DEFAULT NULL,
   `quotation_client_id` int NOT NULL,
+  `is_cancelled` tinyint DEFAULT NULL,
+  `date_cancelled` datetime DEFAULT NULL,
   PRIMARY KEY (`quotation_id`),
   KEY `fk_td_quotations_md_login1_idx` (`login_id`),
   KEY `fk_td_quotations_md_tnc1_idx` (`tnc_id`),
   KEY `fk_td_quotations_td_sales1_idx` (`sales_id`),
   KEY `fk_td_quotations_md_quotation_client1_idx` (`quotation_client_id`),
   CONSTRAINT `fk_td_quotations_md_quotation_client1` FOREIGN KEY (`quotation_client_id`) REFERENCES `md_quotation_clients` (`quotation_client_id`),
-  CONSTRAINT `fk_td_quotations_td_sales1` FOREIGN KEY (`sales_id`) REFERENCES `td_sales` (`sales_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `fk_td_quotations_td_sales1` FOREIGN KEY (`sales_id`) REFERENCES `td_sales` (`sales_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -906,7 +882,7 @@ CREATE TABLE `td_quotations` (
 
 LOCK TABLES `td_quotations` WRITE;
 /*!40000 ALTER TABLE `td_quotations` DISABLE KEYS */;
-INSERT INTO `td_quotations` VALUES (9,'2024-03-07 01:39:45',1,1,NULL,0,22),(10,'2024-03-07 01:43:46',1,2,NULL,0,23),(11,'2024-03-07 01:47:26',1,3,NULL,0,26),(12,'2024-03-07 01:49:49',1,4,NULL,0,27),(13,'2024-03-07 01:55:04',1,5,NULL,0,29),(14,'2024-03-07 01:55:41',1,6,NULL,0,31),(15,'2024-03-08 20:33:58',1,7,NULL,0,32),(16,'2024-03-08 20:34:43',1,8,NULL,0,33),(17,'2024-03-08 20:53:24',1,9,NULL,0,34),(18,'2024-03-08 22:58:18',1,10,NULL,0,35),(19,'2024-03-08 23:05:31',1,11,NULL,0,36),(20,'2024-03-08 23:10:18',1,12,NULL,0,37),(21,'2024-03-09 01:05:48',1,15,NULL,0,3),(22,'2024-03-09 01:16:53',1,16,NULL,0,38),(23,'2024-03-09 10:27:37',1,17,NULL,0,1),(24,'2024-03-13 22:11:02',1,18,NULL,0,39),(25,'2024-03-13 23:17:43',1,19,NULL,0,40),(26,'2024-03-13 23:19:48',1,20,NULL,0,41),(27,'2024-03-13 23:36:20',1,21,NULL,0,42),(28,'2024-03-13 23:43:36',1,22,NULL,0,43),(29,'2024-03-14 00:34:35',1,23,NULL,0,44);
+INSERT INTO `td_quotations` VALUES (9,'2024-03-07 01:39:45',1,1,NULL,22,1,'2024-03-19 01:37:25'),(10,'2024-03-07 01:43:46',1,2,NULL,23,1,'2024-03-19 01:37:25'),(11,'2024-03-07 01:47:26',1,3,NULL,26,1,'2024-03-19 01:37:25'),(12,'2024-03-07 01:49:49',1,4,NULL,27,0,NULL),(13,'2024-03-07 01:55:04',1,5,NULL,29,0,NULL),(14,'2024-03-07 01:55:41',1,6,NULL,31,0,NULL),(15,'2024-03-08 20:33:58',1,7,NULL,32,0,NULL),(16,'2024-03-08 20:34:43',1,8,NULL,33,0,NULL),(17,'2024-03-08 20:53:24',1,9,NULL,34,0,NULL),(18,'2024-03-08 22:58:18',1,10,1,35,0,NULL),(19,'2024-03-08 23:05:31',1,11,2,36,0,NULL),(20,'2024-03-08 23:10:18',1,12,3,37,0,NULL),(21,'2024-03-09 01:05:48',1,15,NULL,3,1,'2024-03-19 01:37:25'),(22,'2024-03-09 01:16:53',1,16,NULL,38,1,'2024-03-19 01:37:25'),(23,'2024-03-09 10:27:37',1,17,NULL,1,1,'2024-03-19 01:37:25'),(25,'2024-03-15 22:57:01',1,19,12,41,0,NULL),(29,'2024-03-16 00:02:54',1,23,11,45,0,NULL),(30,'2024-03-17 22:13:11',1,24,12,41,0,NULL),(31,'2024-03-18 00:57:02',1,25,12,41,0,NULL),(32,'2024-03-18 03:12:30',1,26,13,46,0,NULL),(33,'2024-03-18 03:24:27',1,27,14,39,0,NULL),(34,'2024-03-18 03:26:58',1,28,15,4,0,NULL),(35,'2024-03-18 03:30:13',1,29,15,4,0,NULL);
 /*!40000 ALTER TABLE `td_quotations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -921,10 +897,14 @@ CREATE TABLE `td_sales` (
   `sales_id` int NOT NULL AUTO_INCREMENT,
   `date_created` datetime NOT NULL,
   `login_id` int NOT NULL,
+  `main_quotation_id` int DEFAULT NULL,
+  `is_completed` tinyint DEFAULT NULL,
   PRIMARY KEY (`sales_id`),
   KEY `fk_td_sales_md_login1_idx` (`login_id`),
-  CONSTRAINT `fk_td_sales_md_login1` FOREIGN KEY (`login_id`) REFERENCES `md_login` (`login_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `fk_td_sales_md_quotations1_idx` (`main_quotation_id`),
+  CONSTRAINT `fk_td_sales_md_login1` FOREIGN KEY (`login_id`) REFERENCES `md_login` (`login_id`),
+  CONSTRAINT `fk_td_sales_md_quotations1` FOREIGN KEY (`main_quotation_id`) REFERENCES `td_quotations` (`quotation_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -933,43 +913,146 @@ CREATE TABLE `td_sales` (
 
 LOCK TABLES `td_sales` WRITE;
 /*!40000 ALTER TABLE `td_sales` DISABLE KEYS */;
+INSERT INTO `td_sales` VALUES (7,'2024-03-15 22:58:16',1,NULL,0),(11,'2024-03-16 00:03:15',1,29,0),(12,'2024-03-16 00:13:25',1,25,0),(13,'2024-03-18 03:21:17',1,32,0),(14,'2024-03-18 03:25:16',1,33,0),(15,'2024-03-18 03:27:39',1,34,0);
 /*!40000 ALTER TABLE `td_sales` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `td_warranty_claim_inspection`
+-- Table structure for table `td_warranty`
 --
 
-DROP TABLE IF EXISTS `td_warranty_claim_inspection`;
+DROP TABLE IF EXISTS `td_warranty`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `td_warranty_claim_inspection` (
-  `warranty_id` int NOT NULL,
+CREATE TABLE `td_warranty` (
+  `warranty_id` int NOT NULL AUTO_INCREMENT,
   `date_created` datetime NOT NULL,
   `login_id` int NOT NULL,
-  `sales_id` int NOT NULL,
-  `technician_id` int NOT NULL,
-  `is_claimable` tinyint DEFAULT NULL,
-  `start_inspection_date` datetime NOT NULL,
-  `end_inspection_date` datetime DEFAULT NULL,
-  `issue` varchar(200) DEFAULT NULL,
+  `quotation_id` int NOT NULL,
+  `is_completed` int DEFAULT NULL,
   PRIMARY KEY (`warranty_id`),
-  KEY `fk_td_warranty_claim_inspection_td_sales1_idx` (`sales_id`),
+  KEY `fk_td_warranty_claim_inspection_td_sales1_idx` (`quotation_id`),
   KEY `fk_td_warranty_claim_inspection_md_login1_idx` (`login_id`),
-  KEY `fk_td_warranty_claim_inspection_md_technicians1_idx` (`technician_id`),
   CONSTRAINT `fk_td_warranty_claim_inspection_md_login1` FOREIGN KEY (`login_id`) REFERENCES `md_login` (`login_id`),
-  CONSTRAINT `fk_td_warranty_claim_inspection_md_technicians1` FOREIGN KEY (`technician_id`) REFERENCES `md_technicians` (`technician_id`),
-  CONSTRAINT `fk_td_warranty_claim_inspection_td_sales1` FOREIGN KEY (`sales_id`) REFERENCES `td_sales` (`sales_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `fk_td_warranty_claim_inspection_td_sales1` FOREIGN KEY (`quotation_id`) REFERENCES `td_quotations` (`quotation_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `td_warranty_claim_inspection`
+-- Dumping data for table `td_warranty`
 --
 
-LOCK TABLES `td_warranty_claim_inspection` WRITE;
-/*!40000 ALTER TABLE `td_warranty_claim_inspection` DISABLE KEYS */;
-/*!40000 ALTER TABLE `td_warranty_claim_inspection` ENABLE KEYS */;
+LOCK TABLES `td_warranty` WRITE;
+/*!40000 ALTER TABLE `td_warranty` DISABLE KEYS */;
+INSERT INTO `td_warranty` VALUES (1,'2024-03-17 11:16:47',1,25,0);
+/*!40000 ALTER TABLE `td_warranty` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `td_warranty_claimed_units`
+--
+
+DROP TABLE IF EXISTS `td_warranty_claimed_units`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `td_warranty_claimed_units` (
+  `claimed_unit_id` int NOT NULL AUTO_INCREMENT,
+  `warranty_id` int NOT NULL,
+  `unit_id` int NOT NULL,
+  `issue` varchar(45) DEFAULT NULL,
+  `quantity` int DEFAULT NULL,
+  PRIMARY KEY (`claimed_unit_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `td_warranty_claimed_units`
+--
+
+LOCK TABLES `td_warranty_claimed_units` WRITE;
+/*!40000 ALTER TABLE `td_warranty_claimed_units` DISABLE KEYS */;
+INSERT INTO `td_warranty_claimed_units` VALUES (1,1,1,'233',2);
+/*!40000 ALTER TABLE `td_warranty_claimed_units` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `td_warranty_inspection`
+--
+
+DROP TABLE IF EXISTS `td_warranty_inspection`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `td_warranty_inspection` (
+  `inspection_id` int NOT NULL AUTO_INCREMENT,
+  `warranty_id` int NOT NULL,
+  `inspection_date` datetime NOT NULL,
+  `technician_id` int NOT NULL,
+  `is_completed` int DEFAULT NULL,
+  PRIMARY KEY (`inspection_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `td_warranty_inspection`
+--
+
+LOCK TABLES `td_warranty_inspection` WRITE;
+/*!40000 ALTER TABLE `td_warranty_inspection` DISABLE KEYS */;
+INSERT INTO `td_warranty_inspection` VALUES (1,1,'2024-03-14 13:45:00',1,1),(2,1,'2024-03-21 16:00:00',1,0);
+/*!40000 ALTER TABLE `td_warranty_inspection` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `td_warranty_requested_parts`
+--
+
+DROP TABLE IF EXISTS `td_warranty_requested_parts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `td_warranty_requested_parts` (
+  `requested_part_id` int NOT NULL AUTO_INCREMENT,
+  `warranty_id` int NOT NULL,
+  `part_id` int NOT NULL,
+  `quantity` int NOT NULL,
+  PRIMARY KEY (`requested_part_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `td_warranty_requested_parts`
+--
+
+LOCK TABLES `td_warranty_requested_parts` WRITE;
+/*!40000 ALTER TABLE `td_warranty_requested_parts` DISABLE KEYS */;
+INSERT INTO `td_warranty_requested_parts` VALUES (1,1,1,2),(2,1,2,4),(3,1,1,3),(4,1,2,1);
+/*!40000 ALTER TABLE `td_warranty_requested_parts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `td_warranty_service`
+--
+
+DROP TABLE IF EXISTS `td_warranty_service`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `td_warranty_service` (
+  `warranty_service_id` int NOT NULL AUTO_INCREMENT,
+  `warranty_id` int NOT NULL,
+  `service_date` datetime DEFAULT NULL,
+  `technician_id` int NOT NULL,
+  `is_completed` int DEFAULT NULL,
+  PRIMARY KEY (`warranty_service_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `td_warranty_service`
+--
+
+LOCK TABLES `td_warranty_service` WRITE;
+/*!40000 ALTER TABLE `td_warranty_service` DISABLE KEYS */;
+INSERT INTO `td_warranty_service` VALUES (1,1,'2024-03-18 13:20:00',2,1),(5,1,'2024-03-22 20:30:00',2,0);
+/*!40000 ALTER TABLE `td_warranty_service` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -981,4 +1064,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-03-14  0:38:12
+-- Dump completed on 2024-03-19  1:58:48
