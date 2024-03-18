@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { FaDownload, FaEye } from 'react-icons/fa';
 import { Row, Col, Card, Table } from 'react-bootstrap';
 import '../index.css';
-import PreviewReport from './PreviewReport';
+import PreviewReport from './Reports/SalesReport';
 import logo from '../assets/gree_documentlogo.png';
 import Spinner from 'react-bootstrap/Spinner';
 import html2canvas from 'html2canvas';
