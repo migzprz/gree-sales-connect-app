@@ -12,6 +12,8 @@ const SaleConvertDetails = () => {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const id = searchParams.get('id')
+    const type = searchParams.get('type')
+    const sales = searchParams.get('sales')
 
     useEffect(() => {
         const fetchData = async () => {
@@ -112,10 +114,10 @@ const SaleConvertDetails = () => {
         event.preventDefault();
         event.stopPropagation();
       }
-
+      event.preventDefault();
       setValidated(true);
       try {
-        const res = axios.post('http://localhost:4000/api/convertToSale/', { id, payment, delivery, installation, services })
+        const res = await axios.post(`http://localhost:4000/api/convertToSale/${type === 'add' ? 'add' : 'new'}`, { id, payment, delivery, installation, services, sales })
         navigate('/viewsales')
       } catch (error) {
         console.error(error)

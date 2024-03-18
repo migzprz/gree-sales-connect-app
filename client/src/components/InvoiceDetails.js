@@ -4,18 +4,29 @@ import { useState, useEffect } from 'react';
 import { FaSave} from 'react-icons/fa';
 import { Row, Col, Card, CardBody, Table, Dropdown, CardHeader } from 'react-bootstrap';
 import '../index.css';
-import { Link } from 'react-router-dom';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios'
 
 const InvoiceDetails = () => {
     const [searchParams] = useSearchParams()
     const id = searchParams.get('id')
+    const type = searchParams.get('type') // possible: none -> default, for adding new sales, 'add' -> add quotation to existing sale, 'view' viewing a quotation from sales detail
+    const sales = searchParams.get('sales')
+
+    const navigate = useNavigate()
 
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [client, setClient] = useState({})
     const [quotation, setQuotation] = useState([])
     const [total, setTotal] = useState(null)
+
+    const handleBack = () => {
+        if (type === 'view') {
+            navigate(-1)
+        } else {
+            navigate('/viewquotations')
+        }
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,25 +47,6 @@ const InvoiceDetails = () => {
     useEffect(() => {
         console.log(quotation)
     }, [quotation])
-
-
-    // const handleEllipsisClick = (index) => {
-    //     setActiveDropdown(index === activeDropdown ? null : index);
-    // };
-
-    // const renderDropdown = (index) => {
-    // if (index === activeDropdown) {
-    //     return (
-    //     <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-    //         <Dropdown.Item>Convert to Sale</Dropdown.Item>
-    //         <Dropdown.Item>Cancel Quotation</Dropdown.Item>
-    //     </Dropdown.Menu>
-    //     );
-    // }
-    // return null;
-    // };
-      
-
 
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
@@ -179,14 +171,17 @@ const InvoiceDetails = () => {
             </Row>
                 <Row className="mt-3">
                     <Col lg="2"/>
+                    {type !== 'view' ? (
+                        <Col lg="2">
+                            <Link to={`/converttosale?id=${id}${type === 'add' ? `&type=add&sales=${sales}` : ''}`} className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
+                                {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })}   Proceed to Sale
+                            </Link>
+                        </Col>
+                    ) : <Col lg="2"></Col>}
+                    
                     <Col lg="2">
-                        <Link to={`/converttosale?id=${id}`} className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
-                        {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })}   Proceed to Sale
-                        </Link>
-                    </Col>
-                    <Col lg="2">
-                        <button className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}}>
-                        Cancel
+                        <button className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}} onClick={handleBack}>
+                            {type && type === 'view' ? 'Back' : 'Cancel'}
                         </button>
                     </Col>
                 </Row>
