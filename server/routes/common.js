@@ -199,5 +199,143 @@ module.exports = (query) => {
         }
     })
 
+    //DASHBOARD ROUTES
+    router.get('/getOcularStatistics', async (req, res) => {
+        try {const data = await query(` SELECT 
+                                            YEAR(date_created) AS year, 
+                                            CASE
+                                                WHEN MONTH(date_created) = 1 THEN 'Jan'
+                                                WHEN MONTH(date_created) = 2 THEN 'Feb'
+                                                WHEN MONTH(date_created) = 3 THEN 'Mar'
+                                                WHEN MONTH(date_created) = 4 THEN 'Apr'
+                                                WHEN MONTH(date_created) = 5 THEN 'May'
+                                                WHEN MONTH(date_created) = 6 THEN 'Jun'
+                                                WHEN MONTH(date_created) = 7 THEN 'Jul'
+                                                WHEN MONTH(date_created) = 8 THEN 'Aug'
+                                                WHEN MONTH(date_created) = 9 THEN 'Sep'
+                                                WHEN MONTH(date_created) = 10 THEN 'Oct'
+                                                WHEN MONTH(date_created) = 11 THEN 'Nov'
+                                                ELSE 'Dec'
+                                            END AS month,
+                                            MONTH(date_created) as monthNum,
+                                            DAY(date_created) AS day, 
+                                            COUNT(ocular_id) AS qty
+                                        FROM td_oculars
+                                        GROUP BY day, month, monthNum, year
+                                        ORDER BY year, month, day;
+                                        `, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getQuotationStatistics', async (req, res) => {
+        try {const data = await query(` SELECT 
+                                            YEAR(date_created) AS year, 
+                                            CASE
+                                                WHEN MONTH(date_created) = 1 THEN 'Jan'
+                                                WHEN MONTH(date_created) = 2 THEN 'Feb'
+                                                WHEN MONTH(date_created) = 3 THEN 'Mar'
+                                                WHEN MONTH(date_created) = 4 THEN 'Apr'
+                                                WHEN MONTH(date_created) = 5 THEN 'May'
+                                                WHEN MONTH(date_created) = 6 THEN 'Jun'
+                                                WHEN MONTH(date_created) = 7 THEN 'Jul'
+                                                WHEN MONTH(date_created) = 8 THEN 'Aug'
+                                                WHEN MONTH(date_created) = 9 THEN 'Sep'
+                                                WHEN MONTH(date_created) = 10 THEN 'Oct'
+                                                WHEN MONTH(date_created) = 11 THEN 'Nov'
+                                                ELSE 'Dec'
+                                            END AS month,
+                                            MONTH(date_created) as monthNum,
+                                            DAY(date_created) AS day, 
+                                            COUNT(quotation_id) AS qty
+                                        FROM td_quotations
+                                        GROUP BY day, month, monthNum, year
+                                        ORDER BY year, month, day;
+    
+                                        `, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getSalesStatistics', async (req, res) => {
+        try {const data = await query(` SELECT 
+                                            YEAR(date_created) AS year, 
+                                            CASE
+                                                WHEN MONTH(date_created) = 1 THEN 'Jan'
+                                                WHEN MONTH(date_created) = 2 THEN 'Feb'
+                                                WHEN MONTH(date_created) = 3 THEN 'Mar'
+                                                WHEN MONTH(date_created) = 4 THEN 'Apr'
+                                                WHEN MONTH(date_created) = 5 THEN 'May'
+                                                WHEN MONTH(date_created) = 6 THEN 'Jun'
+                                                WHEN MONTH(date_created) = 7 THEN 'Jul'
+                                                WHEN MONTH(date_created) = 8 THEN 'Aug'
+                                                WHEN MONTH(date_created) = 9 THEN 'Sep'
+                                                WHEN MONTH(date_created) = 10 THEN 'Oct'
+                                                WHEN MONTH(date_created) = 11 THEN 'Nov'
+                                                ELSE 'Dec'
+                                            END AS month,
+                                            MONTH(date_created) as monthNum,
+                                            DAY(date_created) AS day, 
+                                            COUNT(sales_id) AS qty
+                                        FROM td_sales
+                                        GROUP BY day, month, monthNum, year
+                                        ORDER BY year, month, day;
+    
+    
+                                        `, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getRevenueStatistics', async (req, res) => {
+        try {const data = await query(` SELECT year, month, SUM(total) AS total
+                                            FROM (
+                                                SELECT YEAR(s.date_created) AS year, MONTH(s.date_created) AS month, SUM(qp.discounted_price_each*qp.quantity) AS total
+                                                FROM td_quotations q
+                                                JOIN td_sales s ON q.sales_id = s.sales_id
+                                                JOIN md_quotation_parts qp ON q.quotation_id = qp.quotation_id
+                                                GROUP BY year, month
+                                            
+                                                UNION ALL
+                                            
+                                                SELECT YEAR(s.date_created) AS year, MONTH(s.date_created) AS month, SUM(qp.discounted_price_each*qp.quantity) AS total
+                                                FROM td_quotations q
+                                                JOIN td_sales s ON q.sales_id = s.sales_id
+                                                JOIN md_quotation_products qp ON q.quotation_id = qp.quotation_id
+                                                GROUP BY year, month
+                                            
+                                                UNION ALL
+                                            
+                                                SELECT YEAR(s.date_created) AS year, MONTH(s.date_created) AS month, SUM(qs.discounted_price_each*qs.quantity) AS total
+                                                FROM td_quotations q
+                                                JOIN td_sales s ON q.sales_id = s.sales_id
+                                                JOIN md_quotation_services qs ON q.quotation_id = qs.quotation_id
+                                                GROUP BY year, month
+                                            ) AS combined_data
+                                            GROUP BY year, month;
+        
+    
+    
+                                        `, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
     return router;
 }
