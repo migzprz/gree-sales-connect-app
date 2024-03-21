@@ -1,34 +1,20 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { useState, useEffect } from 'react'; 
-import { Link, useParams } from 'react-router-dom';
-import { FaEdit, FaSearch, FaCheck} from 'react-icons/fa';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { FaEdit, FaSearch, FaCheck, FaPlus} from 'react-icons/fa';
 import { Row, Col, Card, CardBody, CardHeader, Table, Form, InputGroup } from 'react-bootstrap';
 import '../index.css';
 import axios from 'axios';
 
 const ClaimWarrantyForm= () => {
 
+    const navigate = useNavigate()
     const { id } = useParams();
     const [warrantySearchData, setWarrantySearchData] = useState([]);
     const [validated, setValidated] = useState(false);
 
-useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(`http://localhost:4000/api/getWarrantySearchDetails/${id}`)
-                // Add quantity field to warrantySearchData
-                const dataWithQuantity = response.data.map(item => ({ ...item, quantity: 0 }));
-                setWarrantySearchData(dataWithQuantity);
-            } catch (error) {
-                console.error('Error fetching data: ', error)
-            }
-        }
-        fetchData()
-    },[id])
-
-
-
+    
     const [formData, setFormData] = useState({
         // new user data
         is_completed: 0,
@@ -45,6 +31,57 @@ useEffect(() => {
     })
 
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:4000/api/getWarrantySearchDetails/${id}`);
+                const response2 = await axios.get('http://localhost:4000/api/getDeductableUnits/')
+
+                const remainingQuantities = {}; // Map to track remaining quantities for each key
+                response2.data.forEach((data2Item) => {
+                    const key = `${data2Item.quotation_id}-${data2Item.unit_id}`;
+                    if (!remainingQuantities[key]) {
+                        remainingQuantities[key] = 0;
+                    }
+                    remainingQuantities[key] += data2Item.qty_claimed;
+                });
+    
+                const updatedData = response.data.map((dataItem) => {
+                    const key = `${dataItem.quotation_id}-${dataItem.product_id}`;
+                    const remainingQty = remainingQuantities[key] || 0;
+                    if (remainingQty > 0) {
+                        dataItem.totalqty -= remainingQty;
+                        remainingQuantities[key] = Math.max(0, remainingQty - dataItem.totalqty); // Ensure remaining quantity is not negative
+                    }
+                    return dataItem;
+                }).filter((dataItem) => dataItem.totalqty > 0); // Filter out items with totalqty <= 0
+                
+                setWarrantySearchData(updatedData);
+    
+                // Populate claimedUnits array in formData
+                const claimedUnits = [];
+                response.data.forEach(item => {
+                    const { totalqty, product_id, unit_model, description } = item;
+                    for (let i = 0; i < parseInt(totalqty); i++) {
+                        claimedUnits.push({ product_id, unit_model, description, issue: '', for_claiming: 0 });
+                    }
+                });
+    
+                setFormData(prevState => ({
+                    ...prevState,
+                    claimed_units: claimedUnits
+                }));
+                
+                
+            } catch (error) {
+                console.error('Error fetching data: ', error);
+            }
+        };
+        fetchData();
+    }, [id]);
+    
+
+
+    useEffect(() => {
         console.log(formData)
     },[formData])
 
@@ -53,93 +90,57 @@ useEffect(() => {
     },[warrantySearchData])
     
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+    const handleChange = (e, index, key) => {
+        const { value, type, checked, name } = e.target;
     
-       
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            [name]: type === 'checkbox' ? (checked ? 1 : 0) : value
-        }));
-
-      
-
-    };
-
-    const handleChangeWarrantySearchData = (e, index) => {
-        const { name, value } = e.target;
-    
-        if (name === 'quantity') {
-            const newValue = parseInt(value);
-            const maxQty = warrantySearchData[index].totalqty;
-    
-            if (newValue > maxQty) {
-                // If the new value exceeds the max quantity, revert back to the max quantity
-                const newWarrantySearchData = warrantySearchData.map((item, idx) => {
-                    if (idx === index) {
-                        return { ...item, quantity: maxQty };
-                    }
-                    return item;
-                });
-                setWarrantySearchData(newWarrantySearchData);
-            } else {
-                // Update the quantity in the warrantySearchData
-                const newWarrantySearchData = warrantySearchData.map((item, idx) => {
-                    if (idx === index) {
-                        return { ...item, quantity: newValue };
-                    }
-                    return item;
-                });
-                setWarrantySearchData(newWarrantySearchData);
-    
-                // Update the claimed_units in formData
-                const claimedUnits = newWarrantySearchData.reduce((acc, item) => {
-                    if (item.quantity > 0) {
-                        const existingUnit = acc.find(unit => unit.quotation_items_id === item.quotation_items_id);
-                        if (!existingUnit) {
-                            acc.push({ product_id: item.product_id, quantity: item.quantity, issue: item.issue, quotation_items_id: item.quotation_items_id });
-                        } else {
-                            existingUnit.quantity = item.quantity;
-                            existingUnit.issue = item.issue;
-                            existingUnit.product_id = item.product_id;
-                        }
-                    }
-                    return acc;
-                }, []);
-                setFormData(prevFormData => ({
-                    ...prevFormData,
-                    claimed_units: claimedUnits
-                }));
-            }
-        } else if (name === 'issue') {
-            const newWarrantySearchData = warrantySearchData.map((item, idx) => {
-                if (idx === index) {
-                    return { ...item, issue: value };
-                }
-                return item;
-            });
-            setWarrantySearchData(newWarrantySearchData);
-    
-            // Update the claimed_units in formData
-            const claimedUnits = newWarrantySearchData.reduce((acc, item) => {
-                if (item.quantity > 0) {
-                    const existingUnit = acc.find(unit => unit.quotation_items_id === item.quotation_items_id);
-                    if (!existingUnit) {
-                        acc.push({ product_id: item.product_id, quantity: item.quantity, issue: item.issue, quotation_items_id: item.quotation_items_id });
-                    } else {
-                        existingUnit.quantity = item.quantity;
-                        existingUnit.issue = item.issue;
-                        existingUnit.product_id = item.product_id;
-                    }
-                }
-                return acc;
-            }, []);
+        if (name === 'for_inspection') {
             setFormData(prevFormData => ({
                 ...prevFormData,
-                claimed_units: claimedUnits
+                for_inspection: checked ? 1 : 0
+            }));
+        } else {
+            const newClaimedUnits = [...formData.claimed_units];
+            if (key === 'for_claiming') {
+                newClaimedUnits[index][key] = checked ? 1 : 0;
+            } else {
+                newClaimedUnits[index][key] = type === 'checkbox' ? (checked ? 1 : 0) : value;
+                if (key === 'unit') {
+                    newClaimedUnits[index].product_id = parseInt(value); // Assuming product_id is an integer
+                }
+            }
+    
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                claimed_units: newClaimedUnits
             }));
         }
     };
+    
+    const handleChangeDate = (e, type) => {
+        const { value } = e.target;
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [type]: value
+        }));
+    };
+    
+    const handleChangeTime = (e, type) => {
+        const { value } = e.target;
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [type]: value
+        }));
+    };
+    
+    const handleChangeTechnician = (e, type) => {
+        const { value } = e.target;
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [type]: value
+        }));
+    };
+
+    
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -162,22 +163,12 @@ useEffect(() => {
             try {
                 const postReponse = await axios.post('http://localhost:4000/api/postWarranty', {data})
                 console.log(postReponse)
-                window.location.reload()
+                navigate('/viewwarranties')
             } catch (error) {
                 console.error('Error: Problem encountered when posting data', error)
             }
         }
       };
-    
-    
-    
-    
-    
-    
-
-    
-
-
 
     const [forInspection, setForInspection] = useState(true);
 
@@ -254,7 +245,7 @@ useEffect(() => {
                             <Col lg="3">
                                 <Form.Group controlId="description">
                                     <Form.Label>Inspection Date</Form.Label>
-                                    <Form.Control type="date" name="inspection_dateonly" value={formData.inspection_dateonly} onChange={handleChange} required />
+                                    <Form.Control type="date" name="inspection_dateonly" value={formData.inspection_dateonly} onChange={(e) => handleChangeDate(e, 'inspection_dateonly')} required />
                                     <Form.Control.Feedback type="invalid">
                                         Please provide inspection date
                                     </Form.Control.Feedback>
@@ -263,7 +254,7 @@ useEffect(() => {
                             <Col lg="3">
                                 <Form.Group controlId="description">
                                     <Form.Label>Inspection Time</Form.Label>
-                                    <Form.Control type="time"  name="inspection_time" value={formData.inspection_time} onChange={handleChange} required />
+                                    <Form.Control type="time"  name="inspection_time" value={formData.inspection_time} onChange={(e) => handleChangeTime(e, 'inspection_time')} required />
                                     <Form.Control.Feedback type="invalid">
                                         Please provide inspection time
                                     </Form.Control.Feedback>
@@ -272,7 +263,7 @@ useEffect(() => {
                             <Col lg="3">
                                 <Form.Group controlId="type">
                                     <Form.Label>Assigned Technician</Form.Label>
-                                    <Form.Control as="select" name="inspection_technician_id" value={formData.inspection_technician_id} onChange={handleChange} required>
+                                    <Form.Control as="select" name="inspection_technician_id" value={formData.inspection_technician_id} onChange={(e) => handleChangeTechnician(e, 'inspection_technician_id')} required>
                                         <option value=""> Select </option>
                                         <option value="1"> Zara </option>
                                         <option value="2"> Split Type </option>
@@ -286,37 +277,37 @@ useEffect(() => {
                     )}
 
                     <Row className="mt-2">
-                            <Col lg="3">
-                                <Form.Group controlId="description">
-                                    <Form.Label>Service Date</Form.Label>
-                                    <Form.Control type="date" name="service_dateonly" value={formData.service_dateonly} onChange={handleChange} required />
-                                    <Form.Control.Feedback type="invalid">
-                                        Please provide service date
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                            </Col>
-                            <Col lg="3">
-                                <Form.Group controlId="description">
-                                    <Form.Label>Service Time</Form.Label>
-                                    <Form.Control type="time" name="service_time" value={formData.service_time} onChange={handleChange} required />
-                                    <Form.Control.Feedback type="invalid">
-                                        Please provide service time
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                            </Col>
-                            <Col lg="3">
-                                <Form.Group controlId="type">
-                                    <Form.Label>Assigned Technician</Form.Label>
-                                    <Form.Control as="select" name="service_technician_id" value={formData.service_technician_id} onChange={handleChange} required>
-                                        <option value=""> Select </option>
-                                        <option value="1"> Zara </option>
-                                        <option value="2"> Split Type </option>
-                                    </Form.Control>
-                                    <Form.Control.Feedback type="invalid">
-                                        Please select technician.
-                                    </Form.Control.Feedback>
-                                </Form.Group>
-                            </Col>
+                        <Col lg="3">
+                            <Form.Group controlId="description">
+                                <Form.Label>Service Date</Form.Label>
+                                <Form.Control type="date" name="service_dateonly" value={formData.service_dateonly} onChange={(e) => handleChangeDate(e, 'service_dateonly')} required />
+                                <Form.Control.Feedback type="invalid">
+                                    Please provide service date
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+                        <Col lg="3">
+                            <Form.Group controlId="description">
+                                <Form.Label>Service Time</Form.Label>
+                                <Form.Control type="time" name="service_time" value={formData.service_time} onChange={(e) => handleChangeTime(e, 'service_time')} required />
+                                <Form.Control.Feedback type="invalid">
+                                    Please provide service time
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+                        <Col lg="3">
+                            <Form.Group controlId="type">
+                                <Form.Label>Assigned Technician</Form.Label>
+                                <Form.Control as="select" name="service_technician_id" value={formData.service_technician_id} onChange={(e) => handleChangeTechnician(e, 'service_technician_id')} required>
+                                    <option value=""> Select </option>
+                                    <option value="1"> Zara </option>
+                                    <option value="2"> Split Type </option>
+                                </Form.Control>
+                                <Form.Control.Feedback type="invalid">
+                                    Please select technician.
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
                     </Row>
                     
                     <Row  className="mt-4">
@@ -327,51 +318,50 @@ useEffect(() => {
                                     <Table>
                                         <thead>
                                             <tr>
-                                                <th style={{color: '#014c91', width: "14%"}}>Qty.</th>
-                                                <th style={{color: '#014c91'}}>Max Qty.</th>
-                                                <th style={{color: '#014c91'}}>Description</th>
-                                                <th style={{color: '#014c91'}}>Model</th>
-                                                <th style={{color: '#014c91', width: "30%"}}>Issue</th>
+                                                <th style={{color: '#014c91', width: '5%'}}>Claim</th>
+                                                <th style={{color: '#014c91'}}>Unit</th>
+                                                <th style={{color: '#014c91', width: "40%"}}>Issue</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {warrantySearchData.map((item, index) => (
-                                                <React.Fragment key={item.id}>
-                                                    <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                                        <td style={{ color: '#014c91' }}>
-                                                            <Form.Group controlId={`qty-${index}`}>
-                                                                <Form.Control
-                                                                    type="number"
-                                                                    inputmode="numeric"
-                                                                    min="0"
-                                                                    max={item.totalqty}
-                                                                    name="quantity"
-                                                                    value={item.quantity}
-                                                                    onChange={(e) => handleChangeWarrantySearchData(e, index)}
-                                                                    required
-                                                                />
-                                                            </Form.Group>
-                                                        </td>
-                                                        <td style={{color: '#014c91'}}> {item.totalqty} </td>
-                                                        <td style={{color: '#014c91'}}>{item.description}</td>
-                                                        <td style={{color: '#014c91'}}>{item.unit_model}</td>
-                                                        <td style={{color: '#014c91'}}>
-                                                        {formData.claimed_units.some(unit => unit.quotation_items_id === item.quotation_items_id) && (
-                                                            <Form.Group controlId={`issue-${index}`}>
-                                                                <Form.Control
-                                                                    type="text"
-                                                                    name="issue"
-                                                                    value={item.issue}
-                                                                    onChange={(e) => handleChangeWarrantySearchData(e, index, 'issue')}
-                                                                    required
-                                                                />
-                                                            </Form.Group>
-                                                        )}
-                                                        </td>
-                                                    </tr>
-                                                
-                                                </React.Fragment>
-                                            ))}
+                                        {formData.claimed_units.map((item, index) => (
+                                            <React.Fragment key={index}>
+                                                <tr style={{ borderRadius: '20px', padding: '10px' }}>
+                                                    <td style={{color: '#014c91'}}>
+                                                        <Form.Check
+                                                        type="checkbox"
+                                                        checked={item.for_claiming === 1}
+                                                        onChange={(e) => handleChange(e, index, 'for_claiming')}
+                                                        required={formData.claimed_units.every(unit => unit.for_claiming === 0)}
+                                                    />
+
+
+                                                    </td>
+                                                    <td style={{color: '#014c91'}}>
+                                                        {item.description} ({item.unit_model})
+                                                    </td>
+                                                    <td style={{color: '#014c91'}}>
+                                                        {item.for_claiming ? 
+                                                        <Form.Group controlId="role">
+                                                            <Form.Control as="select" name="issue" value={item.issue} onChange={(e) => handleChange(e, index, 'issue')} required>
+                                                                <option value=""> Select </option>
+                                                                <option value="Overheating Unit"> Overheating Unit</option>
+                                                                <option value="Inadequate Cooling"> Inadequate Cooling </option>
+                                                                <option value="Water Leaks"> Water Leaks</option>
+                                                                <option value="Strange Noises"> Strange Noises </option>
+                                                                <option value="Fan Malfunctions"> Fan Malfunctions </option>
+                                                                <option value="Strange Noises"> Strange Noises </option>
+                                                                <option value="Others"> Others </option>
+                                                            </Form.Control>
+                                                            <Form.Control.Feedback type="invalid">
+                                                                Please select an issue.
+                                                            </Form.Control.Feedback>
+                                                        </Form.Group> : null }
+                                                    </td>
+                                                </tr>
+                                            </React.Fragment>
+                                        ))}
+
                                         </tbody>
                                     </Table>
                                 </CardBody>

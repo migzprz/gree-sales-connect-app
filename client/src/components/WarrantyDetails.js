@@ -10,6 +10,7 @@ import CompleteWarrantyServiceModal from './CompleteWarrantyServiceModal';
 import EditWarrantyServiceModal from './EditWarrantyServiceModal';
 import AddWarrantyPartModal from './AddWarrantyPartModal';
 import CompleteWarrantyModal from './CompleteWarrantyModal';
+import ClaimWarrantyPartModal from './ClaimWarrantyPartModal';
 
 const WarrantyDetails= () => {
 
@@ -185,7 +186,7 @@ const WarrantyDetails= () => {
                     </Card>
                 </Col>
 
-                <Col lg="4">
+                <Col lg="5">
                     <Card style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9', display: 'flex', flexDirection: 'column', height: '100%'}}>
                         <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91', display: 'flex', flexDirection: 'column', height: '100%'}}>
                             <Row>
@@ -199,7 +200,8 @@ const WarrantyDetails= () => {
                                         <tr>
                                             <th style={{color: '#014c91'}}>Description</th>
                                             <th style={{color: '#014c91'}}>Unit Model</th>             
-                                            <th style={{color: '#014c91'}}>Quantity</th>                         
+                                            <th style={{color: '#014c91'}}>Quantity</th>
+                                            <th style={{color: '#014c91'}}>Status</th>                         
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -209,7 +211,12 @@ const WarrantyDetails= () => {
                                                 <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                                     <td style={{color: '#014c91'}}>{part.description}</td>
                                                     <td style={{color: '#014c91'}}>{part.name}</td>
-                                                    <td style={{color: '#014c91'}}>{part.totalqty}</td>
+                                                    <td style={{color: '#014c91'}}>{part.quantity}</td>
+                                                    <td style={{color: '#014c91'}}>
+                                                        {part.date_claimed === null ?
+                                                        <ClaimWarrantyPartModal description={part.description} quantity={part.quantity} id={part.requested_part_id}/> :
+                                                        "Claimed"}
+                                                        </td>
                                                 </tr>
                                             </React.Fragment>
                                         ))}
@@ -229,7 +236,7 @@ const WarrantyDetails= () => {
                     </Card>
                 </Col>
 
-                <Col lg="5">
+                <Col lg="4">
                     <Card style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9', display: 'flex', flexDirection: 'column', height: '100%'}}>
                         <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91',display: 'flex', flexDirection: 'column', height: '100%'}}>
                             <Row>
@@ -243,7 +250,6 @@ const WarrantyDetails= () => {
                                         <tr>
                                             <th style={{color: '#014c91'}}>Description</th>
                                             <th style={{color: '#014c91'}}>Unit Model</th>
-                                            <th style={{color: '#014c91'}}>Qty</th>
                                             <th style={{color: '#014c91'}}>Issue</th>
                                         </tr>
                                     </thead>
@@ -253,7 +259,6 @@ const WarrantyDetails= () => {
                                                 <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                                     <td style={{color: '#014c91'}}>{unit.description}</td>
                                                     <td style={{color: '#014c91'}}>{unit.unit_model}</td>
-                                                    <td style={{color: '#014c91'}}>{unit.quantity}</td>
                                                     <td style={{color: '#014c91'}}>{unit.issue}</td>
                                                 </tr>
                                             </React.Fragment>

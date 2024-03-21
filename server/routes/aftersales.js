@@ -8,62 +8,59 @@ module.exports = (query) => {
      */
       router.get('/getWarrantySearch', async (req, res) => {
         try {const data = await query(`  SELECT
-                                                s.sales_id,
-                                                q.quotation_id,
-                                                p.product_id,
-                                                p.unit_model,
-                                                p.product_hp,
-                                                p.product_type,
-                                                p.is_inverter,
-                                                delivery_date,
-                                                SUM(qp.quantity) AS totalqty,
-                                                CONCAT(cp.last_name, ", ", cp.first_name) as client_name,
-                                                cp.contact_number as client_number,
-                                                cm.company_name,
-                                                cp.email,
-                                                CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", pr.name) as site_address,
-                                                CONCAT(p.product_hp, ' HP ', UPPER(p.product_type), ' TYPE ', 
-                                                    CASE 
-                                                        WHEN p.is_inverter = 1 THEN 'INVERTER' 
-                                                        WHEN p.is_inverter = 0 THEN 'NON-INVERTER' 
-                                                    END) as description,
-                                                CASE 
-                                                    WHEN DATE_ADD(delivery_date, INTERVAL 1 YEAR) <= CURDATE() THEN 0 
-                                                    ELSE 1 
-                                                END as is_claimable
-                                            FROM
-                                                td_sales s
-                                                JOIN td_quotations q ON q.sales_id = s.sales_id
-                                                JOIN md_quotation_products qp ON qp.quotation_id = q.quotation_id
-                                                JOIN md_products p ON p.product_id = qp.product_id
-                                                JOIN md_deliveries d ON d.quotation_id = q.quotation_id
-                                                JOIN md_quotation_clients qc ON qc.quotation_client_id = q.quotation_client_id
-                                                JOIN md_clients c ON qc.client_id = c.client_id
-                                                JOIN md_companies cm ON cm.company_id = c.company_id
-                                                JOIN md_contactperson cp ON cp.contact_person_id = c.contact_person_id
-                                                JOIN md_locations loc ON qc.location_id = loc.location_id
-                                                JOIN md_provinces pr ON loc.addr_province_id = pr.province_id
-                                                JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
-                                                JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
-                                            GROUP BY
-                                                s.sales_id,
-                                                q.quotation_id,
-                                                p.product_id,
-                                                p.unit_model,
-                                                p.product_hp,
-                                                p.product_type,
-                                                p.is_inverter,
-                                                delivery_date,
-                                                cp.last_name,
-                                                cp.first_name,
-                                                cp.contact_number,
-                                                cm.company_name,
-                                                cp.email,
-                                                loc.addr_street_name,
-                                                b.name,
-                                                m.name,
-                                                loc.zipcode,
-                                                pr.name;`, [])
+        s.sales_id,
+        q.quotation_id,
+        p.product_id,
+        p.unit_model,
+        p.product_hp,
+        p.product_type,
+        p.is_inverter,
+        d.delivery_date,
+        SUM(qp.quantity) AS totalqty,
+        CONCAT(cp.last_name, ", ", cp.first_name) as client_name,
+        cp.contact_number as client_number,
+        cm.company_name,
+        cp.email,
+        CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", pr.name) as site_address,
+        CONCAT(p.product_hp, ' HP ', UPPER(p.product_type), ' TYPE ', 
+            CASE 
+                WHEN p.is_inverter = 1 THEN 'INVERTER' 
+                WHEN p.is_inverter = 0 THEN 'NON-INVERTER' 
+            END) as description
+    FROM
+        td_sales s
+        JOIN td_quotations q ON q.sales_id = s.sales_id
+        JOIN md_quotation_products qp ON qp.quotation_id = q.quotation_id
+        JOIN md_products p ON p.product_id = qp.product_id
+        JOIN md_deliveries d ON d.quotation_id = q.quotation_id
+        JOIN md_quotation_clients qc ON qc.quotation_client_id = q.quotation_client_id
+        JOIN md_clients c ON qc.client_id = c.client_id
+        JOIN md_companies cm ON cm.company_id = c.company_id
+        JOIN md_contactperson cp ON cp.contact_person_id = c.contact_person_id
+        JOIN md_locations loc ON qc.location_id = loc.location_id
+        JOIN md_provinces pr ON loc.addr_province_id = pr.province_id
+        JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
+        JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
+    WHERE d.is_delivered = 1 AND NOT (DATE_ADD(d.delivery_date, INTERVAL 1 YEAR) <= CURDATE())
+    GROUP BY
+        s.sales_id,
+        q.quotation_id,
+        p.product_id,
+        p.unit_model,
+        p.product_hp,
+        p.product_type,
+        p.is_inverter,
+        d.delivery_date,
+        cp.last_name,
+        cp.first_name,
+        cp.contact_number,
+        cm.company_name,
+        cp.email,
+        loc.addr_street_name,
+        b.name,
+        m.name,
+        loc.zipcode,
+        pr.name;`, [])
             console.log(data)
         
             res.send(data)
@@ -76,66 +73,64 @@ module.exports = (query) => {
     router.get('/getWarrantySearchDetails/:id', async (req, res) => {
         try {
             const { id } = req.params
-            const q =  `  SELECT
-                                s.sales_id,
-                                q.quotation_id,
-                                qp.quotation_items_id,
-                                p.product_id,
-                                p.unit_model,
-                                p.product_hp,
-                                p.product_type,
-                                p.is_inverter,
-                                delivery_date,
-                                SUM(qp.quantity) AS totalqty,
-                                CONCAT(cp.last_name, ", ", cp.first_name) as client_name,
-                                cp.contact_number as client_number,
-                                cm.company_name,
-                                cp.email,
-                                CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", pr.name) as site_address,
-                                CONCAT(p.product_hp, ' HP ', UPPER(p.product_type), ' TYPE ', 
-                                    CASE 
-                                        WHEN p.is_inverter = 1 THEN 'INVERTER' 
-                                        WHEN p.is_inverter = 0 THEN 'NON-INVERTER' 
-                                    END) as description,
-                                CASE 
-                                    WHEN DATE_ADD(delivery_date, INTERVAL 1 YEAR) <= CURDATE() THEN 0 
-                                    ELSE 1 
-                                END as is_claimable
-                            FROM
-                                td_sales s
-                                JOIN td_quotations q ON q.sales_id = s.sales_id
-                                JOIN md_quotation_products qp ON qp.quotation_id = q.quotation_id
-                                JOIN md_products p ON p.product_id = qp.product_id
-                                JOIN md_deliveries d ON d.quotation_id = q.quotation_id
-                                JOIN md_quotation_clients qc ON qc.quotation_client_id = q.quotation_client_id
-                                JOIN md_clients c ON qc.client_id = c.client_id
-                                JOIN md_companies cm ON cm.company_id = c.company_id
-                                JOIN md_contactperson cp ON cp.contact_person_id = c.contact_person_id
-                                JOIN md_locations loc ON qc.location_id = loc.location_id
-                                JOIN md_provinces pr ON loc.addr_province_id = pr.province_id
-                                JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
-                                JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
-                            WHERE q.quotation_id = ?
-                            GROUP BY
-                                s.sales_id,
-                                qp.quotation_items_id,
-                                q.quotation_id,
-                                p.product_id,
-                                p.unit_model,
-                                p.product_hp,
-                                p.product_type,
-                                p.is_inverter,
-                                delivery_date,
-                                cp.last_name,
-                                cp.first_name,
-                                cp.contact_number,
-                                cm.company_name,
-                                cp.email,
-                                loc.addr_street_name,
-                                b.name,
-                                m.name,
-                                loc.zipcode,
-                                pr.name; `
+            const q =  ` SELECT
+            s.sales_id,
+            q.quotation_id,
+            p.product_id,
+            p.unit_model,
+            p.product_hp,
+            p.product_type,
+            p.is_inverter,
+            delivery_date,
+            SUM(qp.quantity) AS totalqty,
+            CONCAT(cp.last_name, ", ", cp.first_name) as client_name,
+            cp.contact_number as client_number,
+            cm.company_name,
+            cp.email,
+            CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", pr.name) as site_address,
+            CONCAT(p.product_hp, ' HP ', UPPER(p.product_type), ' TYPE ', 
+                CASE 
+                    WHEN p.is_inverter = 1 THEN 'INVERTER' 
+                    WHEN p.is_inverter = 0 THEN 'NON-INVERTER' 
+                END) as description,
+            CASE 
+                WHEN DATE_ADD(delivery_date, INTERVAL 1 YEAR) <= CURDATE() THEN 0 
+                ELSE 1 
+            END as is_claimable
+        FROM
+            td_sales s
+            JOIN td_quotations q ON q.sales_id = s.sales_id
+            JOIN md_quotation_products qp ON qp.quotation_id = q.quotation_id
+            JOIN md_products p ON p.product_id = qp.product_id
+            JOIN md_deliveries d ON d.quotation_id = q.quotation_id
+            JOIN md_quotation_clients qc ON qc.quotation_client_id = q.quotation_client_id
+            JOIN md_clients c ON qc.client_id = c.client_id
+            JOIN md_companies cm ON cm.company_id = c.company_id
+            JOIN md_contactperson cp ON cp.contact_person_id = c.contact_person_id
+            JOIN md_locations loc ON qc.location_id = loc.location_id
+            JOIN md_provinces pr ON loc.addr_province_id = pr.province_id
+            JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
+            JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
+        WHERE q.quotation_id = ?
+        GROUP BY
+            s.sales_id,
+            q.quotation_id,
+            p.product_id,
+            p.unit_model,
+            p.product_hp,
+            p.product_type,
+            p.is_inverter,
+            delivery_date,
+            cp.last_name,
+            cp.first_name,
+            cp.contact_number,
+            cm.company_name,
+            cp.email,
+            loc.addr_street_name,
+            b.name,
+            m.name,
+            loc.zipcode,
+            pr.name;`
             const data = await query(q, [id])
             console.log(data)
             res.send(data)
@@ -163,11 +158,12 @@ module.exports = (query) => {
     
 
             for (const unit of data.claimed_units) {
-                const { product_id, quantity, issue } = unit;
-            
+                const { product_id, issue, for_claiming } = unit;
+                if(for_claiming){
                 // Insert claimed unit data into respective table
-                await query(`INSERT INTO td_warranty_claimed_units (warranty_id, unit_id, issue, quantity) 
-                                VALUES ('${warranty_id}', '${product_id}', '${issue}', '${quantity}')`);
+                await query(`INSERT INTO td_warranty_claimed_units (warranty_id, unit_id, issue) 
+                                VALUES ('${warranty_id}', '${product_id}', '${issue}')`);
+                }
             }
             
           
@@ -348,7 +344,6 @@ ORDER  BY wi.inspection_date DESC,
                                     WHEN p.is_inverter = 1 THEN 'INVERTER' 
                                     WHEN p.is_inverter = 0 THEN 'NON-INVERTER' END) as description,
                                 p.unit_model,
-                                cu.quantity,
                                 cu.issue
                         FROM td_warranty_claimed_units cu
                         JOIN md_products p ON cu.unit_id = p.product_id
@@ -363,10 +358,10 @@ ORDER  BY wi.inspection_date DESC,
 
     })
 
-    router.patch('/changeWarrantyInspectionState/:id/:state', async (req, res) => {
+    router.patch('/changeWarrantyInspectionState/:id/:state/:note', async (req, res) => {
         try {
-            const values = [req.params.state, req.params.id]
-            const data = await query('UPDATE td_warranty_inspection SET is_completed = ? WHERE inspection_id = ?', values)
+            const values = [req.params.state, req.params.note, req.params.id]
+            const data = await query('UPDATE td_warranty_inspection SET is_completed = ?, notes=? WHERE inspection_id = ?', values)
             console.log(data)
             res.status(200).json({message: `Inspection successfully updated... ${data}`})
         } catch (error) {
@@ -388,10 +383,10 @@ ORDER  BY wi.inspection_date DESC,
         }
     });
 
-    router.patch('/changeWarrantyServiceState/:id/:state', async (req, res) => {
+    router.patch('/changeWarrantyServiceState/:id/:state/:note', async (req, res) => {
         try {
-            const values = [req.params.state, req.params.id]
-            const data = await query('UPDATE td_warranty_service SET is_completed = ? WHERE warranty_service_id = ?', values)
+            const values = [req.params.state, req.params.note, req.params.id]
+            const data = await query('UPDATE td_warranty_service SET is_completed = ?, notes = ? WHERE warranty_service_id = ?', values)
             console.log(data)
             res.status(200).json({message: `Service successfully updated... ${data}`})
         } catch (error) {
@@ -464,14 +459,11 @@ ORDER  BY wi.inspection_date DESC,
     router.get('/getWarrantyRequestedParts/:id', async (req, res) => {
         try {
             const { id } = req.params
-            const q =  `  SELECT wr.part_id, wr.totalqty, wr.warranty_id, p.description, p.name
-                            FROM (
-                                SELECT wr.part_id, SUM(wr.quantity) AS totalqty, wr.warranty_id
-                                FROM td_warranty_requested_parts wr
-                                WHERE wr.warranty_id = ?
-                                GROUP BY wr.part_id, wr.warranty_id
-                            ) AS wr
-                            JOIN md_parts p ON p.parts_id = wr.part_id;`
+            const q =  `  SELECT wr.requested_part_id, wr.part_id, wr.quantity, wr.warranty_id, p.description, p.name, wr.date_claimed
+            FROM td_warranty_requested_parts wr
+            JOIN md_parts p ON p.parts_id = wr.part_id
+            WHERE wr.warranty_id = ?;
+                                  `
             const data = await query(q, [id])
             console.log(data)
             res.send(data)
@@ -494,6 +486,35 @@ ORDER  BY wi.inspection_date DESC,
             res.status(400).json({message: `Error... Failed to update service... ${error}`})
         }
     })
+
+    router.patch('/claimWarrantyRequestedPart/:id', async (req, res) => {
+        try {
+            const values = [req.params.id]
+            const data = await query('UPDATE td_warranty_requested_parts SET date_claimed = NOW() WHERE requested_part_id = ?', values)
+            console.log(data)
+            res.status(200).json({message: `Requested Part successfully updated... ${data}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to update Requested Part... ${error}`})
+        }
+    })
+
+    router.get('/getDeductableUnits', async (req, res) => {
+        try {const data = await query(`  SELECT w.warranty_id, w.quotation_id, wc.unit_id, COUNT(wc.claimed_unit_id) AS qty_claimed
+        FROM td_warranty w
+        JOIN td_warranty_claimed_units wc ON w.warranty_id = wc.warranty_id
+        WHERE w.is_completed = 0
+        GROUP BY  w.quotation_id, w.warranty_id, wc.unit_id;`, [])
+            console.log(data)
+        
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    
 
 
 

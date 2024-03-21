@@ -33,7 +33,8 @@ const CompleteWarrantyServiceModal = ({ service_id, id, type }) => {
         time: null,
         dateonly: null,
         technician_id: '',
-        service_id: service_id
+        service_id: service_id,
+        note: ''
     })
 
     useEffect(() => {
@@ -74,7 +75,7 @@ const CompleteWarrantyServiceModal = ({ service_id, id, type }) => {
         if (form.checkValidity()){
             if (data.for_service && type === "inspection") {
                 try {
-                    const patchResponse = await axios.patch(`http://localhost:4000/api/changeWarrantyInspectionState/${service_id}/1`)
+                    const patchResponse = await axios.patch(`http://localhost:4000/api/changeWarrantyInspectionState/${service_id}/1/${data.note}`, data)
                     console.log(patchResponse)
                     const postReponse = await axios.post(`http://localhost:4000/api/postWarrantyInspection`, {data})
                     console.log(postReponse)
@@ -85,7 +86,7 @@ const CompleteWarrantyServiceModal = ({ service_id, id, type }) => {
                 }
             } else if (!data.for_service && type === "inspection") {
                 try {
-                    const patchResponse = await axios.patch(`http://localhost:4000/api/changeWarrantyInspectionState/${service_id}/1`)
+                    const patchResponse = await axios.patch(`http://localhost:4000/api/changeWarrantyInspectionState/${service_id}/1/${data.note}`, data)
                     console.log(patchResponse)
                     
                     window.location.reload()
@@ -94,7 +95,7 @@ const CompleteWarrantyServiceModal = ({ service_id, id, type }) => {
                 }
             } else  if (data.for_service && type === "service") {
                 try {
-                    const patchResponse = await axios.patch(`http://localhost:4000/api/changeWarrantyServiceState/${service_id}/1`)
+                    const patchResponse = await axios.patch(`http://localhost:4000/api/changeWarrantyServiceState/${service_id}/1/${data.note}`)
                     console.log(patchResponse)
                     const postReponse = await axios.post(`http://localhost:4000/api/postWarrantyService`, {data})
                     console.log(postReponse)
@@ -105,7 +106,7 @@ const CompleteWarrantyServiceModal = ({ service_id, id, type }) => {
                 }
             } else if (!data.for_service && type === "service") {
                 try {
-                    const patchResponse = await axios.patch(`http://localhost:4000/api/changeWarrantyServiceState/${service_id}/1`)
+                    const patchResponse = await axios.patch(`http://localhost:4000/api/changeWarrantyServiceState/${service_id}/1/${data.note}`)
                     console.log(patchResponse)
                     
                     window.location.reload()
@@ -138,10 +139,8 @@ const CompleteWarrantyServiceModal = ({ service_id, id, type }) => {
 
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
                     <Modal.Body style={{color: "#014c91", backgroundColor: "#E5EDF4"}}>
-                              
-
                                     <Row className="mt-3">
-                                        <Col lg="12">
+                                        <Col lg="5">
                                             <Form.Group controlId="paymentOption">
                                             {type === "inspection" ? (
                                                 <Form.Label>Will there be a follow-up inspection?</Form.Label>
@@ -171,6 +170,19 @@ const CompleteWarrantyServiceModal = ({ service_id, id, type }) => {
                                                         required
                                                     />
                                                 </div>
+                                                <Form.Control.Feedback type="invalid">
+                                                    Please select an option.
+                                                </Form.Control.Feedback>
+                                            </Form.Group>
+                                        </Col> 
+                                        <Col lg="7">
+                                            <Form.Group controlId="paymentOption">
+                                            {type === "inspection" ? (
+                                                <Form.Label>Inspection Remarks</Form.Label>
+                                            ) : (
+                                                <Form.Label>Service Remarks</Form.Label>
+                                            )}
+                                                <Form.Control type="text"  name="note" value={formData.note} onChange={handleChange} required />
                                                 <Form.Control.Feedback type="invalid">
                                                     Please select an option.
                                                 </Form.Control.Feedback>

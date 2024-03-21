@@ -9,7 +9,7 @@ const Sidebar = ({ children }) => {
   const toggle = () => setIsOpen(!isOpen);
   const [menuItem, setMenuItem] = useState([]);
 
-  const [userType, setUserType] = useState(1)
+  const [userType, setUserType] = useState(2)
 
   useEffect(() => {
   if(userType === 1){

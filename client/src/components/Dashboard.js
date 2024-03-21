@@ -10,7 +10,7 @@ import SysAdDashboard from './Dashboards/SysAdDashboard';
 
 const Dashboard = () => {
 
-    const [userType, setUserType]=useState(1);
+    const [userType, setUserType]=useState(2);
 
     const ocularData = [
         {name: 'JAN', ocular: 10}, {name: 'FEB', ocular: 120}, {name: 'MAR', ocular: 110}, {name: 'APR', ocular: 150}, 
