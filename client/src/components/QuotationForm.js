@@ -1,7 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState, useEffect } from 'react';
-import { FaFilter, FaSort, FaSearch, FaSave} from 'react-icons/fa';
-import { Row, Col, Form, CardBody, Card, Table } from 'react-bootstrap';
 import '../index.css';
 import OfferSelection from './QuotationComponents/OfferSelection';
 import ClientSelection from './QuotationComponents/ClientSelection';
@@ -21,6 +19,7 @@ const QuotationForm = () => {
   const [searchParams] = useSearchParams()
   const salesId = searchParams.get('sales')
   const type = searchParams.get('type')
+  const quoId = searchParams.get('id')
 
   useEffect(() => {
     if (type === 'view') {
@@ -61,15 +60,23 @@ const QuotationForm = () => {
         const response = await axios.get(`http://localhost:4000/api/getQuoClientIdByOcularId/${id}`);
 
         client_id = response.data[0].quotation_client_id
-      }
+      } 
       else if (salesId) {
         console.log('Adding additional quotation for existing sales record, searching quotation client id')
         const response = await axios.get(`http://localhost:4000/api/getQuoClientIdBySalesId/${salesId}`);
 
         client_id = response.data[0].quotation_client_id
-      } else {
+      } 
+      else if (type === 'edit') {
+        console.log('Editing eixsting quotation recrod... fetching client id')
+        const response = await axios.get(`http://localhost:4000/api/getQuoClientIdByQuoId/${quoId}`);
+
+        client_id = response.data[0].quotation_client_id
+      } 
+      else {
         console.log('Posting new client data...')
         const response = await axios.post('http://localhost:4000/api/postOcular/0', clientData)
+        
         client_id = response.data.data
       }
 
@@ -79,8 +86,18 @@ const QuotationForm = () => {
         id: client_id,
         sales_id: salesId
       }
+
+      console.log('POST DATA FOR QUOTATION SUBMISSION', data)
       
       const postReponse = await axios.post('http://localhost:4000/api/postQuotation/', data)
+
+      // cancel id in search parameter if type is edit
+      if (type === 'edit') {
+        console.log('Successfully posted edited quotation, cancelling old record')
+        const cancelResponse = await axios.patch(`http://localhost:4000/api/cancelQuotation/${quoId}`)
+        console.log(cancelResponse)
+      }
+
       console.log(postReponse)
 
       if (salesId) {
@@ -98,7 +115,7 @@ const QuotationForm = () => {
 
   const handleOfferSubmission = (data) => {
     setOfferData(data)
-    id || salesId ? setSelectionType('terms') : setSelectionType('client')
+    id || salesId || type==='edit' ? setSelectionType('terms') : setSelectionType('client')
   };
 
   const handleClientSubmission = (data) => {
@@ -124,6 +141,15 @@ const QuotationForm = () => {
     console.log(selectionType)
   }, [selectionType])
 
+  const displayHeader = () => {
+    if (type === 'edit') {
+      return 'Editing Existing Record'
+    } else if (type === 'add' || salesId) {
+      return 'Adding Quotation to Existing Sales Record'
+    } else {
+      return 'Generate A New Quotation'
+    }
+  }
   
   useEffect(() => {
     if (id) {
@@ -143,9 +169,9 @@ const QuotationForm = () => {
 
   return (
     <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91' }}>
-      <h1>Generate a New Quotation</h1>
+      <h1>{displayHeader()}</h1>
 
-      {selectionType === 'offer' && <OfferSelection offerList={offer} onOfferSubmission={handleOfferSubmission} />}
+      {selectionType === 'offer' && <OfferSelection offerList={offer} onOfferSubmission={handleOfferSubmission} type={type} id={quoId} />}
       {selectionType === 'client' && <ClientSelection onClientSubmission={handleClientSubmission}/>}
       {selectionType === 'terms' && <TermsAndConditions onTermsSubmission={handleGetTermsData}/>}
       {selectionType === 'download' && <PreviewQuotation offers={offerData} terms={termsData} client={clientData} POST={handleSubmit} type={type}/>}

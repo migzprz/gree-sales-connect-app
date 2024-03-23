@@ -66,7 +66,7 @@ module.exports = (query) => {
         const clientResponse = await query(clientQuery, [id])
 
         // getting the product info
-        const productQuery =   `SELECT qp.quantity, qp.discounted_price_each*qp.quantity AS totalPrice, p.product_srp as srp, p.unit_model, qp.discounted_price_each as discPrice,
+        const productQuery =   `SELECT p.product_id, qp.quantity, qp.discounted_price_each*qp.quantity AS totalPrice, p.product_srp as srp, p.unit_model, qp.discounted_price_each as discPrice,
                                 CONCAT(product_hp, ' HP ', UPPER(product_type), ' TYPE ', CASE WHEN is_inverter = 1 THEN 'INVERTER' WHEN is_inverter = 0 THEN 'NON-INVERTER' END) as article
                                 FROM md_quotation_products qp
                                 JOIN md_products p ON qp.product_id = p.product_id
@@ -78,7 +78,7 @@ module.exports = (query) => {
         });
 
         // getting the services info
-        const servicesQuery =  `SELECT s.description as article, s.service_srp AS srp, qs.discounted_price_each*qs.quantity as totalPrice, qs.quantity, qs.discounted_price_each as discPrice
+        const servicesQuery =  `SELECT s.services_id, s.description as article, s.service_srp AS srp, qs.discounted_price_each*qs.quantity as totalPrice, qs.quantity, qs.discounted_price_each as discPrice
                                 FROM md_quotation_services qs
                                 JOIN md_services s ON qs.services_id = s.services_id
                                 WHERE quotation_id = ?`
@@ -87,7 +87,7 @@ module.exports = (query) => {
             return { ...obj, unit: 'SERVICE' };
         });
         // getting the parts info
-        const partsQuery = `SELECT CONCAT(p.description, ' ', '(', p.name, ')') as article, p.parts_srp as srp, qp.quantity, (qp.discounted_price_each*qp.quantity) as totalPrice, qp.discounted_price_each as discPrice
+        const partsQuery = `SELECT p.parts_id, CONCAT(p.description, ' ', '(', p.name, ')') as article, p.parts_srp as srp, qp.quantity, (qp.discounted_price_each*qp.quantity) as totalPrice, qp.discounted_price_each as discPrice
                             FROM md_quotation_parts qp
                             JOIN md_parts p ON qp.parts_id = p.parts_id
                             WHERE qp.quotation_id = ?`
@@ -127,6 +127,15 @@ module.exports = (query) => {
 
         console.log(id)
         const data = await query('SELECT quotation_client_id FROM md_quotation_clients WHERE ocular_id = ?;', [id])
+
+        res.send(data)
+    })
+
+    router.get('/getQuoClientIdByQuoId/:id', async (req, res) => {
+        const { id } = req.params
+
+        console.log(id)
+        const data = await query('SELECT quotation_client_id FROM td_quotations WHERE quotation_id = ?', [id])
 
         res.send(data)
     })
@@ -249,17 +258,17 @@ module.exports = (query) => {
                 console.log(`STEP 3.${index}: posting offer item`)
                 // determine offer type
                 const offering = off.unit
-                if (offering === 'product') {
+                if (offering === 'product' || offering === 'UNIT') {
                     console.log('Offering is a', offering)
                     const offer_data = await query(offer_queryProduct, [quo_id, off.product_id, off.discPrice, off.quantity])
                     console.log(offer_data)
                 }
-                else if (offering === 'service'){
+                else if (offering.toLowerCase() === 'service'){
                     console.log('Offering is a', offering)
                     const offer_data = await query(offer_queryService, [quo_id, off.services_id, off.discPrice, off.quantity])
                     console.log(offer_data)
                 }
-                else if (offering === 'parts'){
+                else if (offering.toLowerCase() === 'parts'){
                     console.log('Offering is a', offering)
                     const offer_data = await query(offer_queryParts, [quo_id, off.parts_id, off.discPrice, off.quantity])
                     console.log(offer_data)
