@@ -3,13 +3,32 @@ import React, { useState, useEffect } from 'react';
 import { FaFilter, FaSort, FaSearch, FaSave, FaEye, FaEyeSlash, FaTrash} from 'react-icons/fa';
 import { Row, Col, Form, CardBody, Card, Table, InputGroup} from 'react-bootstrap';
 import '../../index.css';
+import axios from 'axios';
 
-const OfferSelection = ({offerList, onOfferSubmission, }) => {
+const OfferSelection = ({offerList, onOfferSubmission, type, id }) => {
     const [hasItems, setHasItems] = useState(false);
     const [isFullView, setIsFullView] = useState(true);
     const [validated, setValidated] = useState(false);
+    const [itemList, setItemList] = useState([]);
+    const [itemListTotals, setItemListTotals] = useState([]);
 
-
+    useEffect(() => {
+        if (type === 'edit') {
+            const fetchData = async () => {
+              try {
+                  const res = (await axios.get(`http://localhost:4000/api/getQuotationDetailsById/${id}`)).data
+                  console.log(res.quotation)
+                  setItemList(res.quotation)
+              } catch (error) {
+                  console.log(error)
+              }
+          }
+          fetchData()
+        }
+    }, [type])
+    useEffect(() => {
+        console.log(itemList)
+    }, [itemList])
 
     const handleSubmit = (event) => {
         const form = event.currentTarget;
@@ -30,8 +49,7 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
 
 
 
-    const [itemList, setItemList] = useState([]);
-    const [itemListTotals, setItemListTotals] = useState([]);
+    
 
     //Rendering Transition Logic for Alternating Views
     const [shouldRender, setShouldRender] = useState(false);
@@ -62,7 +80,7 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
         });
     };
 
-    console.log(itemList)
+    // console.log(itemList)
 
     const handleAddToItemList = (offer) => {
 
@@ -94,7 +112,8 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
         itemList.forEach(item => {
         // handle different offering types
         const unit_srp = item.unit + '_srp'
-        subtotal += parseFloat(item[unit_srp]) * item.quantity;
+        const val = item[unit_srp] || item['srp']
+        subtotal += parseFloat(val) * item.quantity;
         total += parseFloat(item.discPrice) * item.quantity;
         });
     
@@ -130,8 +149,8 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
 
         // handle different offering types
         const unit_srp = item.unit + '_srp'
-
-        return item[unit_srp].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const val = item[unit_srp] ||  item['srp']
+        return val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     }
   
 
@@ -294,11 +313,11 @@ const OfferSelection = ({offerList, onOfferSubmission, }) => {
                                                     <tr key={index} style={{ borderRadius: '20px', padding: '10px' }}>
                                                     <td style={{ color: '#014c91' }}>
                                                         <Form.Group controlId={`qty-${index}`}>
-                                                            <Form.Control   type="number" inputmode="numeric" min="1" required
+                                                            <Form.Control   type="number" inputMode="numeric" min="1" required
                                                                             value={item.quantity} onChange={(e) => handleItemListChange(e, index, 'quantity')} />
                                                         </Form.Group>
                                                     </td>
-                                                    <td style={{ color: '#014c91' }}>{item.display || item.description}</td>
+                                                    <td style={{ color: '#014c91' }}>{item.display || item.description || item.article}</td>
                                                     <td style={{ color: '#014c91' }}>{item.unit_model || item.name}</td>
                                                     <td style={{ color: '#014c91' }}>
                                                         ₱ {formatItemList(item)}

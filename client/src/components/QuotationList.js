@@ -59,6 +59,7 @@ const QuotationList = () => {
         if (index === activeDropdown) {
             return (
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
+                <Dropdown.Item><Link to={`/generatequotation?id=${id}&type=edit`} style={{ color: '#014c91'}}>Edit Quotation</Link></Dropdown.Item>
                 <Dropdown.Item><Link to={`/generateinvoice?id=${id}`} style={{ color: '#014c91'}}>Convert To Sale</Link></Dropdown.Item>
                 <CancelQuotationModal id={id}/>
             </Dropdown.Menu>
