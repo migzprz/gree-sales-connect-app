@@ -10,7 +10,7 @@ import SysAdDashboard from './Dashboards/SysAdDashboard';
 
 const Dashboard = () => {
 
-    const [userType, setUserType]=useState(4);
+    const [userType, setUserType]=useState(3);
     
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>

@@ -161,7 +161,7 @@ const ExecutiveDashboard = () => {
                     <Card style={{color: '#014c91', overflow: 'hidden'}}>
                         <CardBody>
                              <h5>Total Expenses Incurred</h5>
-                             <h1 style={{fontSize:'48px'}}> ₱ {formatNumber(expenseTotal)}</h1>
+                             <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(expenseTotal)}</h1>
                         </CardBody>
                     </Card>
                 </Col>
@@ -169,7 +169,7 @@ const ExecutiveDashboard = () => {
                     <Card style={{color: '#014c91', overflow: 'hidden'}}>
                         <CardBody>
                              <h5>Total Sales Revenue Generated</h5>
-                             <h1 style={{fontSize:'48px'}}> ₱ {formatNumber(revenueTotal)}</h1>
+                             <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(revenueTotal)}</h1>
                         </CardBody>
                     </Card>
                 </Col>
@@ -188,7 +188,7 @@ const ExecutiveDashboard = () => {
                     <Card style={{ color: '#014c91', overflow: 'hidden' }}>
                         <CardBody className="mb-5">
                             <ResponsiveContainer width='100%' height={300}>
-                                <h5>Quotations Generated and Sale Conversion over Time</h5>
+                                <h5>Expenses Incurred and Revenue Generated over Time</h5>
                                 <LineChart data={salesAndExpenseData}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis dataKey="name" />

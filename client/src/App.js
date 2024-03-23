@@ -25,6 +25,7 @@ import ViewExpenses from './pages/ViewExpenses';
 import ViewExpenseDetails from './pages/ViewExpenseDetails';
 import RecordExpenses from './pages/RecordExpenses';
 import ViewTechnicians from './pages/ViewTechnicians';
+import ViewReport from './pages/ViewReport';
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
 
                     {/* Executive Module */}
                     <Route path="/report" element={<GenerateReport/>}/> 
+                    <Route path="/viewreport/:type/:syear/:smonth/:sday/:eyear/:emonth/:eday" element={<ViewReport/>}/>
                     <Route path="/viewexpenses" element={<ViewExpenses/>}/>
                     <Route path="/viewexpensedetails/:id" element={<ViewExpenseDetails/>}/>
                     <Route path="/recordexpenses" element={<RecordExpenses/>}/>

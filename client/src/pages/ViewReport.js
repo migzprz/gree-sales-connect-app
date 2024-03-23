@@ -1,21 +1,24 @@
 import MainHeader from "../components/MainHeader"
 import SalesReport from "../components/Reports/SalesReport";
-import QuotationConversionReport from "../components/Reports/QuotationConversionReport";
-import ReportOptions from "../components/ReportOptions";
 import Sidebar from "../components/Sidebar";
+import { useParams  } from 'react-router-dom';
 import '../index.css';
 
-const GenerateReport = () => {
+const ViewReport = () => {
+    const { type } = useParams();
+
     return (
         <>
             <MainHeader/>
             <div style={{ display: 'flex' }}>
                 <Sidebar />
-                <ReportOptions/>
+                {type === '1' ?
+                <SalesReport/>
+                : null}
             </div>
         </>
 
     );
 };
 
-export default GenerateReport;
+export default ViewReport;
