@@ -1,26 +1,119 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
-import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer, XAxis, YAxis, CartesianGrid, LineChart, Line  } from 'recharts';
-import { Row, Col, Card, CardBody, Table } from 'react-bootstrap';
-import { FaFilter, FaSort, FaSearch} from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { Legend, Tooltip, ResponsiveContainer, XAxis, YAxis, CartesianGrid, LineChart, Line  } from 'recharts';
+import { Row, Col, Card, CardBody} from 'react-bootstrap';
+import { FaFilter } from 'react-icons/fa';
+import axios from 'axios'
 
 const ExecutiveDashboard = () => {
 
-    const ocularData = [
-        {name: 'JAN', ocular: 10}, {name: 'FEB', ocular: 120}, {name: 'MAR', ocular: 110}, {name: 'APR', ocular: 150}, 
-        {name: 'MAY', ocular: 160}, {name: 'JUN', ocular: 180}, {name: 'JUL', ocular: 160}, {name: 'AUG', ocular: 130},
-        {name: 'SEP', ocular: 130}, {name: 'OCT', ocular: 130}, {name: 'NOV', ocular: 130}, {name: 'DEC', ocular: 130}
-      ];
+        const [yearOptions, setYearOptions] = useState([]);
 
-    const quotationData = [
-        {name: 'JAN', quotation: 120}, {name: 'FEB', quotation: 120}, {name: 'MAR', quotation: 110}, {name: 'APR', quotation: 150}, 
-        {name: 'MAY', quotation: 160}, {name: 'JUN', quotation: 180}, {name: 'JUL', quotation: 160}, {name: 'AUG', quotation: 130},
-        {name: 'SEP', quotation: 130}, {name: 'OCT', quotation: 30}, {name: 'NOV', quotation: 230}, {name: 'DEC', quotation: 130}
-      ];
+        const [salesAndExpenseData, setSalesAndExpenseData] = useState([]);
+        const [expenseTotal, setExpenseTotal] = useState(0);
+        const [profitTotal, setProfitTotal] = useState(0);
+        const [revenueTotal, setRevenueTotal] = useState(0);
+
+
+        const [yearFilter, setYearFilter] = useState(2024);
+        const [monthFilter, setMonthFilter] = useState(0);
+        
+        // fetch and mount ocular data to useState
+        useEffect(() => {
+            const fetchSalesAndExpenseData = async () => {
+                try {
+                    const response = await axios.get('http://localhost:4000/api/getExpenseStatistics/');
+                    const response2 = await axios.get('http://localhost:4000/api/getDetailedRevenueStatistics/');
+                    let newData = [];
+                    let total = 0; // Initialize total
+                    let salesTotal = 0; // Initialize sales total
+
+                     // Get unique year values from response.data
+                     const uniqueYears = [...new Set(response.data.map(item => item.year))];
+                     // Sort uniqueYears array in descending order
+                     setYearOptions(uniqueYears.sort((a, b) => b - a));
+            
+                    if (monthFilter === 0) {
+                        // If monthFilter is empty, generate data for all months
+                        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                        newData = months.map((month) => {
+                            const totalQty = response.data.reduce((total, item) => {
+                                if (item.year === yearFilter && item.month === month) {
+                                    return total + item.total;
+                                }
+                                return total;
+                            }, 0);
+                            const salesQty = response2.data.reduce((total, item) => {
+                                if (item.year === yearFilter && item.month === month) {
+                                    return total + item.total;
+                                }
+                                return total;
+                            }, 0);
+                            total += totalQty; // Add to total
+                            salesTotal += salesQty; // Add to sales total
+                            return { name: month, expense: totalQty, revenue: salesQty };
+                        });
+                    } else {
+                        // Get the number of days in the selected month
+                        const daysInMonth = new Date(yearFilter, monthFilter, 0).getDate();
+                        // Generate data for each day of the selected month
+                        for (let i = 1; i <= daysInMonth; i++) {
+                            const totalQty = response.data.reduce((total, item) => {
+                                if (item.year === yearFilter && item.monthNum === monthFilter && item.day === i) {
+                                    return total + item.total;
+                                }
+                                return total;
+                            }, 0);
+                            const salesQty = response2.data.reduce((total, item) => {
+                                if (item.year === yearFilter && item.monthNum === monthFilter && item.day === i) {
+                                    return total + item.total;
+                                }
+                                return total;
+                            }, 0);
+                            total += totalQty; // Add to total
+                            salesTotal += salesQty; // Add to sales total
+                            newData.push({ name: i.toString(), expense: totalQty, revenue: salesQty });
+                        }
+                    }
+            
+                    setSalesAndExpenseData(newData);
+                    setExpenseTotal(total);
+                    setRevenueTotal(salesTotal); 
+                    setProfitTotal(salesTotal-total);
+                } catch (error) {
+                    console.error('Error fetching data: ', error);
+                }
+            };
+
+            fetchSalesAndExpenseData();
+        }, [yearFilter, monthFilter]);
+        
+        
+        useEffect(() => {
+            console.log(salesAndExpenseData)
+        },[salesAndExpenseData])
+        useEffect(() => {
+            console.log(revenueTotal)
+        },[revenueTotal])
+        useEffect(() => {
+            console.log(yearOptions)
+        },[yearOptions])
+        useEffect(() => {
+            console.log(expenseTotal)
+        },[expenseTotal])
+        useEffect(() => {
+            console.log(profitTotal)
+        },[profitTotal])
 
 
     const [ocularLinesVisibility, setOcularLinesVisibility] = useState({ocular: true});
     const [quotationLinesVisibility, setquotationLinesVisibility] = useState({quotation: true});
+    const [salesLinesVisibility, setsalesLinesVisibility] = useState({sales: true});
+
+    //Amount Conversion Function
+    const formatNumber = (number) => {
+        return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
     
     return (
         <>
@@ -34,8 +127,10 @@ const ExecutiveDashboard = () => {
                                 {React.createElement(FaFilter, { size: 20 })}
                             </div>  
                         </div>
-                        <select className="form-select">
-                            <option value="">2024</option>
+                        <select className="form-select" value={yearFilter} onChange={(e) => setYearFilter(e.target.value)}>
+                            {yearOptions.map((year) => (
+                                <option value={year}>{year}</option>
+                            ))}
                         </select>
 
                     </div>
@@ -49,9 +144,13 @@ const ExecutiveDashboard = () => {
                                 {React.createElement(FaFilter, { size: 20 })}
                             </div>  
                         </div>
-                        <select className="form-select">
-                            <option value="">All Months</option>
+                        <select className="form-select" value={monthFilter} onChange={(e) => setMonthFilter(parseInt(e.target.value))}>
+                            <option value="0">All Months</option>
+                            {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                                <option key={month} value={month}>{new Date(2024, month - 1, 1).toLocaleString('default', { month: 'short' })}</option>
+                            ))}
                         </select>
+
 
                     </div>
                 </Col>
@@ -61,50 +160,49 @@ const ExecutiveDashboard = () => {
                 <Col lg="4">
                     <Card style={{color: '#014c91', overflow: 'hidden'}}>
                         <CardBody>
-                             <h5>Total Expenses</h5>
-                             <h1 style={{fontSize:'48px'}}> 21</h1>
+                             <h5>Total Expenses Incurred</h5>
+                             <h1 style={{fontSize:'48px'}}> ₱ {formatNumber(expenseTotal)}</h1>
                         </CardBody>
                     </Card>
                 </Col>
                 <Col lg="4">
                     <Card style={{color: '#014c91', overflow: 'hidden'}}>
                         <CardBody>
-                             <h5>Total Sales Revenue</h5>
-                             <h1 style={{fontSize:'48px'}}> 45</h1>
+                             <h5>Total Sales Revenue Generated</h5>
+                             <h1 style={{fontSize:'48px'}}> ₱ {formatNumber(revenueTotal)}</h1>
                         </CardBody>
                     </Card>
                 </Col>
                 <Col lg="4">
-                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
+                    <Card style={{color: '#014c91', overflow: 'hidden', height: '100%'}}>
                         <CardBody>
                              <h5>Total Profits</h5>
-                             <h1 style={{fontSize:'48px'}}> 32</h1>
+                             <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(profitTotal)}</h1>
                         </CardBody>
                     </Card>
                 </Col>
             </Row>
+
             <Row className="mt-3">
                 <Col lg="12">
-                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
+                    <Card style={{ color: '#014c91', overflow: 'hidden' }}>
                         <CardBody className="mb-5">
                             <ResponsiveContainer width='100%' height={300}>
-                                <h3>Revenue</h3>
-                                <LineChart data={ocularData}>
+                                <h5>Quotations Generated and Sale Conversion over Time</h5>
+                                <LineChart data={salesAndExpenseData}>
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name"/>
+                                    <XAxis dataKey="name" />
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
-                                    {Object.keys(ocularLinesVisibility).map((key, index) => (
-                                        ocularLinesVisibility[key] && (
-                                            <Line key={key} type="monotone" dataKey={key} stroke={'#E26014'}/>
-                                        )
-                                    ))}
+                                    <Line type="monotone" dataKey="expense" name="Expenses Incurred" stroke="#1427E2" />
+                                    <Line type="monotone" dataKey="revenue" name="Revenue Generated" stroke="#097969" />
                                 </LineChart>
                             </ResponsiveContainer>
                         </CardBody>
                     </Card>
                 </Col>
+
             </Row>
 
 

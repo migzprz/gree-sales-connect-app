@@ -325,9 +325,253 @@ module.exports = (query) => {
                                                 GROUP BY year, month
                                             ) AS combined_data
                                             GROUP BY year, month;
-        
-    
-    
+                                        `, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getWarrantyStatistics', async (req, res) => {
+        try {const data = await query(` SELECT 
+        YEAR(date_created) AS year, 
+        CASE
+            WHEN MONTH(date_created) = 1 THEN 'Jan'
+            WHEN MONTH(date_created) = 2 THEN 'Feb'
+            WHEN MONTH(date_created) = 3 THEN 'Mar'
+            WHEN MONTH(date_created) = 4 THEN 'Apr'
+            WHEN MONTH(date_created) = 5 THEN 'May'
+            WHEN MONTH(date_created) = 6 THEN 'Jun'
+            WHEN MONTH(date_created) = 7 THEN 'Jul'
+            WHEN MONTH(date_created) = 8 THEN 'Aug'
+            WHEN MONTH(date_created) = 9 THEN 'Sep'
+            WHEN MONTH(date_created) = 10 THEN 'Oct'
+            WHEN MONTH(date_created) = 11 THEN 'Nov'
+            ELSE 'Dec'
+        END AS month,
+        MONTH(date_created) as monthNum,
+        DAY(date_created) AS day, 
+        COUNT(warranty_id) AS qty
+    FROM td_warranty
+    GROUP BY day, month, monthNum, year
+    ORDER BY year, month, day; `, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getResolvedWarrantyStatistics', async (req, res) => {
+        try {const data = await query(` SELECT 
+        YEAR(date_created) AS year, 
+        CASE
+            WHEN MONTH(date_created) = 1 THEN 'Jan'
+            WHEN MONTH(date_created) = 2 THEN 'Feb'
+            WHEN MONTH(date_created) = 3 THEN 'Mar'
+            WHEN MONTH(date_created) = 4 THEN 'Apr'
+            WHEN MONTH(date_created) = 5 THEN 'May'
+            WHEN MONTH(date_created) = 6 THEN 'Jun'
+            WHEN MONTH(date_created) = 7 THEN 'Jul'
+            WHEN MONTH(date_created) = 8 THEN 'Aug'
+            WHEN MONTH(date_created) = 9 THEN 'Sep'
+            WHEN MONTH(date_created) = 10 THEN 'Oct'
+            WHEN MONTH(date_created) = 11 THEN 'Nov'
+            ELSE 'Dec'
+        END AS month,
+        MONTH(date_created) as monthNum,
+        DAY(date_created) AS day, 
+        COUNT(warranty_id) AS qty
+    FROM td_warranty
+    WHERE is_completed = 1
+    GROUP BY day, month, monthNum, year
+    ORDER BY year, month, day; `, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getClaimedUnitStatistics', async (req, res) => {
+        try {const data = await query(` SELECT 
+        YEAR(w.date_created) AS year, 
+        CASE
+            WHEN MONTH(w.date_created) = 1 THEN 'Jan'
+            WHEN MONTH(w.date_created) = 2 THEN 'Feb'
+            WHEN MONTH(w.date_created) = 3 THEN 'Mar'
+            WHEN MONTH(w.date_created) = 4 THEN 'Apr'
+            WHEN MONTH(w.date_created) = 5 THEN 'May'
+            WHEN MONTH(w.date_created) = 6 THEN 'Jun'
+            WHEN MONTH(w.date_created) = 7 THEN 'Jul'
+            WHEN MONTH(w.date_created) = 8 THEN 'Aug'
+            WHEN MONTH(w.date_created) = 9 THEN 'Sep'
+            WHEN MONTH(w.date_created) = 10 THEN 'Oct'
+            WHEN MONTH(w.date_created) = 11 THEN 'Nov'
+            ELSE 'Dec'
+        END AS month,
+        MONTH(w.date_created) as monthNum,
+        wc.issue,
+        COUNT(wc.claimed_unit_id) AS qty
+    FROM td_warranty_claimed_units wc
+    JOIN td_warranty w ON w.warranty_id = wc.warranty_id
+    GROUP BY issue, month, monthNum, year
+    ORDER BY year, month, issue; `, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getYearlyClaimedUnitStatistics', async (req, res) => {
+        try {const data = await query(` SELECT 
+                YEAR(w.date_created) AS year,
+                wc.issue,
+                COUNT(wc.claimed_unit_id) AS qty
+            FROM td_warranty_claimed_units wc
+            JOIN td_warranty w ON w.warranty_id = wc.warranty_id
+            GROUP BY issue, year
+            ORDER BY year, issue;`, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getExpenseStatistics', async (req, res) => {
+        try {const data = await query(` SELECT year, monthNum, day, SUM(total) AS total,
+                                                CASE
+                                                    WHEN monthNum = 1 THEN 'Jan'
+                                                    WHEN monthNum = 2 THEN 'Feb'
+                                                    WHEN monthNum = 3 THEN 'Mar'
+                                                    WHEN monthNum = 4 THEN 'Apr'
+                                                    WHEN monthNum = 5 THEN 'May'
+                                                    WHEN monthNum = 6 THEN 'Jun'
+                                                    WHEN monthNum = 7 THEN 'Jul'
+                                                    WHEN monthNum = 8 THEN 'Aug'
+                                                    WHEN monthNum = 9 THEN 'Sep'
+                                                    WHEN monthNum = 10 THEN 'Oct'
+                                                    WHEN monthNum = 11 THEN 'Nov'
+                                                    ELSE 'Dec'
+                                                END AS month
+                                        FROM (
+                                            SELECT YEAR(expense_date) AS year, MONTH(expense_date) AS monthNum, DAY(expense_date) AS day, SUM(amount) AS total
+                                            FROM td_operating_expense
+                                            GROUP BY year, monthNum, day
+
+                                            UNION ALL
+
+                                            SELECT YEAR(expense_date) AS year, MONTH(expense_date) AS monthNum, DAY(expense_date) AS day, SUM(amount) AS total
+                                            FROM td_nonoperating_expense
+                                            GROUP BY year, monthNum, day
+                                        ) AS expenses
+                                        GROUP BY year, monthNum, day;`, [])
+                                                    console.log(data)
+                                                    res.send(data)
+                                                } catch (error) {
+                                                    console.error('Error: ', error)
+                                                    throw error
+                                                }
+    })
+
+    router.get('/getDetailedRevenueStatistics', async (req, res) => {
+        try {const data = await query(` SELECT year, monthNum, day, SUM(total) AS total,
+                                            CASE
+                                                    WHEN monthNum = 1 THEN 'Jan'
+                                                    WHEN monthNum = 2 THEN 'Feb'
+                                                    WHEN monthNum = 3 THEN 'Mar'
+                                                    WHEN monthNum = 4 THEN 'Apr'
+                                                    WHEN monthNum = 5 THEN 'May'
+                                                    WHEN monthNum = 6 THEN 'Jun'
+                                                    WHEN monthNum = 7 THEN 'Jul'
+                                                    WHEN monthNum = 8 THEN 'Aug'
+                                                    WHEN monthNum = 9 THEN 'Sep'
+                                                    WHEN monthNum = 10 THEN 'Oct'
+                                                    WHEN monthNum = 11 THEN 'Nov'
+                                                    ELSE 'Dec'
+                                                END AS month
+                                        FROM (
+                                            SELECT YEAR(s.date_created) AS year, MONTH(s.date_created) AS monthNum, DAY(s.date_created) AS day, SUM(qp.discounted_price_each*qp.quantity) AS total
+                                            FROM td_quotations q
+                                            JOIN td_sales s ON q.sales_id = s.sales_id
+                                            JOIN md_quotation_parts qp ON q.quotation_id = qp.quotation_id
+                                            GROUP BY year, monthNum, day
+                                        
+                                            UNION ALL
+                                        
+                                            SELECT YEAR(s.date_created) AS year, MONTH(s.date_created) AS monthNum, DAY(s.date_created) AS day, SUM(qp.discounted_price_each*qp.quantity) AS total
+                                            FROM td_quotations q
+                                            JOIN td_sales s ON q.sales_id = s.sales_id
+                                            JOIN md_quotation_products qp ON q.quotation_id = qp.quotation_id
+                                            GROUP BY year, monthNum, day
+                                        
+                                            UNION ALL
+                                        
+                                            SELECT YEAR(s.date_created) AS year, MONTH(s.date_created) AS monthNum, DAY(s.date_created) AS day, SUM(qs.discounted_price_each*qs.quantity) AS total
+                                            FROM td_quotations q
+                                            JOIN td_sales s ON q.sales_id = s.sales_id
+                                            JOIN md_quotation_services qs ON q.quotation_id = qs.quotation_id
+                                            GROUP BY year, monthNum, day
+                                        ) AS combined_data
+                                        GROUP BY year, monthNum, day;`, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getProductCount', async (req, res) => {
+        try {const data = await query(`SELECT COUNT(product_id) as qty 
+                                        FROM md_products
+                                        WHERE is_active=1;     `, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getServicesCount', async (req, res) => {
+        try {const data = await query(`SELECT COUNT(services_id) as qty 
+                                        FROM md_services
+                                        WHERE is_active=1 
+                                        `, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getUsersCount', async (req, res) => {
+        try {const data = await query(`SELECT COUNT(login_id) as qty 
+                                        FROM md_login
+                                        WHERE is_active=1 
+                                        `, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getTechniciansCount', async (req, res) => {
+        try {const data = await query(` SELECT COUNT(technician_id) as qty 
+                                        FROM md_technicians
+                                        WHERE is_active=1
                                         `, [])
             console.log(data)
             res.send(data)

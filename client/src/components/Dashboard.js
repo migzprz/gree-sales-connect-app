@@ -10,23 +10,7 @@ import SysAdDashboard from './Dashboards/SysAdDashboard';
 
 const Dashboard = () => {
 
-    const [userType, setUserType]=useState(1);
-
-    const ocularData = [
-        {name: 'JAN', ocular: 10}, {name: 'FEB', ocular: 120}, {name: 'MAR', ocular: 110}, {name: 'APR', ocular: 150}, 
-        {name: 'MAY', ocular: 160}, {name: 'JUN', ocular: 180}, {name: 'JUL', ocular: 160}, {name: 'AUG', ocular: 130},
-        {name: 'SEP', ocular: 130}, {name: 'OCT', ocular: 130}, {name: 'NOV', ocular: 130}, {name: 'DEC', ocular: 130}
-      ];
-
-    const quotationData = [
-        {name: 'JAN', quotation: 120}, {name: 'FEB', quotation: 120}, {name: 'MAR', quotation: 110}, {name: 'APR', quotation: 150}, 
-        {name: 'MAY', quotation: 160}, {name: 'JUN', quotation: 180}, {name: 'JUL', quotation: 160}, {name: 'AUG', quotation: 130},
-        {name: 'SEP', quotation: 130}, {name: 'OCT', quotation: 30}, {name: 'NOV', quotation: 230}, {name: 'DEC', quotation: 130}
-      ];
-
-
-    const [ocularLinesVisibility, setOcularLinesVisibility] = useState({ocular: true});
-    const [quotationLinesVisibility, setquotationLinesVisibility] = useState({quotation: true});
+    const [userType, setUserType]=useState(4);
     
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>

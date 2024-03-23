@@ -1,26 +1,148 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
-import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer, XAxis, YAxis, CartesianGrid, LineChart, Line  } from 'recharts';
-import { Row, Col, Card, CardBody, Table } from 'react-bootstrap';
-import { FaFilter, FaSort, FaSearch} from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { Legend, Tooltip, ResponsiveContainer, XAxis, YAxis, CartesianGrid, LineChart, Line, BarChart, Bar, Rectangle  } from 'recharts';
+import { Row, Col, Card, CardBody} from 'react-bootstrap';
+import { FaFilter } from 'react-icons/fa';
+import axios from 'axios'
 
 const AfterSalesDashboard = () => {
 
-    const ocularData = [
-        {name: 'JAN', ocular: 10}, {name: 'FEB', ocular: 120}, {name: 'MAR', ocular: 110}, {name: 'APR', ocular: 150}, 
-        {name: 'MAY', ocular: 160}, {name: 'JUN', ocular: 180}, {name: 'JUL', ocular: 160}, {name: 'AUG', ocular: 130},
-        {name: 'SEP', ocular: 130}, {name: 'OCT', ocular: 130}, {name: 'NOV', ocular: 130}, {name: 'DEC', ocular: 130}
-      ];
+        const [yearOptions, setYearOptions] = useState([]);
+        const [warrantyData, setWarrantyData] = useState([]);
+        const [warrantyTotal, setWarrantyTotal] = useState([]);
+        const [resWarrantyTotal, setResWarrantyTotal] = useState([]);
+        const [unitData, setUnitData] = useState([]);
+        const [unitTotal, setUnitTotal] = useState([]);
 
-    const quotationData = [
-        {name: 'JAN', quotation: 120}, {name: 'FEB', quotation: 120}, {name: 'MAR', quotation: 110}, {name: 'APR', quotation: 150}, 
-        {name: 'MAY', quotation: 160}, {name: 'JUN', quotation: 180}, {name: 'JUL', quotation: 160}, {name: 'AUG', quotation: 130},
-        {name: 'SEP', quotation: 130}, {name: 'OCT', quotation: 30}, {name: 'NOV', quotation: 230}, {name: 'DEC', quotation: 130}
-      ];
+        const [yearFilter, setYearFilter] = useState(2024);
+        const [monthFilter, setMonthFilter] = useState(0);
+        
+        // fetch and mount ocular data to useState
+        useEffect(() => {
+            const fetchWarrantyData = async () => {
+                try {
+                    const response = await axios.get('http://localhost:4000/api/getWarrantyStatistics/');
+                    const response2 = await axios.get('http://localhost:4000/api/getResolvedWarrantyStatistics/');
+                    let newData = [];
+                    let total = 0; // Initialize total
+                    let resTotal = 0; // Initialize sales total
+
+                    // Get unique year values from response.data
+                    const uniqueYears = [...new Set(response.data.map(item => item.year))];
+                    // Sort uniqueYears array in descending order
+                    setYearOptions(uniqueYears.sort((a, b) => b - a));
+            
+                    if (monthFilter === 0) {
+                        // If monthFilter is empty, generate data for all months
+                        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                        newData = months.map((month) => {
+                            const totalQty = response.data.reduce((total, item) => {
+                                if (item.year === yearFilter && item.month === month) {
+                                    return total + item.qty;
+                                }
+                                return total;
+                            }, 0);
+                            const resQty = response2.data.reduce((total, item) => {
+                                if (item.year === yearFilter && item.month === month) {
+                                    return total + item.qty;
+                                }
+                                return total;
+                            }, 0);
+                            total += totalQty; // Add to total
+                            resTotal += resQty; // Add to sales total
+                            return { name: month, warranty: totalQty, resolved: resQty };
+                        });
+                    } else {
+                        // Get the number of days in the selected month
+                        const daysInMonth = new Date(yearFilter, monthFilter, 0).getDate();
+                        // Generate data for each day of the selected month
+                        for (let i = 1; i <= daysInMonth; i++) {
+                            const totalQty = response.data.reduce((total, item) => {
+                                if (item.year === yearFilter && item.monthNum === monthFilter && item.day === i) {
+                                    return total + item.qty;
+                                }
+                                return total;
+                            }, 0);
+                            const resQty = response2.data.reduce((total, item) => {
+                                if (item.year === yearFilter && item.monthNum === monthFilter && item.day === i) {
+                                    return total + item.qty;
+                                }
+                                return total;
+                            }, 0);
+                            total += totalQty; // Add to total
+                            resTotal += resQty; // Add to sales total
+                            newData.push({ name: i.toString(), warranty: totalQty, resolved: resQty });
+                        }
+                    }
+            
+                    setWarrantyData(newData);
+                    setWarrantyTotal(total);
+                    setResWarrantyTotal(resTotal); // Set salesTotal
+                } catch (error) {
+                    console.error('Error fetching data: ', error);
+                }
+            };
+            const fetchUnitData = async () => {
+                try {
+                    let newData = [];
+                    let total = 0; // Initialize total
+                    
+                    if (monthFilter === 0) {
+                        // If monthFilter is empty, generate data for all months
+                        const response = await axios.get('http://localhost:4000/api/getYearlyClaimedUnitStatistics/');
+                        newData = response.data
+                            .filter(item => item.year === yearFilter)
+                            .map(item => ({ name: item.issue, unit: item.qty }));
+                        total = newData.reduce((acc, item) => acc + item.unit, 0);
+                    } else {
+                        // If a specific month is chosen
+                        const response = await axios.get('http://localhost:4000/api/getClaimedUnitStatistics/');
+                        newData = response.data
+                            .filter(item => item.year === yearFilter && item.monthNum === monthFilter)
+                            .map(item => ({ name: item.issue, unit: item.qty }));
+                        total = newData.reduce((acc, item) => acc + item.unit, 0);
+                    }
+            
+                    setUnitData(newData);
+                    setUnitTotal(total);
+                } catch (error) {
+                    console.error('Error fetching data: ', error);
+                }
+            };
+            
+            fetchUnitData();
+            
+        
+            fetchUnitData();
+            fetchWarrantyData();
+        }, [yearFilter, monthFilter]);
+        
+        
+        useEffect(() => {
+            console.log(warrantyData)
+        },[warrantyData])
+        useEffect(() => {
+            console.log(warrantyTotal)
+        },[warrantyTotal])
+        useEffect(() => {
+            console.log(yearOptions)
+        },[yearOptions])
+        useEffect(() => {
+            console.log(unitData)
+        },[unitData])
+        useEffect(() => {
+            console.log(unitTotal)
+        },[unitTotal])
 
 
     const [ocularLinesVisibility, setOcularLinesVisibility] = useState({ocular: true});
     const [quotationLinesVisibility, setquotationLinesVisibility] = useState({quotation: true});
+    const [salesLinesVisibility, setsalesLinesVisibility] = useState({sales: true});
+
+    //Amount Conversion Function
+    const formatNumber = (number) => {
+        return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
     
     return (
         <>
@@ -34,8 +156,10 @@ const AfterSalesDashboard = () => {
                                 {React.createElement(FaFilter, { size: 20 })}
                             </div>  
                         </div>
-                        <select className="form-select">
-                            <option value="">2024</option>
+                        <select className="form-select" value={yearFilter} onChange={(e) => setYearFilter(e.target.value)}>
+                            {yearOptions.map((year) => (
+                                <option value={year}>{year}</option>
+                            ))}
                         </select>
 
                     </div>
@@ -49,9 +173,13 @@ const AfterSalesDashboard = () => {
                                 {React.createElement(FaFilter, { size: 20 })}
                             </div>  
                         </div>
-                        <select className="form-select">
-                            <option value="">All Months</option>
+                        <select className="form-select" value={monthFilter} onChange={(e) => setMonthFilter(parseInt(e.target.value))}>
+                            <option value="0">All Months</option>
+                            {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                                <option key={month} value={month}>{new Date(2024, month - 1, 1).toLocaleString('default', { month: 'short' })}</option>
+                            ))}
                         </select>
+
 
                     </div>
                 </Col>
@@ -62,15 +190,7 @@ const AfterSalesDashboard = () => {
                     <Card style={{color: '#014c91', overflow: 'hidden'}}>
                         <CardBody>
                              <h5>Total Warranties Claimed</h5>
-                             <h1 style={{fontSize:'48px'}}> 21</h1>
-                        </CardBody>
-                    </Card>
-                </Col>
-                <Col lg="4">
-                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
-                        <CardBody>
-                             <h5>Total Inspections Made</h5>
-                             <h1 style={{fontSize:'48px'}}> 45</h1>
+                             <h1 style={{fontSize:'48px'}}> {warrantyTotal}</h1>
                         </CardBody>
                     </Card>
                 </Col>
@@ -78,33 +198,58 @@ const AfterSalesDashboard = () => {
                     <Card style={{color: '#014c91', overflow: 'hidden'}}>
                         <CardBody>
                              <h5>Total Warranties Resolved</h5>
-                             <h1 style={{fontSize:'48px'}}> 32</h1>
+                             <h1 style={{fontSize:'48px'}}> {resWarrantyTotal}</h1>
+                        </CardBody>
+                    </Card>
+                </Col>
+                <Col lg="4">
+                    <Card style={{color: '#014c91', overflow: 'hidden', height: '100%'}}>
+                        <CardBody>
+                             <h5>Total Units with Issues</h5>
+                             <h1 style={{fontSize:'40px'}}> {unitTotal}</h1>
                         </CardBody>
                     </Card>
                 </Col>
             </Row>
+
             <Row className="mt-3">
-                <Col lg="12">
-                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
+
+                <Col lg="6">
+                    <Card style={{ color: '#014c91', overflow: 'hidden' }}>
                         <CardBody className="mb-5">
                             <ResponsiveContainer width='100%' height={300}>
-                                <h3>Number of Warranties Claimed</h3>
-                                <LineChart data={ocularData}>
+                                <h5>Claimed and Resolved Warranties over Time</h5>
+                                <LineChart data={warrantyData}>
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name"/>
+                                    <XAxis dataKey="name" />
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
-                                    {Object.keys(ocularLinesVisibility).map((key, index) => (
-                                        ocularLinesVisibility[key] && (
-                                            <Line key={key} type="monotone" dataKey={key} stroke={'#E26014'}/>
-                                        )
-                                    ))}
+                                    <Line type="monotone" dataKey="warranty" name="Warranties Claimed" stroke="#1427E2" />
+                                    <Line type="monotone" dataKey="resolved" name="Warranties Resolved" stroke="#FFA500" />
                                 </LineChart>
                             </ResponsiveContainer>
                         </CardBody>
                     </Card>
                 </Col>
+                <Col lg="6">
+                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
+                        <CardBody className="mb-5">
+                            <ResponsiveContainer width='100%' height={300}>
+                            <h5>Claimed Units across Issue Categories</h5>
+                                <BarChart data={unitData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name"/>
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Bar dataKey="unit" name="Claimed Units" fill="#893101" activeBar={<Rectangle fill="#D67229" stroke="blue" />} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </CardBody>
+                    </Card>
+                </Col>
+
             </Row>
 
 
