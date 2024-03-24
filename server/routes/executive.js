@@ -219,7 +219,7 @@ module.exports = (query) => {
         }
     });
 
-    router.get('/getReportSalesWindowProducts/:syear/:smonth/:sday/:eyear/:emonth/:eday', async (req, res) => {
+    router.get('/getReportSalesProducts/:syear/:smonth/:sday/:eyear/:emonth/:eday', async (req, res) => {
         try {
             const { syear, smonth, sday, eyear, emonth, eday } = req.params;
     
@@ -227,19 +227,110 @@ module.exports = (query) => {
             const startDate = `${syear}-${smonth.padStart(2, '0')}-${sday.padStart(2, '0')}`;
             const endDate = `${eyear}-${emonth.padStart(2, '0')}-${eday.padStart(2, '0')}`;
     
-            const q = `SELECT p.product_id, CONCAT(p.product_hp, ' HP ', UPPER(p.product_type), ' TYPE ', 
-                                CASE 
-                                    WHEN p.is_inverter = 1 THEN 'INVERTER' 
-                                    WHEN p.is_inverter = 0 THEN 'NON-INVERTER' END, ' (', p.unit_model, ')') AS description, AVG(qp.discounted_price_each) AS average_amount, SUM(qp.quantity*qp.discounted_price_each) AS revenue, SUM(qp.quantity) AS units
-                        FROM md_quotation_products qp
-                        JOIN md_products p ON p.product_id = qp.product_id
-                        JOIN td_quotations q ON q.quotation_id = qp.quotation_id
-                        JOIN td_sales s ON s.sales_id = q.sales_id
-                        WHERE ? <= s.date_created AND s.date_created <= ? AND p.product_type = 'window'
-                        GROUP BY p.product_id
-                        ORDER BY revenue DESC;`;
+            const q = `SELECT *
+            FROM (
+                SELECT
+                    1 AS type,
+                    p.product_id,
+                    CONCAT(
+                        p.product_hp,
+                        ' HP ',
+                        UPPER(p.product_type),
+                        ' TYPE ',
+                        CASE
+                            WHEN p.is_inverter = 1 THEN 'INVERTER'
+                            WHEN p.is_inverter = 0 THEN 'NON-INVERTER'
+                        END,
+                        ' (',
+                        p.unit_model,
+                        ')'
+                    ) AS description,
+                    AVG(qp.discounted_price_each) AS average_amount,
+                    SUM(qp.quantity * qp.discounted_price_each) AS revenue,
+                    SUM(qp.quantity) AS units
+                FROM
+                    md_quotation_products qp
+                JOIN md_products p ON p.product_id = qp.product_id
+                JOIN td_quotations q ON q.quotation_id = qp.quotation_id
+                JOIN td_sales s ON s.sales_id = q.sales_id
+                WHERE
+                    ? <= s.date_created
+                    AND s.date_created <= ?
+                    AND p.product_type = 'window'
+                GROUP BY
+                    p.product_id
+                UNION ALL
+                SELECT
+                    2 AS type,
+                    p.product_id,
+                    CONCAT(
+                        p.product_hp,
+                        ' HP ',
+                        UPPER(p.product_type),
+                        ' TYPE ',
+                        CASE
+                            WHEN p.is_inverter = 1 THEN 'INVERTER'
+                            WHEN p.is_inverter = 0 THEN 'NON-INVERTER'
+                        END,
+                        ' (',
+                        p.unit_model,
+                        ')'
+                    ) AS description,
+                    AVG(qp.discounted_price_each) AS average_amount,
+                    SUM(qp.quantity * qp.discounted_price_each) AS revenue,
+                    SUM(qp.quantity) AS units
+                FROM
+                    md_quotation_products qp
+                JOIN md_products p ON p.product_id = qp.product_id
+                JOIN td_quotations q ON q.quotation_id = qp.quotation_id
+                JOIN td_sales s ON s.sales_id = q.sales_id
+                WHERE
+                    ? <= s.date_created
+                    AND s.date_created <= ?
+                    AND p.product_type = 'split'
+                GROUP BY
+                    p.product_id
+                UNION ALL
+                SELECT
+                    3 AS type,
+                    p.parts_id,
+                    CONCAT(p.description, ' (', p.name, ')') AS description,
+                    AVG(qp.discounted_price_each) AS average_amount,
+                    SUM(qp.quantity * qp.discounted_price_each) AS revenue,
+                    SUM(qp.quantity) AS units
+                FROM
+                    md_quotation_parts qp
+                JOIN md_parts p ON p.parts_id = qp.parts_id
+                JOIN td_quotations q ON q.quotation_id = qp.quotation_id
+                JOIN td_sales s ON s.sales_id = q.sales_id
+                WHERE
+                    ? <= s.date_created
+                    AND s.date_created <= ?
+                GROUP BY
+                    p.parts_id
+                UNION ALL
+                SELECT
+                    4 AS type,
+                    p.services_id,
+                    p.description,
+                    AVG(qp.discounted_price_each) AS average_amount,
+                    SUM(qp.quantity * qp.discounted_price_each) AS revenue,
+                    SUM(qp.quantity) AS units
+                FROM
+                    md_quotation_services qp
+                JOIN md_services p ON p.services_id = qp.services_id
+                JOIN td_quotations q ON q.quotation_id = qp.quotation_id
+                JOIN td_sales s ON s.sales_id = q.sales_id
+                WHERE
+                    ? <= s.date_created
+                    AND s.date_created <= ?
+                GROUP BY
+                    p.services_id
+            ) AS combined_data
+            ORDER BY type, revenue DESC
+            `;
     
-            const data = await query(q, [startDate, endDate]);
+            const data = await query(q, [startDate, endDate,startDate, endDate, startDate, endDate, startDate, endDate]);
             console.log(data);
             res.send(data);
         } catch (error) {
@@ -248,87 +339,6 @@ module.exports = (query) => {
         }
     });
 
-    router.get('/getReportSalesSplitProducts/:syear/:smonth/:sday/:eyear/:emonth/:eday', async (req, res) => {
-        try {
-            const { syear, smonth, sday, eyear, emonth, eday } = req.params;
-    
-            // Format the start and end dates for SQL query
-            const startDate = `${syear}-${smonth.padStart(2, '0')}-${sday.padStart(2, '0')}`;
-            const endDate = `${eyear}-${emonth.padStart(2, '0')}-${eday.padStart(2, '0')}`;
-    
-            const q = `SELECT p.product_id, CONCAT(p.product_hp, ' HP ', UPPER(p.product_type), ' TYPE ', 
-                                CASE 
-                                    WHEN p.is_inverter = 1 THEN 'INVERTER' 
-                                    WHEN p.is_inverter = 0 THEN 'NON-INVERTER' END, ' (', p.unit_model, ')') AS description, AVG(qp.discounted_price_each) AS average_amount, SUM(qp.quantity*qp.discounted_price_each) AS revenue, SUM(qp.quantity) AS units
-                        FROM md_quotation_products qp
-                        JOIN md_products p ON p.product_id = qp.product_id
-                        JOIN td_quotations q ON q.quotation_id = qp.quotation_id
-                        JOIN td_sales s ON s.sales_id = q.sales_id
-                        WHERE ? <= s.date_created AND s.date_created <= ? AND p.product_type = 'split'
-                        GROUP BY p.product_id
-                        ORDER BY revenue DESC;`;
-    
-            const data = await query(q, [startDate, endDate]);
-            console.log(data);
-            res.send(data);
-        } catch (error) {
-            console.error('Error: ', error);
-            throw error;
-        }
-    });
-
-    router.get('/getReportSalesParts/:syear/:smonth/:sday/:eyear/:emonth/:eday', async (req, res) => {
-        try {
-            const { syear, smonth, sday, eyear, emonth, eday } = req.params;
-    
-            // Format the start and end dates for SQL query
-            const startDate = `${syear}-${smonth.padStart(2, '0')}-${sday.padStart(2, '0')}`;
-            const endDate = `${eyear}-${emonth.padStart(2, '0')}-${eday.padStart(2, '0')}`;
-    
-            const q = `SELECT p.parts_id, CONCAT(p.description, ' (', p.name, ')') AS description, AVG(qp.discounted_price_each) AS average_amount, SUM(qp.quantity*qp.discounted_price_each) AS revenue, SUM(qp.quantity) AS units
-                        FROM md_quotation_parts qp
-                        JOIN md_parts p ON p.parts_id = qp.parts_id
-                        JOIN td_quotations q ON q.quotation_id = qp.quotation_id
-                        JOIN td_sales s ON s.sales_id = q.sales_id
-                        WHERE ? <= s.date_created AND s.date_created <= ?
-                        GROUP BY p.parts_id
-                        ORDER BY revenue DESC;`;
-    
-            const data = await query(q, [startDate, endDate]);
-            console.log(data);
-            res.send(data);
-        } catch (error) {
-            console.error('Error: ', error);
-            throw error;
-        }
-    });
-
-    router.get('/getReportSalesServices/:syear/:smonth/:sday/:eyear/:emonth/:eday', async (req, res) => {
-        try {
-            const { syear, smonth, sday, eyear, emonth, eday } = req.params;
-    
-            // Format the start and end dates for SQL query
-            const startDate = `${syear}-${smonth.padStart(2, '0')}-${sday.padStart(2, '0')}`;
-            const endDate = `${eyear}-${emonth.padStart(2, '0')}-${eday.padStart(2, '0')}`;
-    
-            const q = `SELECT p.services_id, p.description, AVG(qp.discounted_price_each) AS average_amount, SUM(qp.quantity*qp.discounted_price_each) AS revenue, SUM(qp.quantity) AS units
-                            FROM md_quotation_services qp
-                            JOIN md_services p ON p.services_id = qp.services_id
-                            JOIN td_quotations q ON q.quotation_id = qp.quotation_id
-                            JOIN td_sales s ON s.sales_id = q.sales_id
-                            WHERE ? <= s.date_created AND s.date_created <= ?
-                            GROUP BY p.services_id
-                            ORDER BY revenue DESC;`;
-    
-            const data = await query(q, [startDate, endDate]);
-            console.log(data);
-            res.send(data);
-        } catch (error) {
-            console.error('Error: ', error);
-            throw error;
-        }
-    });
-    
     
     
 

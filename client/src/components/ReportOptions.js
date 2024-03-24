@@ -1,25 +1,77 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaDownload, FaCheck} from 'react-icons/fa';
 import { Row, Col, Form, CardBody } from 'react-bootstrap';
 import '../index.css';
-import PreviewReport from './Reports/SalesReport';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const ReportOptions = () => {
-
+    const navigate = useNavigate()
     const [validated, setValidated] = useState(false);
-    const [preview, setPreview] = useState(false);
+    const [reportOption, setReportOption] = useState({
+        report_type: '',
+        start_date: null,
+        end_date: null
+    });
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const handleSubmit = (event) => {
-    event.preventDefault();
-      const form = event.currentTarget;
-      if (form.checkValidity() === false) {
-        event.stopPropagation();
-      } else {
-        setPreview(true);
-      }
-  
-      setValidated(true);
+    useEffect(() => {
+        console.log(reportOption)
+    }, [reportOption]);
+
+
+    const handleChange = (event) => {
+        const { id, value } = event.target;
+        if (id === 'startdate') {
+            setReportOption(prevState => ({
+                ...prevState,
+                start_date: value
+            }));
+        } else if (id === 'enddate') {
+            setReportOption(prevState => ({
+                ...prevState,
+                end_date: value
+            }));
+        } else {
+            setReportOption(prevState => ({
+                ...prevState,
+                [id]: value
+            }));
+        }
+    };
+    
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setErrorMessage(null);
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.stopPropagation();
+            setValidated(true);
+        } else {
+            
+            const { start_date, end_date } = reportOption;
+            const [syear, smonth, sday] = start_date.split('-');
+            const [eyear, emonth, eday] = end_date.split('-');
+            try {
+                const response = await axios.get(`http://localhost:4000/api/getReportSalesTotal/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}`);
+
+                if (new Date(start_date) > new Date(end_date)) {
+                    setErrorMessage("*Invalid Date Range");
+                    setValidated(false);
+                } else if (response.data[0].total === null) {
+                    setErrorMessage('*Insufficient Data');
+                    setValidated(false);
+                } else {
+                    navigate(`/viewreport/${reportOption.report_type}/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}`);
+                }
+                
+            } catch (error) {
+                console.error('Error fetching report:', error);
+                setErrorMessage('An error occurred while fetching the report.');
+            }
+        }
     };
 
     return (
@@ -35,9 +87,9 @@ const ReportOptions = () => {
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Row className="mt-3">
                     <Col lg="12">
-                        <Form.Group controlId="reporttype">
+                        <Form.Group controlId="report_type">
                             <Form.Label>Report Type</Form.Label>
-                            <Form.Control as="select" required>
+                            <Form.Control as="select" required onChange={handleChange}>
                                 <option value=""> Select </option>
                                 <option value="1"> Sales Report</option>
                                 <option value="2"> Quotation Conversion Status Report </option>
@@ -55,7 +107,7 @@ const ReportOptions = () => {
                     <Col lg="6">
                         <Form.Group controlId="startdate">
                             <Form.Label>Start Date</Form.Label>
-                            <Form.Control type="date" required/>
+                            <Form.Control type="date" required onChange={handleChange}/>
                             <Form.Control.Feedback type="invalid">
                                 Please choose a valid date.
                             </Form.Control.Feedback>
@@ -64,7 +116,7 @@ const ReportOptions = () => {
                     <Col lg="6">
                         <Form.Group controlId="enddate">
                             <Form.Label>End Date</Form.Label>
-                            <Form.Control type="date" required/>
+                            <Form.Control type="date" required onChange={handleChange}/>
                             <Form.Control.Feedback type="invalid">
                                 Please choose a valid date.
                             </Form.Control.Feedback>
@@ -72,8 +124,18 @@ const ReportOptions = () => {
                     </Col>
                 </Row>
 
+                {errorMessage ? 
+                <Row className="mt-2">
+                    <Col lg="6"/>
+                    <Col lg="6" className="text-center">
+                        <span style={{ color: "#FF0000" }}> {errorMessage} </span> 
+                    </Col>
+                </Row> 
+            : null}
 
-                <Row className="mt-5">
+
+
+                <Row className="mt-3" >
                     <Col lg="6"/>
                     <Col lg="6">
                         <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
