@@ -581,5 +581,52 @@ module.exports = (query) => {
         }
     })
 
+    /**
+     * Return true if a given technician from input: technician_id is available 
+     * (x) mins before first closest schedule from input and (y) mins after the next closest schedule
+     */
+    router.get('/getTechnicianAvailability/:id', async (req, res) => {
+        const { id } = req.params
+        // collect non-cancelled technician schedules from different table
+        // (note: only include records that are active)
+
+        // [O] ocular (note that if the associated quotation_client_id has both a quotation id associated then it is excluded: ongoing oculars only)
+        const oq = `SELECT DISTINCT o.ocular_id, o.ocular_date
+                    FROM td_quotations q
+                    LEFT JOIN md_quotation_clients qc ON q.quotation_client_id 
+                    LEFT JOIN td_oculars o ON qc.ocular_id = o.ocular_id
+                    WHERE qc.ocular_id IS NOT NULL
+                    AND q.quotation_id NOT IN (SELECT quotation_client_id FROM md_quotation_clients)
+                    AND o.is_active = 1
+                    AND o.technician_id = ?;`
+        const or = await query(oq, [id])
+
+        // [Q] service schedule
+        const qssq = `SELECT service_date
+                        FROM md_service_schedules ss
+                        JOIN td_quotations q ON ss.quotation_id = q.quotation_id
+                        WHERE q.is_cancelled = 0
+                        AND ss.is_completed = 0
+                        AND technician_id = ?;`
+        const qssr = await query(qssq, [id])
+
+        // [Q] installation schedule
+        const qiq = `SELECT start_installation_date
+                    FROM md_installations i
+                    JOIN td_quotations q ON i.quotation_id = q.quotation_id
+                    WHERE q.is_cancelled = 0
+                    AND i.is_installed = 0
+                    AND technician_id = ?;`
+        const qir = await query(qiq, [id])
+        
+        // [W] inspection schedule
+        // [W] warranty schedule
+
+        // insert each query outputs into a set, and return as array
+        // iterate over the array and for each index i, compare if input x satisfies [i]+a < x < [i+1]+b
+
+        res.send(or)
+    })
+
     return router;
 }
