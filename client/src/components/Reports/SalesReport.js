@@ -6,7 +6,7 @@ import logo from '../../assets/gree_documentlogo.png';
 import Spinner from 'react-bootstrap/Spinner';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { useNavigate, Link, useParams  } from 'react-router-dom';
+import { useNavigate, NavLink, useParams  } from 'react-router-dom';
 import axios from 'axios';
 
 const SalesReport = () => {
@@ -253,7 +253,16 @@ const SalesReport = () => {
                                 </tr>
                                 {item.filter(product => product.type === 1).map((product, index) => (
                                     <tr key={index}>
-                                        <td style={{ padding: '3px', border: '1px solid black', width: '50%' }}>{product.description}</td>
+                                        <td style={{ padding: '3px', border: '1px solid black', width: '50%' }}>
+                                            <NavLink style={{ textDecoration: 'none', color: 'inherit', display: 'block', padding: '3px' }}
+                                                to={`/viewreport/2/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}/${product.product_id}/1`}
+                                                activeStyle={{ backgroundColor: 'lightgray' }}
+                                                onMouseOver={(e) => e.target.style.backgroundColor = 'lightgray'}
+                                                onMouseOut={(e) => e.target.style.backgroundColor = ''}
+                                            >
+                                                {product.description}
+                                            </NavLink>
+                                        </td>
                                         <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '12%' }}>{product.units}</td>
                                         <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '23%' }}>₱ {formatNumber(product.average_amount)}</td>
                                         <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '15%' }}>₱ {formatNumber(product.revenue)}</td>
@@ -278,7 +287,16 @@ const SalesReport = () => {
                                 </tr>
                                 {item.filter(product => product.type === 2).map((product, index) => (
                                     <tr key={index}>
-                                        <td style={{ padding: '3px', border: '1px solid black', width: '50%' }}>{product.description}</td>
+                                        <td style={{ padding: '3px', border: '1px solid black', width: '50%' }}>
+                                            <NavLink style={{ textDecoration: 'none', color: 'inherit', display: 'block', padding: '3px' }}
+                                                to={`/viewreport/2/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}/${product.product_id}/1`}
+                                                activeStyle={{ backgroundColor: 'lightgray' }}
+                                                onMouseOver={(e) => e.target.style.backgroundColor = 'lightgray'}
+                                                onMouseOut={(e) => e.target.style.backgroundColor = ''}
+                                            >
+                                                {product.description}
+                                            </NavLink>
+                                        </td>
                                         <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '12%' }}>{product.units}</td>
                                         <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '23%' }}>₱ {formatNumber(product.average_amount)}</td>
                                         <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '15%' }}>₱ {formatNumber(product.revenue)}</td>
@@ -292,18 +310,27 @@ const SalesReport = () => {
                                 <tr style={{ height: '10px' }}></tr> 
                                 <tr>
                                     <td colSpan="4" style={{ padding: '3px', border: '1px solid black', color: 'white', background: '#082464', textAlign: 'center' }}>
-                                        <strong>Services Rendered Breakdown</strong>
+                                        <strong>AC Parts Breakdown</strong>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style={{ padding: '3px', border: '1px solid black', width: '50%' }}><strong>Service Rendered</strong></td>
+                                    <td style={{ padding: '3px', border: '1px solid black', width: '50%' }}><strong>AC Parts</strong></td>
                                     <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '12%' }}><strong>Units Sold</strong></td>
                                     <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '23%' }}><strong>Average Selling Price</strong></td>
                                     <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '15%' }}><strong>Revenue</strong></td>
                                 </tr>
                                 {item.filter(product => product.type === 3).map((product, index) => (
                                     <tr key={index}>
-                                        <td style={{ padding: '3px', border: '1px solid black', width: '50%' }}>{product.description}</td>
+                                        <td style={{ padding: '3px', border: '1px solid black', width: '50%' }}>
+                                            <NavLink style={{ textDecoration: 'none', color: 'inherit', display: 'block', padding: '3px' }}
+                                                to={`/viewreport/2/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}/${product.product_id}/2`}
+                                                activeStyle={{ backgroundColor: 'lightgray' }}
+                                                onMouseOver={(e) => e.target.style.backgroundColor = 'lightgray'}
+                                                onMouseOut={(e) => e.target.style.backgroundColor = ''}
+                                            >
+                                                {product.description}
+                                            </NavLink>
+                                        </td>
                                         <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '12%' }}>{product.units}</td>
                                         <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '23%' }}>₱ {formatNumber(product.average_amount)}</td>
                                         <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '15%' }}>₱ {formatNumber(product.revenue)}</td>
@@ -318,18 +345,27 @@ const SalesReport = () => {
                                 <tr style={{ height: '10px' }}></tr> 
                                 <tr>
                                     <td colSpan="4" style={{ padding: '3px', border: '1px solid black', color: 'white', background: '#082464', textAlign: 'center' }}>
-                                        <strong>AC Parts Breakdown</strong>
+                                        <strong>Services Rendered Breakdown</strong>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style={{ padding: '3px', border: '1px solid black', width: '50%' }}><strong>AC Parts</strong></td>
+                                    <td style={{ padding: '3px', border: '1px solid black', width: '50%' }}><strong>Service Rendered</strong></td>
                                     <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '12%' }}><strong>Units Sold</strong></td>
                                     <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '23%' }}><strong>Average Selling Price</strong></td>
                                     <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '15%' }}><strong>Revenue</strong></td>
                                 </tr>
                                 {item.filter(product => product.type === 4).map((product, index) => (
                                     <tr key={index}>
-                                        <td style={{ padding: '3px', border: '1px solid black', width: '50%' }}>{product.description}</td>
+                                        <td style={{ padding: '3px', border: '1px solid black', width: '50%' }}>
+                                            <NavLink style={{ textDecoration: 'none', color: 'inherit', display: 'block', padding: '3px' }}
+                                                to={`/viewreport/2/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}/${product.product_id}/1`}
+                                                activeStyle={{ backgroundColor: 'lightgray' }}
+                                                onMouseOver={(e) => e.target.style.backgroundColor = 'lightgray'}
+                                                onMouseOut={(e) => e.target.style.backgroundColor = ''}
+                                            >
+                                                {product.description}
+                                            </NavLink>
+                                        </td>
                                         <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '12%' }}>{product.units}</td>
                                         <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '23%' }}>₱ {formatNumber(product.average_amount)}</td>
                                         <td style={{ padding: '3px', border: '1px solid black', textAlign: 'right', width: '15%' }}>₱ {formatNumber(product.revenue)}</td>

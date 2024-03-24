@@ -61,6 +61,7 @@ function App() {
                     {/* Executive Module */}
                     <Route path="/report" element={<GenerateReport/>}/> 
                     <Route path="/viewreport/:type/:syear/:smonth/:sday/:eyear/:emonth/:eday" element={<ViewReport/>}/>
+                    <Route path="/viewreport/:type/:syear/:smonth/:sday/:eyear/:emonth/:eday/:id/:producttype" element={<ViewReport/>}/>
                     <Route path="/viewexpenses" element={<ViewExpenses/>}/>
                     <Route path="/viewexpensedetails/:id" element={<ViewExpenseDetails/>}/>
                     <Route path="/recordexpenses" element={<RecordExpenses/>}/>
