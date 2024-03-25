@@ -222,14 +222,14 @@ const DetailedSalesReport = () => {
 
     useEffect(() => {
         const splitDataIntoPages = async () => {
-            const itemsPerPage = 19;
+            const itemsPerPage = 16;
             const totalPages = Math.ceil(productData.length / itemsPerPage);
             const pagesArray = Array.from({ length: totalPages }, (_, index) => {
                 let startIndex;
                 let endIndex;
                 if (index === 0) {
                     startIndex = 0;
-                    endIndex = startIndex + itemsPerPage - 3; // Adjust the endIndex for the first page
+                    endIndex = startIndex + itemsPerPage; // Adjust the endIndex for the first page
                 } else {
                     startIndex = (index - 1) * itemsPerPage + (itemsPerPage - 3);
                     endIndex = startIndex + itemsPerPage;
@@ -308,7 +308,7 @@ const DetailedSalesReport = () => {
             });
     
             setLoader(false);
-            doc.save('sales_report.pdf');
+            doc.save(`${item[0].description}_sales_report_${formatDate(reportDetails.date_generated)}.pdf`);
         });
     };
     

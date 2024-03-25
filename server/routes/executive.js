@@ -339,6 +339,312 @@ module.exports = (query) => {
         }
     });
 
+
+    //Detailed Sales Report
+
+
+    router.get('/getDetailedReportSalesProductsTotal/:id/:syear/:smonth/:sday/:eyear/:emonth/:eday', async (req, res) => {
+        try {
+            const { id, syear, smonth, sday, eyear, emonth, eday } = req.params;
+    
+            // Format the start and end dates for SQL query
+            const startDate = `${syear}-${smonth.padStart(2, '0')}-${sday.padStart(2, '0')}`;
+            const endDate = `${eyear}-${emonth.padStart(2, '0')}-${eday.padStart(2, '0')}`;
+    
+            const q = `SELECT SUM(qp.discounted_price_each*qp.quantity) AS total
+                        FROM td_quotations q
+                        JOIN td_sales s ON q.sales_id = s.sales_id
+                        JOIN md_quotation_products qp ON q.quotation_id = qp.quotation_id
+                        WHERE
+                            ? <= s.date_created
+                            AND s.date_created <= ?
+                            AND qp.product_id = ?
+                        `;
+    
+            const data = await query(q, [startDate, endDate, id]);
+            console.log(data);
+            res.send(data);
+        } catch (error) {
+            console.error('Error: ', error);
+            throw error;
+        }
+    });
+
+    router.get('/getDetailedReportSalesProducts/:id/:syear/:smonth/:sday/:eyear/:emonth/:eday', async (req, res) => {
+        try {
+            const { id, syear, smonth, sday, eyear, emonth, eday } = req.params;
+    
+            // Format the start and end dates for SQL query
+            const startDate = `${syear}-${smonth.padStart(2, '0')}-${sday.padStart(2, '0')}`;
+            const endDate = `${eyear}-${emonth.padStart(2, '0')}-${eday.padStart(2, '0')}`;
+    
+            const q = `SELECT
+                            s.sales_id,
+                            s.date_created,
+                            p.product_id,
+                            CONCAT(
+                                p.product_hp,
+                                ' HP ',
+                                UPPER(p.product_type),
+                                ' TYPE ',
+                                CASE
+                                    WHEN p.is_inverter = 1 THEN 'INVERTER'
+                                    WHEN p.is_inverter = 0 THEN 'NON-INVERTER'
+                                END,
+                                ' (',
+                                p.unit_model,
+                                ')'
+                            ) AS description,
+                            qp.discounted_price_each,
+                            (qp.quantity * qp.discounted_price_each) AS revenue,
+                            qp.quantity
+                        FROM
+                            md_quotation_products qp
+                        JOIN md_products p ON p.product_id = qp.product_id
+                        JOIN td_quotations q ON q.quotation_id = qp.quotation_id
+                        JOIN td_sales s ON s.sales_id = q.sales_id
+                        WHERE
+                            ? <= s.date_created
+                            AND s.date_created <= ?
+                            AND p.product_id = ?
+            `;
+    
+            const data = await query(q, [startDate, endDate, id]);
+            console.log(data);
+            res.send(data);
+        } catch (error) {
+            console.error('Error: ', error);
+            throw error;
+        }
+    });
+
+    router.get('/getDetailedReportSalesPartsTotal/:id/:syear/:smonth/:sday/:eyear/:emonth/:eday', async (req, res) => {
+        try {
+            const { id, syear, smonth, sday, eyear, emonth, eday } = req.params;
+    
+            // Format the start and end dates for SQL query
+            const startDate = `${syear}-${smonth.padStart(2, '0')}-${sday.padStart(2, '0')}`;
+            const endDate = `${eyear}-${emonth.padStart(2, '0')}-${eday.padStart(2, '0')}`;
+    
+            const q = `SELECT SUM(qp.discounted_price_each*qp.quantity) AS total
+                        FROM td_quotations q
+                        JOIN td_sales s ON q.sales_id = s.sales_id
+                        JOIN md_quotation_parts qp ON q.quotation_id = qp.quotation_id
+                        WHERE
+                            ? <= s.date_created
+                            AND s.date_created <= ?
+                            AND qp.parts_id = ?
+                        `;
+    
+            const data = await query(q, [startDate, endDate, id]);
+            console.log(data);
+            res.send(data);
+        } catch (error) {
+            console.error('Error: ', error);
+            throw error;
+        }
+    });
+
+    router.get('/getDetailedReportSalesParts/:id/:syear/:smonth/:sday/:eyear/:emonth/:eday', async (req, res) => {
+        try {
+            const { id, syear, smonth, sday, eyear, emonth, eday } = req.params;
+    
+            // Format the start and end dates for SQL query
+            const startDate = `${syear}-${smonth.padStart(2, '0')}-${sday.padStart(2, '0')}`;
+            const endDate = `${eyear}-${emonth.padStart(2, '0')}-${eday.padStart(2, '0')}`;
+    
+            const q = `SELECT
+                            s.sales_id,
+                            s.date_created,
+                            p.parts_id,
+                            CONCAT(
+                                p.description, ' (', p.name, ')'
+                            ) AS description,
+                            qp.discounted_price_each,
+                            (qp.quantity * qp.discounted_price_each) AS revenue,
+                            qp.quantity
+                        FROM
+                            md_quotation_parts qp
+                        JOIN md_parts p ON p.parts_id = qp.parts_id
+                        JOIN td_quotations q ON q.quotation_id = qp.quotation_id
+                        JOIN td_sales s ON s.sales_id = q.sales_id
+                        WHERE
+                            ? <= s.date_created
+                            AND s.date_created <= ?
+                            AND p.parts_id = ?
+            `;
+    
+            const data = await query(q, [startDate, endDate, id]);
+            console.log(data);
+            res.send(data);
+        } catch (error) {
+            console.error('Error: ', error);
+            throw error;
+        }
+    });
+
+    router.get('/getDetailedReportSalesServicesTotal/:id/:syear/:smonth/:sday/:eyear/:emonth/:eday', async (req, res) => {
+        try {
+            const { id, syear, smonth, sday, eyear, emonth, eday } = req.params;
+    
+            // Format the start and end dates for SQL query
+            const startDate = `${syear}-${smonth.padStart(2, '0')}-${sday.padStart(2, '0')}`;
+            const endDate = `${eyear}-${emonth.padStart(2, '0')}-${eday.padStart(2, '0')}`;
+    
+            const q = `SELECT SUM(qp.discounted_price_each*qp.quantity) AS total
+                        FROM td_quotations q
+                        JOIN td_sales s ON q.sales_id = s.sales_id
+                        JOIN md_quotation_services qp ON q.quotation_id = qp.quotation_id
+                        WHERE
+                            ? <= s.date_created
+                            AND s.date_created <= ?
+                            AND qp.services_id = ?
+                        `;
+    
+            const data = await query(q, [startDate, endDate, id]);
+            console.log(data);
+            res.send(data);
+        } catch (error) {
+            console.error('Error: ', error);
+            throw error;
+        }
+    });
+
+    router.get('/getDetailedReportSalesServices/:id/:syear/:smonth/:sday/:eyear/:emonth/:eday', async (req, res) => {
+        try {
+            const { id, syear, smonth, sday, eyear, emonth, eday } = req.params;
+    
+            // Format the start and end dates for SQL query
+            const startDate = `${syear}-${smonth.padStart(2, '0')}-${sday.padStart(2, '0')}`;
+            const endDate = `${eyear}-${emonth.padStart(2, '0')}-${eday.padStart(2, '0')}`;
+    
+            const q = `SELECT
+                            s.sales_id,
+                            s.date_created,
+                            p.services_id,
+                            p.description,
+                            qp.discounted_price_each,
+                            (qp.quantity * qp.discounted_price_each) AS revenue,
+                            qp.quantity
+                        FROM
+                            md_quotation_services qp
+                        JOIN md_services p ON p.services_id = qp.services_id
+                        JOIN td_quotations q ON q.quotation_id = qp.quotation_id
+                        JOIN td_sales s ON s.sales_id = q.sales_id
+                        WHERE
+                            ? <= s.date_created
+                            AND s.date_created <= ?
+                            AND p.services_id = ?
+            `;
+    
+            const data = await query(q, [startDate, endDate, id]);
+            console.log(data);
+            res.send(data);
+        } catch (error) {
+            console.error('Error: ', error);
+            throw error;
+        }
+    });
+
+    //Quotation Conversion Report
+
+    router.get('/getQuotationConversionReport/:syear/:smonth/:sday/:eyear/:emonth/:eday', async (req, res) => {
+        try {
+            const { syear, smonth, sday, eyear, emonth, eday } = req.params;
+    
+            // Format the start and end dates for SQL query
+            const startDate = `${syear}-${smonth.padStart(2, '0')}-${sday.padStart(2, '0')}`;
+            const endDate = `${eyear}-${emonth.padStart(2, '0')}-${eday.padStart(2, '0')}`;
+    
+            const q = `SELECT *
+            FROM (
+                SELECT 1 AS type, date_created, quotation_id, SUM(total) AS revenue
+                FROM (
+                    SELECT q.quotation_id, q.date_created, (qp.discounted_price_each*qp.quantity) AS total
+                    FROM td_quotations q
+                    JOIN td_sales s ON q.sales_id = s.sales_id
+                    JOIN md_quotation_parts qp ON q.quotation_id = qp.quotation_id
+                    WHERE q.date_created >= ? AND q.date_created <= ?
+                    
+                    UNION ALL
+                    
+                    SELECT q.quotation_id, q.date_created, (qp.discounted_price_each*qp.quantity) AS total
+                    FROM td_quotations q
+                    JOIN td_sales s ON q.sales_id = s.sales_id
+                    JOIN md_quotation_products qp ON q.quotation_id = qp.quotation_id
+                    WHERE q.date_created >= ? AND q.date_created <= ?
+                    
+                    UNION ALL
+                    
+                    SELECT q.quotation_id, q.date_created, (qs.discounted_price_each*qs.quantity) AS total
+                    FROM td_quotations q
+                    JOIN td_sales s ON q.sales_id = s.sales_id
+                    JOIN md_quotation_services qs ON q.quotation_id = qs.quotation_id
+                    WHERE q.date_created >= ? AND q.date_created <= ?
+                ) AS combined_data
+                GROUP BY quotation_id, date_created
+
+                UNION ALL
+            
+                SELECT 2 AS type, date_created, quotation_id, SUM(total) AS revenue
+                FROM (
+                    SELECT q.quotation_id, q.date_created, (qp.discounted_price_each*qp.quantity) AS total
+                    FROM td_quotations q
+                    JOIN md_quotation_parts qp ON q.quotation_id = qp.quotation_id
+                    WHERE q.sales_id IS null AND q.date_cancelled IS null AND q.date_created >= ? AND q.date_created <= ?
+                    
+                    UNION ALL
+                    
+                    SELECT q.quotation_id, q.date_created, (qp.discounted_price_each*qp.quantity) AS total
+                    FROM td_quotations q
+                    JOIN md_quotation_products qp ON q.quotation_id = qp.quotation_id
+                    WHERE q.sales_id IS null AND q.date_cancelled IS null AND q.date_created >= ? AND q.date_created <= ?
+                    
+                    UNION ALL
+                    
+                    SELECT q.quotation_id, q.date_created, (qs.discounted_price_each*qs.quantity) AS total
+                    FROM td_quotations q
+                    JOIN md_quotation_services qs ON q.quotation_id = qs.quotation_id
+                    WHERE q.sales_id IS null AND q.date_cancelled IS null AND q.date_created >= ? AND q.date_created <= ?
+                ) AS combined_data
+                GROUP BY quotation_id, date_created
+            
+                UNION ALL
+            
+                SELECT 3 AS type, date_created, quotation_id, SUM(total) AS revenue
+                FROM (
+                    SELECT q.quotation_id, q.date_created, (qp.discounted_price_each*qp.quantity) AS total
+                    FROM td_quotations q
+                    JOIN md_quotation_parts qp ON q.quotation_id = qp.quotation_id
+                    WHERE q.date_cancelled IS NOT null AND q.date_created >= ? AND q.date_created <= ?
+                    
+                    UNION ALL
+                    
+                    SELECT q.quotation_id, q.date_created, (qp.discounted_price_each*qp.quantity) AS total
+                    FROM td_quotations q
+                    JOIN md_quotation_products qp ON q.quotation_id = qp.quotation_id
+                    WHERE q.date_cancelled IS NOT null AND q.date_created >= ? AND q.date_created <= ?
+                    
+                    UNION ALL
+                    
+                    SELECT q.quotation_id, q.date_created, (qs.discounted_price_each*qs.quantity) AS total
+                    FROM td_quotations q
+                    JOIN md_quotation_services qs ON q.quotation_id = qs.quotation_id
+                    WHERE q.date_cancelled IS NOT null AND q.date_created >= ? AND q.date_created <= ?
+                ) AS combined_data
+                GROUP BY quotation_id, date_created
+            ) AS combined_data
+            ORDER BY type, date_created;
+            `;
+    
+            const data = await query(q, [startDate, endDate, startDate, endDate, startDate, endDate,startDate, endDate, startDate, endDate, startDate, endDate, startDate, endDate, startDate, endDate, startDate, endDate]);
+            console.log(data);
+            res.send(data);
+        } catch (error) {
+            console.error('Error: ', error);
+            throw error;
+        }
+    });
     
     
 

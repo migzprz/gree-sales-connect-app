@@ -55,16 +55,31 @@ const ReportOptions = () => {
             const [syear, smonth, sday] = start_date.split('-');
             const [eyear, emonth, eday] = end_date.split('-');
             try {
-                const response = await axios.get(`http://localhost:4000/api/getReportSalesTotal/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}`);
 
-                if (new Date(start_date) > new Date(end_date)) {
-                    setErrorMessage("*Invalid Date Range");
-                    setValidated(false);
-                } else if (response.data[0].total === null) {
-                    setErrorMessage('*Insufficient Data');
-                    setValidated(false);
-                } else {
-                    navigate(`/viewreport/${reportOption.report_type}/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}`);
+                if(reportOption.report_type === '1'){
+                    const response = await axios.get(`http://localhost:4000/api/getReportSalesTotal/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}`);
+
+                    if (new Date(start_date) > new Date(end_date)) {
+                        setErrorMessage("*Invalid Date Range");
+                        setValidated(false);
+                    } else if (response.data[0].total === null) {
+                        setErrorMessage('*Insufficient Data');
+                        setValidated(false);
+                    } else {
+                        navigate(`/viewreport/${reportOption.report_type}/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}`);
+                    }
+                } else if(reportOption.report_type === '3'){
+                    const response = await axios.get(`http://localhost:4000/api/getQuotationConversionReport/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}`);
+
+                    if (new Date(start_date) > new Date(end_date)) {
+                        setErrorMessage("*Invalid Date Range");
+                        setValidated(false);
+                    } else if (response.data.length === 0) {
+                        setErrorMessage('*Insufficient Data');
+                        setValidated(false);
+                    } else {
+                        navigate(`/viewreport/${reportOption.report_type}/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}`);
+                    }
                 }
                 
             } catch (error) {
@@ -92,7 +107,7 @@ const ReportOptions = () => {
                             <Form.Control as="select" required onChange={handleChange}>
                                 <option value=""> Select </option>
                                 <option value="1"> Sales Report</option>
-                                <option value="2"> Quotation Conversion Status Report </option>
+                                <option value="3"> Quotation Conversion Status Report </option>
                                 <option value="3"> Warranty Claims Report </option>
                                 <option value="4"> Profit Statement </option>
                             </Form.Control>
@@ -135,7 +150,7 @@ const ReportOptions = () => {
 
 
 
-                <Row className="mt-3" >
+                <Row className="mt-1" >
                     <Col lg="6"/>
                     <Col lg="6">
                         <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>

@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar";
 import { useParams  } from 'react-router-dom';
 import '../index.css';
 import DetailedSalesReport from "../components/Reports/DetailedSalesReport";
+import QuotationConversionReport from "../components/Reports/QuotationConversionReport";
 
 const ViewReport = () => {
     const { type } = useParams();
@@ -17,6 +18,8 @@ const ViewReport = () => {
                 <SalesReport/>
                 :type === '2' ?
                 <DetailedSalesReport/>
+                :type === '3' ?
+                <QuotationConversionReport/>
                 :null}
             </div>
         </>

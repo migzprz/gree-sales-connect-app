@@ -94,14 +94,14 @@ const SalesReport = () => {
 
     useEffect(() => {
         const splitDataIntoPages = async () => {
-            const itemsPerPage = 19;
+            const itemsPerPage = 16;
             const totalPages = Math.ceil(productData.length / itemsPerPage);
             const pagesArray = Array.from({ length: totalPages }, (_, index) => {
                 let startIndex;
                 let endIndex;
                 if (index === 0) {
                     startIndex = 0;
-                    endIndex = startIndex + itemsPerPage - 3; // Adjust the endIndex for the first page
+                    endIndex = startIndex + itemsPerPage; // Adjust the endIndex for the first page
                 } else {
                     startIndex = (index - 1) * itemsPerPage + (itemsPerPage - 3);
                     endIndex = startIndex + itemsPerPage;
@@ -180,7 +180,7 @@ const SalesReport = () => {
             });
     
             setLoader(false);
-            doc.save('sales_report.pdf');
+            doc.save(`sales_report_${formatDate(reportDetails.date_generated)}.pdf`);
         });
     };
     
@@ -358,7 +358,7 @@ const SalesReport = () => {
                                     <tr key={index}>
                                         <td style={{ padding: '3px', border: '1px solid black', width: '50%' }}>
                                             <NavLink style={{ textDecoration: 'none', color: 'inherit', display: 'block', padding: '3px' }}
-                                                to={`/viewreport/2/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}/${product.product_id}/1`}
+                                                to={`/viewreport/2/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}/${product.product_id}/3`}
                                                 activeStyle={{ backgroundColor: 'lightgray' }}
                                                 onMouseOver={(e) => e.target.style.backgroundColor = 'lightgray'}
                                                 onMouseOut={(e) => e.target.style.backgroundColor = ''}
