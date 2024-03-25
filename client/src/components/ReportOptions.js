@@ -80,6 +80,18 @@ const ReportOptions = () => {
                     } else {
                         navigate(`/viewreport/${reportOption.report_type}/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}`);
                     }
+                } else if(reportOption.report_type === '4'){
+                    const response = await axios.get(`http://localhost:4000/api/getWarrantyClaimsReport/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}`);
+
+                    if (new Date(start_date) > new Date(end_date)) {
+                        setErrorMessage("*Invalid Date Range");
+                        setValidated(false);
+                    } else if (response.data.length === 0) {
+                        setErrorMessage('*Insufficient Data');
+                        setValidated(false);
+                    } else {
+                        navigate(`/viewreport/${reportOption.report_type}/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}`);
+                    }
                 }
                 
             } catch (error) {
@@ -108,8 +120,8 @@ const ReportOptions = () => {
                                 <option value=""> Select </option>
                                 <option value="1"> Sales Report</option>
                                 <option value="3"> Quotation Conversion Status Report </option>
-                                <option value="3"> Warranty Claims Report </option>
-                                <option value="4"> Profit Statement </option>
+                                <option value="4"> Warranty Claims Report </option>
+                                <option value="5"> Profit Statement </option>
                             </Form.Control>
                             <Form.Control.Feedback type="invalid">
                                 Please choose a report type.
@@ -118,7 +130,7 @@ const ReportOptions = () => {
                     </Col>
                 </Row>
 
-                <Row className="mt-3">
+                <Row className="mt-3 mb-3">
                     <Col lg="6">
                         <Form.Group controlId="startdate">
                             <Form.Label>Start Date</Form.Label>

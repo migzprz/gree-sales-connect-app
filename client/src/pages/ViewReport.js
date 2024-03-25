@@ -5,6 +5,7 @@ import { useParams  } from 'react-router-dom';
 import '../index.css';
 import DetailedSalesReport from "../components/Reports/DetailedSalesReport";
 import QuotationConversionReport from "../components/Reports/QuotationConversionReport";
+import WarrantyClaimsReport from "../components/Reports/WarrantyClaimsReport";
 
 const ViewReport = () => {
     const { type } = useParams();
@@ -20,6 +21,8 @@ const ViewReport = () => {
                 <DetailedSalesReport/>
                 :type === '3' ?
                 <QuotationConversionReport/>
+                :type === '4' ?
+                <WarrantyClaimsReport/>
                 :null}
             </div>
         </>

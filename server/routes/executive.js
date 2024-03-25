@@ -645,6 +645,72 @@ module.exports = (query) => {
             throw error;
         }
     });
+
+    //Warranty Claims Report
+
+    router.get('/getWarrantyClaimsReport/:syear/:smonth/:sday/:eyear/:emonth/:eday', async (req, res) => {
+        try {
+            const { syear, smonth, sday, eyear, emonth, eday } = req.params;
+    
+            // Format the start and end dates for SQL query
+            const startDate = `${syear}-${smonth.padStart(2, '0')}-${sday.padStart(2, '0')}`;
+            const endDate = `${eyear}-${emonth.padStart(2, '0')}-${eday.padStart(2, '0')}`;
+    
+            const q = `SELECT *
+            FROM (
+            SELECT 1 AS type, q.sales_id, w.date_created, 
+                    CONCAT(
+                        p.product_hp,
+                        ' HP ',
+                        UPPER(p.product_type),
+                        ' TYPE ',
+                        CASE
+                            WHEN p.is_inverter = 1 THEN 'INVERTER'
+                            WHEN p.is_inverter = 0 THEN 'NON-INVERTER'
+                        END,
+                        ' (',
+                        p.unit_model,
+                        ')'
+                    ) AS description, wcu.issue
+            FROM td_warranty_claimed_units wcu
+            JOIN td_warranty w ON w.warranty_id = wcu.warranty_id
+            JOIN td_quotations q ON q.quotation_id = w.quotation_id
+            JOIN md_products p ON wcu.unit_id = p.product_id
+            WHERE w.is_completed = 1 AND  ? <= w.date_created AND w.date_created <= ?
+            
+            UNION ALL
+            
+            SELECT 2 AS type, q.sales_id, w.date_created, 
+                    CONCAT(
+                        p.product_hp,
+                        ' HP ',
+                        UPPER(p.product_type),
+                        ' TYPE ',
+                        CASE
+                            WHEN p.is_inverter = 1 THEN 'INVERTER'
+                            WHEN p.is_inverter = 0 THEN 'NON-INVERTER'
+                        END,
+                        ' (',
+                        p.unit_model,
+                        ')'
+                    ) AS description, wcu.issue
+            FROM td_warranty_claimed_units wcu
+            JOIN td_warranty w ON w.warranty_id = wcu.warranty_id
+            JOIN td_quotations q ON q.quotation_id = w.quotation_id
+            JOIN md_products p ON wcu.unit_id = p.product_id
+            WHERE w.is_completed = 0 AND ? <= w.date_created AND w.date_created <= ?
+            ) AS combined_data
+            ORDER BY type, date_created, sales_id, description, issue
+            `;
+    
+            const data = await query(q, [startDate, endDate, startDate, endDate]);
+            console.log(data);
+            res.send(data);
+        } catch (error) {
+            console.error('Error: ', error);
+            throw error;
+        }
+    });
     
     
 

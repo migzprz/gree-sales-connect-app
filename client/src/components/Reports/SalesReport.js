@@ -97,15 +97,8 @@ const SalesReport = () => {
             const itemsPerPage = 16;
             const totalPages = Math.ceil(productData.length / itemsPerPage);
             const pagesArray = Array.from({ length: totalPages }, (_, index) => {
-                let startIndex;
-                let endIndex;
-                if (index === 0) {
-                    startIndex = 0;
-                    endIndex = startIndex + itemsPerPage; // Adjust the endIndex for the first page
-                } else {
-                    startIndex = (index - 1) * itemsPerPage + (itemsPerPage - 3);
-                    endIndex = startIndex + itemsPerPage;
-                }
+                const startIndex = index * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
                 return productData.slice(startIndex, endIndex);
             });
             setPages(pagesArray);
