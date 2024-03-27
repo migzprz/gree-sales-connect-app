@@ -130,6 +130,7 @@ module.exports = (query) => {
                                         WHEN is_inverter = 1 THEN 'INVERTER' 
                                         WHEN is_inverter = 0 THEN 'NON-INVERTER' END) as display
                                     FROM greesalesconnect.md_products
+                                    WHERE is_active = 1
                                     ORDER BY unit_model ASC;`, [])
             console.log(data)
 
