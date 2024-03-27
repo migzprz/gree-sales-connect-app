@@ -26,6 +26,8 @@ import ViewExpenseDetails from './pages/ViewExpenseDetails';
 import RecordExpenses from './pages/RecordExpenses';
 import ViewTechnicians from './pages/ViewTechnicians';
 import ViewReport from './pages/ViewReport';
+import Restriction from './pages/Restriction';
+import Error404 from './pages/Error404';
 
 function App() {
   return (
@@ -70,6 +72,10 @@ function App() {
                     <Route path="/viewproducts" element={<ViewProducts/>}/>
                     <Route path="/viewusers" element={<ViewUsers/>}/>
                     <Route path="/viewtechnicians" element={<ViewTechnicians/>}/>
+
+                    {/* Security Pages */}
+                    <Route path="/unauthorized" element={<Restriction/>}/>
+                    <Route path="/error" element={<Error404/>}/>
 
                   </Routes>
           </BrowserRouter>
