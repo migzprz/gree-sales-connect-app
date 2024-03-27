@@ -587,11 +587,25 @@ module.exports = (query) => {
      */
     router.get('/getTechnicianAvailability/:id', async (req, res) => {
         const { id } = req.params
+
+        // TEST: REPLACE WITH ACTUAL INPUT
+        const inputDate = new Date(req.query.datetime)
+
+        const getHourDiff = (date1, date2) => {
+
+            console.log(date1, date2)
+            if (!date1 || !date2) {
+                return true
+            }
+            console.log(Math.abs((date1  - date2) / 36e5))
+            return Math.abs((date1  - date2) / 36e5)
+        }
+
         // collect non-cancelled technician schedules from different table
         // (note: only include records that are active)
 
         // [O] ocular (note that if the associated quotation_client_id has both a quotation id associated then it is excluded: ongoing oculars only)
-        const oq = `SELECT DISTINCT o.ocular_id, o.ocular_date
+        const oq = `SELECT DISTINCT o.ocular_id, o.ocular_date as date
                     FROM td_quotations q
                     LEFT JOIN md_quotation_clients qc ON q.quotation_client_id 
                     LEFT JOIN td_oculars o ON qc.ocular_id = o.ocular_id
@@ -602,7 +616,7 @@ module.exports = (query) => {
         const or = await query(oq, [id])
 
         // [Q] service schedule
-        const qssq = `SELECT service_date
+        const qssq = `SELECT service_date as date
                         FROM md_service_schedules ss
                         JOIN td_quotations q ON ss.quotation_id = q.quotation_id
                         WHERE q.is_cancelled = 0
@@ -611,7 +625,7 @@ module.exports = (query) => {
         const qssr = await query(qssq, [id])
 
         // [Q] installation schedule
-        const qiq = `SELECT start_installation_date
+        const qiq = `SELECT start_installation_date as date
                     FROM md_installations i
                     JOIN td_quotations q ON i.quotation_id = q.quotation_id
                     WHERE q.is_cancelled = 0
@@ -620,12 +634,53 @@ module.exports = (query) => {
         const qir = await query(qiq, [id])
         
         // [W] inspection schedule
-        // [W] warranty schedule
+        const wiq = `SELECT inspection_date as date
+                    FROM td_warranty_inspection wi 
+                    WHERE wi.is_completed = 0
+                    AND wi.technician_id = ?;`
+        const wir = await query(wiq, [id])
+
+        // [W] warranty service schedule
+        const wsq = `SELECT ws.service_date as date
+                    FROM td_warranty_service ws
+                    WHERE is_completed = 0
+                    AND technician_id = ?`
+        const wsr = await query(wsq, [id])
 
         // insert each query outputs into a set, and return as array
-        // iterate over the array and for each index i, compare if input x satisfies [i]+a < x < [i+1]+b
+        const response_array = [or, qssr, qir, wir, wsr]
+        const date_list = []
 
-        res.send(or)
+        response_array.forEach(res => {
+            res.forEach(item => {
+                date_list.push(new Date(item.date))
+                date_list.sort((a, b) => new Date(a) - new Date(b))
+            })
+        })
+
+        // modified insertion sort to find index where input would be inserted
+        let low = 0;
+        let high = date_list.length;
+
+        while (low < high) {
+            let mid = Math.floor((low + high) / 2);
+            if (date_list[mid] < inputDate) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+
+        // check condition if value at the previous index has a one hour difference and the value at the next index has a 5 hour difference
+        let validDateCheck = false
+        if ((low === 0 || getHourDiff(date_list[low - 1], inputDate) >= 1) && 
+            (low === date_list.length || getHourDiff(date_list[low], inputDate) >= 5)) {
+            validDateCheck = true
+        }
+
+        // testing return
+        // res.send([date_list,validDateCheck, new Date(), low])
+        res.send(validDateCheck)
     })
 
     return router;

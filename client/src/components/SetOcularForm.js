@@ -7,6 +7,7 @@ import ReturningClientModal from './ReturningClientModal';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import useAddressFilter from '../hooks/useAddressFilter'
+import useAvailableTechnicians from '../hooks/useAvailableTechnicians';
 
 const SetOcularForm = () => {
 
@@ -15,7 +16,14 @@ const SetOcularForm = () => {
     const [clients, setClients] = useState({})
     const [storedLocations, setStoredLocations] = useState({})
     const [companies, setCompanies] = useState({})
-    const [technicians, setTechnicians] = useState([])
+    
+
+    // const [technicians, setTechnicians] = useState([])
+    const [inputDateTime, setInputDateTime] = useState(null)
+    const { technicians, mod } = useAvailableTechnicians(inputDateTime)
+
+
+
     const [isNew, setIsNew] = useState(true);
     const [activeOption, setActiveOption] = useState('newClient');
     const [formData, setFormData] = useState({
@@ -51,6 +59,19 @@ const SetOcularForm = () => {
         console.log('form data: ', formData)
     }, [formData])
 
+    useEffect(() => {
+        console.log(formData.date, formData.time)
+        if (formData.date && formData.time) {
+            // Both date and time are present, update inputDateTime
+            const newInputDateTime = formData.date + "T" + formData.time;
+            setInputDateTime(newInputDateTime);
+        }
+    }, [formData.date, formData.time])
+    useEffect(() => {
+        console.log(inputDateTime)
+    }, [inputDateTime])
+
+
     const { region, filteredProvince, filteredCity, filteredBarangay } = useAddressFilter(formData, setFormData)
 
     // fetch location data and stored client and location data for quick fillup feature
@@ -76,12 +97,12 @@ const SetOcularForm = () => {
             console.error('Error fetching company data: ', error)
         }
 
-        try {
-            const technicianResponse = await axios.get('http://localhost:4000/api/getTechnicians/')
-            setTechnicians(technicianResponse.data)
-        } catch (error) {
-            console.error('Error fetching technician data: ', error)
-        }
+        // try {
+        //     const technicianResponse = await axios.get('http://localhost:4000/api/getTechnicians/')
+        //     setTechnicians(technicianResponse.data)
+        // } catch (error) {
+        //     console.error('Error fetching technician data: ', error)
+        // }
     }
     useEffect(() => {
         fetchData()
@@ -138,10 +159,11 @@ const SetOcularForm = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-          ...formData,
-          [name]: value,
-        });
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value
+        }))
     };
 
     return (
@@ -358,6 +380,7 @@ const SetOcularForm = () => {
                             <option key={tech.technician_id} value={tech.technician_id}>{tech.complete_name}</option>
                         ))}
                     </Form.Control>
+                    {mod ? (<p>One or more technicians are unavailable with the given schedule</p>) : null}
                     <Form.Control.Feedback type="invalid">
                         Please choose a technician.
                     </Form.Control.Feedback>
