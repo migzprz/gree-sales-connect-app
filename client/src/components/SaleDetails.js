@@ -10,6 +10,7 @@ import AddPaymentModal from './AddPaymentModal';
 import EditServiceDetailsModal from './EditServiceDetailsModal';
 import { useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import CompleteSalesModal from './CompleteSalesModal';
 
 const SaleDetails= () => {
 
@@ -77,11 +78,13 @@ const SaleDetails= () => {
                             Email Address: <strong>{detail.email}</strong>
                         </Col>
                     </Row>
-                    <Row>
+                    {(deliveries.length === 0 && installations.length === 0 && services.length === 0 && (quotations.reduce((sum, q) => sum + q.totalPrice, 0) - payments.reduce((sum, p) => sum + p.amount, 0) === 0)) ? (
+                    <Row className="mt-3">
                         <Col>
-                            Sale Status: <strong>{detail.is_completed === 0 ? 'ONGOING' : 'COMPLETED'}</strong>
+                            <CompleteSalesModal id={id}/>
                         </Col>
                     </Row>
+                    ): null}
 
                 </Col>
             </Row>
@@ -91,15 +94,19 @@ const SaleDetails= () => {
 
             <Row>
                 <Col lg="3">
-                    <Card style={{padding: '15px', borderRadius: '20px', background: '#CCDBE9'}}>
+                    <Card style={{padding: '15px', borderRadius: '20px', background: '#CCDBE9', height: '100%'}}>
 
-                        <Card style={{padding: '15px', borderRadius: '20px', color: deliveries.length > 0 ? '#014c91' : '#008000', background: deliveries.length > 0 ? '' : '#E7FFE2' }}>
+                        <Card style={{padding: '15px', borderRadius: '20px', color: deliveries.length > 0 ? '#014c91' : '#008000', background: deliveries.length > 0 ? '' : '#E7FFE2', height: '100%' }}>
                             <Row>
                                 <Col lg="9">
                                     <h3>{React.createElement(FaTruck, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Delivery</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
-                                    <EditServiceDetailsModal type={"pickup"}/>
+                                <EditServiceDetailsModal 
+                                    type={deliveries && deliveries[0]?.is_pickup ? "pickup" : "delivery"} 
+                                    is_completed={!deliveries || deliveries.length === 0}
+                                />
+
                                 </Col>
                             </Row>
 
@@ -122,26 +129,27 @@ const SaleDetails= () => {
                                     </Row>
                                     <Row className="mt-2">
                                         <Col>
-                                                <CompleteServiceModal type={"delivery"} id={deliveries[0].delivery_id} refId={String(detail.sales_id).padStart(4, '0')}/>
+                                            <CompleteServiceModal type={"delivery"} id={deliveries[0].delivery_id} refId={String(detail.sales_id).padStart(4, '0')}/>
                                         </Col>
                                     </Row>
                                 </>
                             ) : (
                                 <Row>
                                         <Col>
-                                            None
+                                            No upcoming deliveries
                                         </Col>
                                 </Row>
                             )}
                         </Card>
 
-                        <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', color: installations.length > 0 ? '#014c91' : '#008000', background: installations.length > 0 ? '' : '#E7FFE2'}}>
+                        <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', color: installations.length > 0 ? '#014c91' : '#008000', background: installations.length > 0 ? '' : '#E7FFE2', height: '100%' }}>
                                 <Row>
                                     <Col lg="9">
                                         <h3>{React.createElement(FaScrewdriver, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Installation</h3>
                                     </Col>
                                     <Col className="d-flex justify-content-end">
-                                        <EditServiceDetailsModal type={"installation"}/>
+                                        <EditServiceDetailsModal type={"installation"}  is_completed={installations.length === 0}/>
+                                       
                                     </Col>
                                 </Row>
                                 {installations && installations.length > 0 ? (
@@ -190,24 +198,24 @@ const SaleDetails= () => {
                                 ):(
                                     <Row>
                                             <Col>
-                                                None
+                                                No upcoming installations
                                             </Col>
                                     </Row>
                                 ) }
                         </Card>
-
+                        {services && services.length > 0 ? (
+                                <>
                         <Card className="mt-2" style={{padding: '15px', borderRadius: '20px', color: services.length > 0 ? '#014c91' : '#008000', background: services.length > 0 ? '' : '#E7FFE2'}}>
                             <Row>
                                 <Col lg="9">
                                     <h3>{React.createElement(FaToolbox, { size: 25, style: { marginRight: '5px', marginBottom: '5px' }})}Service</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
-                                    <EditServiceDetailsModal type={"service"}/>
+                                    <EditServiceDetailsModal type={"service"} is_completed={services.length === 0}/>
                                 </Col>
                             </Row>
                             
-                            {services && services.length > 0 ? (
-                                <>
+
                                     <Row>
                                         <Col>
                                             Date: <strong>{new Date(services[0].service_date).toLocaleDateString()}</strong>
@@ -233,19 +241,15 @@ const SaleDetails= () => {
                                                 <CompleteServiceModal type={"service"} id={services[0].service_schedule_id} refId={String(detail.sales_id).padStart(4, '0')}/>
                                             </Col>
                                     </Row>
-                                </>
-                            ) : (
-                                <Row>
-                                        <Col>
-                                            None
-                                        </Col>
-                                </Row>
-                            )}
+                               
                             
                         </Card>
+                        </>
+                            ) : null}
 
                     </Card>
                 </Col>
+
                 <Col lg="4">
                     <Card style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9', display: 'flex', flexDirection: 'column', height: '100%'}}>
                         <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91',display: 'flex', flexDirection: 'column', height: '100%'}}>
@@ -286,7 +290,8 @@ const SaleDetails= () => {
                                                     <td style={{color: '#014c91'}}>
                                                         <strong>
                                                             ₱{quotations ? formatNumber(quotations.reduce((sum, q) => sum + q.totalPrice, 0) - payments.reduce((sum, p) => sum + p.amount, 0)) : null}
-                                                        </strong></td>
+                                                        </strong>
+                                                    </td>
                                                 </tr>
                                             </React.Fragment>
                                         </tbody>
@@ -300,15 +305,18 @@ const SaleDetails= () => {
                                 </Row>
                             )}
 
-                            
+                            {}
                             <Row className="mt-2">
                                 <Col>
-                                    <AddPaymentModal id={id}/>
+                                    {quotations.reduce((sum, q) => sum + q.totalPrice, 0) - payments.reduce((sum, p) => sum + p.amount, 0) > 0 ?
+                                        <AddPaymentModal id={id} max={quotations.reduce((sum, q) => sum + q.totalPrice, 0) - payments.reduce((sum, p) => sum + p.amount, 0)}/> : null
+                                    }
                                 </Col>
                             </Row>
                         </Card>
                     </Card>
                 </Col>
+
                 <Col lg="5">
                     <Card style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9', display: 'flex', flexDirection: 'column', height: '100%'}}>
                         <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91',display: 'flex', flexDirection: 'column', height: '100%'}}>

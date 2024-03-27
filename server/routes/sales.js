@@ -134,11 +134,6 @@ module.exports = (query) => {
         cp.contact_number,
         co.company_name,
         MAX(deliveries.latest_delivery_date) AS latest_delivery_date,
-        CASE 
-            WHEN MAX(deliveries.is_pickup) = 1 THEN 'PICKUP' 
-            WHEN MAX(deliveries.is_pickup) = 0 THEN 'DELIVERY' 
-            ELSE 'N/A' 
-        END AS transportMode,
         MAX(installations.latest_installation_date) AS latest_installation_date,
         MAX(services.latest_service_date) AS latest_service_date,
         s.is_completed,
@@ -173,8 +168,7 @@ module.exports = (query) => {
         (SELECT 
              q.sales_id,
              MAX(d.delivery_date) AS latest_delivery_date,
-             MAX(d.is_delivered) AS is_completed,
-             MAX(d.is_pickup) AS is_pickup
+             MIN(d.is_delivered) AS is_completed
          FROM 
              td_quotations q
          JOIN 
@@ -185,7 +179,7 @@ module.exports = (query) => {
         (SELECT 
              q.sales_id,
              MAX(i.start_installation_date) AS latest_installation_date,
-             MAX(i.is_installed) AS is_completed
+             MIN(i.is_installed) AS is_completed
          FROM 
              td_quotations q
          JOIN 
@@ -196,15 +190,16 @@ module.exports = (query) => {
         (SELECT 
              q.sales_id,
              MAX(ss.service_date) AS latest_service_date,
-             MAX(ss.is_completed) AS is_completed
+             MIN(ss.is_completed) AS is_completed
          FROM 
              td_quotations q
          JOIN 
              md_service_schedules ss ON q.quotation_id = ss.quotation_id
          GROUP BY 
              q.sales_id) AS services ON s.sales_id = services.sales_id
+	WHERE s.is_completed = 0
     GROUP BY 
-        s.sales_id;        
+        s.sales_id;       
     `
         const data = await query(salesQuery, [])
 
@@ -231,7 +226,7 @@ module.exports = (query) => {
                             WHERE s.sales_id = ?`
         const detailsResponse = await query(detailsQuery, [id])
 
-        const deliveryQuery = `SELECT d.delivery_date, d.delivery_id
+        const deliveryQuery = `SELECT d.delivery_date, d.delivery_id, d.is_pickup
                                 FROM td_quotations q
                                 JOIN md_deliveries d ON q.quotation_id = d.quotation_id
                                 WHERE q.sales_id = ?
@@ -364,6 +359,18 @@ module.exports = (query) => {
                     WHERE s.sales_id = ?;`
         const response = await query(q, [id])
         res.send(response)
+    })
+
+    router.patch('/changeSaleState/:id/:state', async (req, res) => {
+        try {
+            const values = [req.params.state, req.params.id]
+            const data = await query('UPDATE td_sales SET is_completed = ? WHERE sales_id = ?', values)
+            console.log(data)
+            res.status(200).json({message: `Service successfully updated... ${data}`})
+        } catch (error) {
+            console.error('Error: ', error)
+            res.status(400).json({message: `Error... Failed to update service... ${error}`})
+        }
     })
 
     return router

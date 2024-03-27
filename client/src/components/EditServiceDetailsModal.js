@@ -3,7 +3,7 @@ import { Row, Col, Modal, Form,  Dropdown } from 'react-bootstrap';
 import { FaEdit, FaCheck, FaSave} from 'react-icons/fa';
 import axios from 'axios';
 
-const EditServiceDetailsModal = ({ type }) => {
+const EditServiceDetailsModal = ({ type, is_completed }) => {
     const [showModal, setShowModal] = useState(false);
     const [record, setRecord] = useState({})
 
@@ -36,9 +36,16 @@ const EditServiceDetailsModal = ({ type }) => {
 
     return (
         <div>
-            <div onClick={handleShowModal} style={{color: "white", color: '#014c91', cursor: 'pointer'}}>
-                {React.createElement(FaEdit, {size: 18})} 
-            </div>
+
+            {is_completed ? (
+                <div style={{color: '#008000'}}>
+                    {React.createElement(FaCheck, {size: 18})} 
+                </div>
+            ): (
+                <div onClick={handleShowModal} style={{color: '#014c91', cursor: 'pointer'}}>
+                    {React.createElement(FaEdit, {size: 18})} 
+                </div>
+            )}
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header style={{color: "white", backgroundColor: record.is_active ? "#8c1919" : "#014c91"}}>

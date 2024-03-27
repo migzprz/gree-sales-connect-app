@@ -3,7 +3,7 @@ import { Row, Col, Button, Modal, Form,  InputGroup } from 'react-bootstrap';
 import { FaSave, FaPlus} from 'react-icons/fa';
 import axios from 'axios';
 
-const AddPaymentModal = ({ id }) => {
+const AddPaymentModal = ({ id, max}) => {
     const [showModal, setShowModal] = useState(false);
     const handleShowModal = () => { setShowModal(true) };
 
@@ -103,11 +103,11 @@ const AddPaymentModal = ({ id }) => {
                                         <Form.Label>Amount</Form.Label>
                                         <InputGroup>
                                             <InputGroup.Text> ₱ </InputGroup.Text>
-                                            <Form.Control   className="money" type="number" inputMode="numeric" min="0" 
+                                            <Form.Control   className="money" type="number" inputMode="numeric" min="0" max={max}
                                                             required onWheel={(e) => e.target.blur()} name='amount' onChange={handleChange} />
                                         </InputGroup>
                                         <Form.Control.Feedback type="invalid">
-                                            Please provide an amount.
+                                            Invalid Amount
                                         </Form.Control.Feedback>
                                     </Form.Group>
                             </Col>

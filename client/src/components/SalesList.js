@@ -131,7 +131,6 @@ const SalesList = () => {
                                 <th style={{color: '#014c91'}}>Client</th>
                                 <th style={{color: '#014c91'}}>Company</th>
                                 <th style={{color: '#014c91'}}>Contact Number</th>
-                                <th style={{color: '#014c91'}}>Transport Mode</th>
                                 <th style={{color: '#014c91'}}>Transport Schedule</th>
                                 <th style={{color: '#014c91'}}>Installation Schedule</th>
                                 <th style={{color: '#014c91'}}>Service Schedule</th>
@@ -147,7 +146,6 @@ const SalesList = () => {
                                         <td style={{color: '#014c91'}}>{sales.client_name}</td>
                                         <td style={{color: '#014c91'}}>{sales.company_name}</td>
                                         <td style={{color: '#014c91'}}>{sales.contact_number}</td>
-                                        <td style={{color: '#014c91'}}>{sales.transportMode === 'DELIVERY' ? "Delivery" : "Pick Up"}</td>
                                         <td style={{color: sales.hasDelivery && sales.allDeliveriesCompleted ? '#008000' : (sales.hasDelivery && !sales.allDeliveriesCompleted ? '#DC6601' : '')}}>
                                             {sales.hasDelivery && sales.allDeliveriesCompleted ? (<FaCheck size={20} className="me-1"/>) : (sales.hasDelivery && !sales.allDeliveriesCompleted ? (<FaClock size={20} className="me-1"/>) : null)}
                                             {sales.latest_delivery_date ? (
