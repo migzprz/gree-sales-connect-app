@@ -649,14 +649,21 @@ module.exports = (query) => {
 
         // insert each query outputs into a set, and return as array
         const response_array = [or, qssr, qir, wir, wsr]
-        const date_list = []
+        const date_set = new Set()
+        
 
+        // Add all responses into a set, removing duplicates that could interfere with the condition checker
         response_array.forEach(res => {
             res.forEach(item => {
-                date_list.push(new Date(item.date))
-                date_list.sort((a, b) => new Date(a) - new Date(b))
+                date_set.add(new Date(item.date))
             })
         })
+
+        // Convert back into an array
+        const date_list = Array.from(date_set)
+
+        // Sort array
+        date_list.sort((a, b) => new Date(a) - new Date(b))
 
         // modified insertion sort to find index where input would be inserted
         let low = 0;

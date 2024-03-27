@@ -193,7 +193,7 @@ const SearchWarrantyForm = () => {
                                                 <td style={{borderBottom: 'none',color: '#014c91'}}>{claimables[0].client_number}</td>
                                                 <td style={{borderBottom: 'none',color: '#014c91'}}>{claimables[0].email}</td>
                                                 <td style={{borderBottom: 'none',color: '#014c91', width:'15%'}}>{claimables[0].site_address}</td>
-                                                <td style={{borderBottom: 'none',color: '#014c91'}}>{claimables[0].delivery_date}</td>
+                                                <td style={{borderBottom: 'none',color: '#014c91'}}>{new Date(claimables[0].delivery_date).toLocaleString()}</td>
                                                 <td style={{borderBottom: 'none',color: '#014c91'}}>
                                                     <Link to={`/claimwarranty/${claimables[0].quotation_id}`} className="btn w-60" style={{ color: "white", backgroundColor: "#014c91" }}>
                                                         Claim Warranty
@@ -212,7 +212,7 @@ const SearchWarrantyForm = () => {
                                                 <td style={{color: '#014c91'}}>{claimables[0].client_number}</td>
                                                 <td style={{color: '#014c91'}}>{claimables[0].email}</td>
                                                 <td style={{color: '#014c91', width:'20%'}}>{claimables[0].site_address}</td>
-                                                <td style={{color: '#014c91'}}>{claimables[0].delivery_date}</td>
+                                                <td style={{color: '#014c91'}}>{new Date(claimables[0].delivery_date).toLocaleString()}</td>
                                                 <td style={{color: '#014c91'}}>
                                                     <Link to={`/claimwarranty/${claimables[0].quotation_id}`} className="btn w-60" style={{ color: "white", backgroundColor: "#014c91" }}>
                                                         Claim Warranty
