@@ -143,15 +143,35 @@ console.log(expenseList)
                                     </Col>
                                     <Col lg="2">
                                         <Form.Group controlId="description">
-                                            <Form.Control type="text" name="name" value={expenseType.expense[0].name} onChange={(e) => handleChange(e, 0, index)} required />
+                                            <Form.Control as="select" name="name" value={expenseType.expense[0].name} onChange={(e) => handleChange(e, 0, index)} required>
+
+                                                    {expenseType.is_operating ?
+                                                        <>
+                                                            <option value="">Select an expense</option>
+                                                            <option value="Cost of Goods Sold">Cost of Goods Sold</option>
+                                                            <option value="Office Supplies">Office Supplies</option>
+                                                            <option value="Rent">Rent</option>
+                                                            <option value="Utilities">Utilities</option>
+                                                            <option value="Salaries">Salaries</option>
+                                                            <option value="Travel Expenses">Travel Expenses</option>
+                                                        </> :
+                                                        <>
+                                                        <option value="">Select an expense</option>
+                                                        <option value="Interest Payments">Interest Payments</option>
+                                                        <option value="Investment Losses">Investment Losses</option>
+                                                        <option value="Sale Losses">Sale Losses</option>
+                                                        <option value="Restructuring Costs">Restructuring Costs</option>
+                                                        </>}
+
+                                            </Form.Control>
                                             <Form.Control.Feedback type="invalid">
-                                                Please provide an expense
+                                                Please select an expense
                                             </Form.Control.Feedback>
                                         </Form.Group>
                                     </Col>
                                     <Col lg="3">
                                         <Form.Group controlId="description">
-                                            <Form.Control type="text" name="description" value={expenseType.expense[0].description} onChange={(e) => handleChange(e, 0, index)} required />
+                                            <Form.Control type="text" name="description" value={expenseType.expense[0].description} placeholder="optional"  onChange={(e) => handleChange(e, 0, index)}/>
                                             <Form.Control.Feedback type="invalid">
                                                 Please provide a description
                                             </Form.Control.Feedback>
@@ -190,15 +210,34 @@ console.log(expenseList)
                                                 </Col>
                                                 <Col lg="2">
                                                     <Form.Group controlId="description">
-                                                        <Form.Control type="text" name="name" value={subexpense.name} onChange={(e) => handleChange(e, subindex, index)} required />
+                                                        <Form.Control as="select" name="name" value={subexpense.name} onChange={(e) => handleChange(e, subindex, index)} required>
+                                                        
+                                                        {expenseType.is_operating ?
+                                                            <>
+                                                                <option value="">Select an expense</option>
+                                                                <option value="Cost of Goods Sold">Cost of Goods Sold</option>
+                                                                <option value="Office Supplies">Office Supplies</option>
+                                                                <option value="Rent">Rent</option>
+                                                                <option value="Utilities">Utilities</option>
+                                                                <option value="Salaries">Salaries</option>
+                                                                <option value="Travel Expenses">Travel Expenses</option>
+                                                            </> :
+                                                            <>
+                                                            <option value="">Select an expense</option>
+                                                            <option value="Interest Payments">Interest Payments</option>
+                                                            <option value="Investment Losses">Investment Losses</option>
+                                                            <option value="Sale Losses">Sale Losses</option>
+                                                            <option value="Restructuring Costs">Restructuring Costs</option>
+                                                            </>}
+                                                        </Form.Control>
                                                         <Form.Control.Feedback type="invalid">
-                                                            Please provide an expense
+                                                            Please select an expense
                                                         </Form.Control.Feedback>
                                                     </Form.Group>
                                                 </Col>
                                                 <Col lg="3">
                                                     <Form.Group controlId="description">
-                                                        <Form.Control type="text" name="description" value={subexpense.description} onChange={(e) => handleChange(e, subindex, index)} required />
+                                                        <Form.Control type="text" name="description" value={subexpense.description} placeholder="optional" onChange={(e) => handleChange(e, subindex, index)} />
                                                         <Form.Control.Feedback type="invalid">
                                                             Please provide a description
                                                         </Form.Control.Feedback>

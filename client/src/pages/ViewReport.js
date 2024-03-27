@@ -6,6 +6,7 @@ import '../index.css';
 import DetailedSalesReport from "../components/Reports/DetailedSalesReport";
 import QuotationConversionReport from "../components/Reports/QuotationConversionReport";
 import WarrantyClaimsReport from "../components/Reports/WarrantyClaimsReport";
+import ProfitStatement from "../components/Reports/ProfitStatement";
 
 const ViewReport = () => {
     const { type } = useParams();
@@ -23,6 +24,8 @@ const ViewReport = () => {
                 <QuotationConversionReport/>
                 :type === '4' ?
                 <WarrantyClaimsReport/>
+                :type === '5' ?
+                <ProfitStatement/>
                 :null}
             </div>
         </>

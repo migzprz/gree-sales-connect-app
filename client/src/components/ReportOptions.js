@@ -92,6 +92,19 @@ const ReportOptions = () => {
                     } else {
                         navigate(`/viewreport/${reportOption.report_type}/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}`);
                     }
+                } else if(reportOption.report_type === '5'){
+                    const response = await axios.get(`http://localhost:4000/api/getProfitStatement/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}`);
+
+                    if (new Date(start_date) > new Date(end_date)) {
+                        setErrorMessage("*Invalid Date Range");
+                        setValidated(false);
+                    } else if (response.data.length === 0 || response.data.some(item => item.type >= 1 && item.type <= 4 && item.type >= 5 && item.type <= 6)) {
+                        setErrorMessage('*Insufficient Data');
+                        setValidated(false);
+                    }
+                     else {
+                        navigate(`/viewreport/${reportOption.report_type}/${syear}/${smonth}/${sday}/${eyear}/${emonth}/${eday}`);
+                    }
                 }
                 
             } catch (error) {
@@ -121,7 +134,7 @@ const ReportOptions = () => {
                                 <option value="1"> Sales Report</option>
                                 <option value="3"> Quotation Conversion Status Report </option>
                                 <option value="4"> Warranty Claims Report </option>
-                                <option value="5"> Profit Statement </option>
+                                <option value="5"> Profit and Loss Statement </option>
                             </Form.Control>
                             <Form.Control.Feedback type="invalid">
                                 Please choose a report type.
