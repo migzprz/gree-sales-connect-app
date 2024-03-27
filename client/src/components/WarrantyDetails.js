@@ -113,7 +113,7 @@ const WarrantyDetails= () => {
                                     <h3>{React.createElement(FaSearch, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Inspection</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
-                                    <EditWarrantyServiceModal service_id={warrantyData.inspection_id} id={id} type={"inspection"} is_completed={warrantyData.inspection_completed}/>
+                                    <EditWarrantyServiceModal service_id={warrantyData.inspection_id} id={id} type={"inspection"} is_completed={warrantyData.inspection_completed} date={warrantyData.inspection_date}/>
                                 </Col>
                             </Row>
 
@@ -151,7 +151,7 @@ const WarrantyDetails= () => {
                                     <h3>{React.createElement(FaToolbox, { size: 25, style: { marginRight: '5px', marginBottom: '5px' }})}Service</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
-                                <EditWarrantyServiceModal service_id={warrantyData.warranty_service_id} id={id} type={"service"} is_completed={warrantyData.service_completed}/>
+                                <EditWarrantyServiceModal service_id={warrantyData.warranty_service_id} id={id} type={"service"} is_completed={warrantyData.service_completed} date={warrantyData.service_date}/>
 
                                 </Col>
                             </Row>

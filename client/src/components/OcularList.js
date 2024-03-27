@@ -39,12 +39,12 @@ const OcularList = () => {
         setActiveDropdown(index === activeDropdown ? null : index);
     };
 
-    const renderDropdown = (index, id) => {
+    const renderDropdown = (index, id, date) => {
         if (index === activeDropdown) {
             return (
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
                 <Dropdown.Item href={`generatequotation/${id}`}>Generate Quotation</Dropdown.Item>
-                <EditOcularModal id={id}/>
+                <EditOcularModal id={id} date={date}/>
                 <CancelOcularModal id={id}/>
             </Dropdown.Menu>
             );
@@ -214,7 +214,7 @@ const OcularList = () => {
                                                     <FaEllipsisH size={20} />
                                                 </div>
                                                     <Dropdown show={index === activeDropdown} align="start">
-                                                        {renderDropdown(index, ocular.ocular_id)}
+                                                        {renderDropdown(index, ocular.ocular_id, ocular.ocular_date)}
                                                     </Dropdown>
                                             </div>
                                         </td>

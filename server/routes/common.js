@@ -591,6 +591,12 @@ module.exports = (query) => {
 
         // TEST: REPLACE WITH ACTUAL INPUT
         const inputDate = new Date(req.query.datetime)
+        
+        // Exclude the existing datetime when editing a record
+        const editDateTime = req.query.editDateTime
+        const excludedDateTime = editDateTime ? new Date(editDateTime) : null
+
+        if (excludedDateTime) { console.log('Editing Record, Existing Datetime Discovered ', excludedDateTime) }
 
         const getHourDiff = (date1, date2) => {
 
@@ -666,6 +672,9 @@ module.exports = (query) => {
         // Sort array
         date_list.sort((a, b) => new Date(a) - new Date(b))
 
+        // Filter array to remove exlucded datetime
+        date_list.filter(item => item !== excludedDateTime)
+
         // modified insertion sort to find index where input would be inserted
         let low = 0;
         let high = date_list.length;
@@ -687,7 +696,7 @@ module.exports = (query) => {
         }
 
         // testing return
-        // res.send([date_list,validDateCheck, new Date(), low])
+        // res.send([date_list,validDateCheck, inputDate, low])
         res.send(validDateCheck)
     })
 
