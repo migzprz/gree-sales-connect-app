@@ -4,11 +4,12 @@ import { FaEdit} from 'react-icons/fa';
 import axios from 'axios'
 import useAddressFilter from '../hooks/useAddressFilter';
 import useOcularById from '../hooks/useOcularById';
+import useAvailableTechnicians from '../hooks/useAvailableTechnicians';
 
-const EditOcularModal = ({ id }) => {
+const EditOcularModal = ({ id, date }) => {
     const [showModal, setShowModal] = useState(false);
     const [editData, setEditData] = useState({})
-    const [technicians, setTechnicians] = useState([])
+    //const [technicians, setTechnicians] = useState([])
     const [defaultTime, setDefaultTime] = useState('')
     //const [isRequired, setIsRequired] = useState(false)
 
@@ -23,28 +24,41 @@ const EditOcularModal = ({ id }) => {
         setDefaultTime(t)
     },[record])
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const technicianResponse = await axios.get('http://localhost:4000/api/getTechnicians/')
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const technicianResponse = await axios.get('http://localhost:4000/api/getTechnicians/')
 
-                // arrange technician by name under record first
-                const data = technicianResponse.data
-                const technician = [
-                    ...data.filter((tech) => tech.technician_id === record.technician_id),
-                    ...data.filter((tech) => tech.technician_id !== record.technician_id)
-                ]
-                setTechnicians(technician)
-            } catch (error) {
-                console.error('Error fetching technician data: ', error)
-            }
+    //             // arrange technician by name under record first
+    //             const data = technicianResponse.data
+    //             const technician = [
+    //                 ...data.filter((tech) => tech.technician_id === record.technician_id),
+    //                 ...data.filter((tech) => tech.technician_id !== record.technician_id)
+    //             ]
+    //             setTechnicians(technician)
+    //         } catch (error) {
+    //             console.error('Error fetching technician data: ', error)
+    //         }
+    //     }
+    //     fetchData()
+    // }, [id, record])
+
+    // useEffect(() => {
+    //     console.log(technicians)
+    // }, [technicians])
+
+
+    const [inputDateTime, setInputDateTime] = useState(null)
+    const { technicians, mod } = useAvailableTechnicians(inputDateTime, date)
+
+    useEffect(() => {
+        console.log(editData.date, editData.time)
+        if (editData.date && editData.time) {
+            // Both date and time are present, update inputDateTime
+            const newInputDateTime = editData.date + "T" + editData.time;
+            setInputDateTime(newInputDateTime);
         }
-        fetchData()
-    }, [id, record])
-
-    useEffect(() => {
-        console.log(technicians)
-    }, [technicians])
+    }, [editData.date, editData.time])
 
     const clearData = () => {
         setEditData({})
@@ -308,7 +322,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="date">
                                             <Form.Label>Ocular Date</Form.Label>
-                                            <Form.Control type="date" onChange={handleChange} name='date' defaultValue={record.ocular_date ? new Date(record.ocular_date).toISOString().split('T')[0]: null}/>
+                                            <Form.Control type="date" onChange={handleChange} name='date' />
                                             <Form.Control.Feedback type="invalid">
                                                 Please choose a valid date.
                                             </Form.Control.Feedback>
@@ -317,7 +331,7 @@ const EditOcularModal = ({ id }) => {
                                     <Col lg="3">
                                         <Form.Group controlId="time">
                                             <Form.Label>Ocular Time</Form.Label>
-                                            <Form.Control type="time" onChange={handleChange} name='time' defaultValue={defaultTime} />
+                                            <Form.Control type="time" onChange={handleChange} name='time'  />
                                             <Form.Control.Feedback type="invalid">
                                                 Please choose a valid time.
                                             </Form.Control.Feedback>
@@ -327,10 +341,12 @@ const EditOcularModal = ({ id }) => {
                                         <Form.Group controlId="technician">
                                             <Form.Label>Assigned Technician</Form.Label>
                                             <Form.Control as="select" onChange={handleChange} name='technician_id' >
+                                                <option value=''>Select</option>
                                                 {technicians.map((tec, index) => (
                                                     <option key={index} value={tec.technician_id}>{tec.complete_name}</option>
                                                 ))}
                                             </Form.Control>
+                                            {mod ? (<p>Some technicians are unavailable</p>) : null}
                                             <Form.Control.Feedback type="invalid">
                                                 Please choose a technician.
                                             </Form.Control.Feedback>

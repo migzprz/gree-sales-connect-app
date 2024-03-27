@@ -2,11 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Modal, Form,  Dropdown } from 'react-bootstrap';
 import { FaEdit, FaCheck, FaSave} from 'react-icons/fa';
 import axios from 'axios';
+import useAvailableTechnicians from '../hooks/useAvailableTechnicians';
 
 const EditServiceDetailsModal = ({ type }) => {
     const [showModal, setShowModal] = useState(false);
     const [record, setRecord] = useState({})
 
+    const [inputDateTime, setInputDateTime] = useState(null)
+    const { technicians, mod } = useAvailableTechnicians(inputDateTime)
+
+    useEffect(() => {
+        console.log(record.date, record.time)
+        if (record.date && record.time) {
+            // Both date and time are present, update inputDateTime
+            const newInputDateTime = record.date + "T" + record.time;
+            setInputDateTime(newInputDateTime);
+        }
+    }, [record.date, record.time])
     
     const handleShowModal = () => {
         setShowModal(true);
@@ -22,14 +34,22 @@ const EditServiceDetailsModal = ({ type }) => {
     }, [record])
 
 
-    const [validated, setValidated] = useState(false);
+    const handleChange = (e) => {
+        const { name, value } = e.target;
 
+        setRecord({
+            ...record,
+            [name]: value,
+          });
+    };
+
+    const [validated, setValidated] = useState(false);
     const handleSubmit = async (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
 
     };
       
@@ -75,7 +95,7 @@ const EditServiceDetailsModal = ({ type }) => {
                                             <Col lg="6">
                                                 <Form.Group controlId="installstartdate">
                                                     <Form.Label>Installation Start Date</Form.Label>
-                                                    <Form.Control type="date" required/>
+                                                    <Form.Control type="date" name='date' onChange={handleChange} required/>
                                                     <Form.Control.Feedback type="invalid">
                                                         Please choose a valid date.
                                                     </Form.Control.Feedback>
@@ -85,7 +105,7 @@ const EditServiceDetailsModal = ({ type }) => {
                                             <Col lg="6">
                                                 <Form.Group controlId="installstarttime">
                                                     <Form.Label>Installation Start Time</Form.Label>
-                                                    <Form.Control type="time" required/>
+                                                    <Form.Control type="time" name='time' onChange={handleChange} required/>
                                                     <Form.Control.Feedback type="invalid">
                                                         Please choose a valid time.
                                                     </Form.Control.Feedback>
@@ -97,7 +117,7 @@ const EditServiceDetailsModal = ({ type }) => {
                                             <Col lg="6">
                                                 <Form.Group controlId="installstartdate">
                                                     <Form.Label>Installation End Date</Form.Label>
-                                                    <Form.Control type="date" required/>
+                                                    <Form.Control type="date" onChange={handleChange} required/>
                                                     <Form.Control.Feedback type="invalid">
                                                         Please choose a valid date.
                                                     </Form.Control.Feedback>
@@ -107,7 +127,7 @@ const EditServiceDetailsModal = ({ type }) => {
                                             <Col lg="6">
                                                 <Form.Group controlId="installstarttime">
                                                     <Form.Label>Installation End Time</Form.Label>
-                                                    <Form.Control type="time" required/>
+                                                    <Form.Control type="time" onChange={handleChange}  required/>
                                                     <Form.Control.Feedback type="invalid">
                                                         Please choose a valid time.
                                                     </Form.Control.Feedback>
@@ -121,10 +141,11 @@ const EditServiceDetailsModal = ({ type }) => {
                                                     <Form.Label>Technician</Form.Label>
                                                     <Form.Control as="select" required>
                                                         <option value=""> Select </option>
-                                                        <option value="1"> One </option>
-                                                        <option value="2"> Two </option>
-                                                        <option value="3"> Three </option>
+                                                        {technicians.map((tech) => (
+                                                            <option key={tech.technician_id} value={tech.technician_id}>{tech.complete_name}</option>
+                                                        ))}
                                                     </Form.Control>
+                                                    {mod ? (<p>Some technicians are unavailable</p>) : null}
                                                     <Form.Control.Feedback type="invalid">
                                                         Please choose a mode of payment.
                                                     </Form.Control.Feedback>
@@ -160,7 +181,7 @@ const EditServiceDetailsModal = ({ type }) => {
                                             <Col lg="6">
                                                 <Form.Group controlId="date">
                                                     <Form.Label>Service Date</Form.Label>
-                                                    <Form.Control type="date" required/>
+                                                    <Form.Control type="date" onChange={handleChange} required/>
                                                     <Form.Control.Feedback type="invalid">
                                                         Please choose a valid date.
                                                     </Form.Control.Feedback>
@@ -170,7 +191,7 @@ const EditServiceDetailsModal = ({ type }) => {
                                             <Col lg="6">
                                                 <Form.Group controlId="time">
                                                     <Form.Label>Service Time</Form.Label>
-                                                    <Form.Control type="time" required/>
+                                                    <Form.Control type="time" onChange={handleChange} required/>
                                                     <Form.Control.Feedback type="invalid">
                                                         Please choose a valid time.
                                                     </Form.Control.Feedback>
@@ -184,10 +205,11 @@ const EditServiceDetailsModal = ({ type }) => {
                                                     <Form.Label>Technician</Form.Label>
                                                     <Form.Control as="select" required>
                                                         <option value=""> Select </option>
-                                                        <option value="1"> One </option>
-                                                        <option value="2"> Two </option>
-                                                        <option value="3"> Three </option>
+                                                        {technicians.map((tech) => (
+                                                            <option key={tech.technician_id} value={tech.technician_id}>{tech.complete_name}</option>
+                                                        ))}
                                                     </Form.Control>
+                                                    {mod ? (<p>Some technicians are unavailable</p>) : null}
                                                     <Form.Control.Feedback type="invalid">
                                                         Please choose a mode of payment.
                                                     </Form.Control.Feedback>

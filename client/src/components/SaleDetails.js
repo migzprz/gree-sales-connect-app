@@ -141,7 +141,7 @@ const SaleDetails= () => {
                                         <h3>{React.createElement(FaScrewdriver, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Installation</h3>
                                     </Col>
                                     <Col className="d-flex justify-content-end">
-                                        <EditServiceDetailsModal type={"installation"}/>
+                                        <EditServiceDetailsModal type={"installation"} date={installations.start_installation_date}/>
                                     </Col>
                                 </Row>
                                 {installations && installations.length > 0 ? (
@@ -202,7 +202,7 @@ const SaleDetails= () => {
                                     <h3>{React.createElement(FaToolbox, { size: 25, style: { marginRight: '5px', marginBottom: '5px' }})}Service</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
-                                    <EditServiceDetailsModal type={"service"}/>
+                                    <EditServiceDetailsModal type={"service"} date={services.service_date}/>
                                 </Col>
                             </Row>
                             

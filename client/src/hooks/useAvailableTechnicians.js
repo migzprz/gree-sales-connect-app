@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const useAvailableTechnicians = (datetime) => {
+const useAvailableTechnicians = (datetime, editDateTime) => {
     const [allTechnicians, setAllTechnicians] = useState([])
     const [availTechnicians, setAvailTechnicians] = useState([])
     const [checked, setChecked] = useState(false)
@@ -20,10 +20,12 @@ const useAvailableTechnicians = (datetime) => {
 
     useEffect(() => {
         if (datetime !== null && allTechnicians.length > 0) {
+            console.log(datetime, editDateTime)
             const fetchAvailability = async () => {
                 try {
                     const promises = allTechnicians.map(async (technician) => {
-                        const valid = await axios.get(`http://localhost:4000/api/getTechnicianAvailability/${technician.technician_id}`,{ params: {datetime: datetime} } );
+                        const valid = await axios.get(`http://localhost:4000/api/getTechnicianAvailability/${technician.technician_id}`,
+                            { params: {datetime: datetime, editDateTime: editDateTime} });
                         return valid.data;
                     });
     
