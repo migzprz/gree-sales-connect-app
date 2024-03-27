@@ -22,7 +22,7 @@ const SetOcularForm = () => {
     const [inputDateTime, setInputDateTime] = useState(null)
     const { technicians, mod } = useAvailableTechnicians(inputDateTime)
 
-
+    const [errorMessage, setErrorMessage] = useState('');
 
     const [isNew, setIsNew] = useState(true);
     const [activeOption, setActiveOption] = useState('newClient');
@@ -129,13 +129,14 @@ const SetOcularForm = () => {
     const [validated, setValidated] = useState(false);
 
     const handleSubmit = async (event) => {
+        event.preventDefault();
       const form = event.currentTarget;
       if (form.checkValidity() === false) {
         event.preventDefault();
         event.stopPropagation();
       }
       event.preventDefault();
-      setValidated(true);
+      
 
       // add ocular_date by concat date and time
       const data = {
@@ -144,11 +145,18 @@ const SetOcularForm = () => {
       }
 
       console.log(data)
+      setValidated(true);
       if (form.checkValidity()) {
         try {
-            const postReponse = await axios.post('http://localhost:4000/api/postOcular/1', data)
-            console.log(postReponse)
-            navigate('/viewoculars')
+            if (formData.client_id === null && !isNew) {
+                setErrorMessage("*Please select a returning client");
+                setValidated(false);
+            } else {
+                const postReponse = await axios.post('http://localhost:4000/api/postOcular/1', data)
+                console.log(postReponse)
+                navigate('/viewoculars')
+            }
+            
         } catch (error) {
             console.error('Error: Problem encountered when posting data', error)
         }
@@ -220,7 +228,7 @@ const SetOcularForm = () => {
                     </Form.Control.Feedback>
                 </Form.Group>
             </Col>
-            <Col className="ms-5" lg="4">
+            <Col lg="3">
                  <Form.Group controlId="companyName">
                     <Form.Label>Company Name</Form.Label>
                     <Form.Control type="text" disabled={!isNew} value={formData.returningClientCompanyName || null }onChange={handleChange} name='companyName' placeholder="optional"/>
@@ -250,10 +258,10 @@ const SetOcularForm = () => {
                     </Form.Control.Feedback>
                 </Form.Group>
             </Col>
-            <Col className="ms-5"  lg="4">
+            <Col lg="3">
                  <Form.Group controlId="tin">
                     <Form.Label>Company TIN ID</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientCompanyTin || null } placeholder="optional" name='tin' onChange={handleChange}/>
+                    <Form.Control type="text" pattern="[0-9]{9,12}" disabled={!isNew} value={formData.returningClientCompanyTin || null } placeholder="optional" name='tin' onChange={handleChange}/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid TIN
                     </Form.Control.Feedback>
@@ -262,7 +270,7 @@ const SetOcularForm = () => {
         </Row>
 
         <Row className="mt-3">
-            <Col lg="4">
+            <Col lg="3">
                 <Form.Group controlId="bldg_no">
                     <Form.Label>Unit No.</Form.Label>
                     <Form.Control type="text" onChange={handleChange} name='bldg_no' required/>
@@ -271,7 +279,7 @@ const SetOcularForm = () => {
                     </Form.Control.Feedback>
                 </Form.Group>
             </Col>
-            <Col lg="4">
+            <Col lg="3">
                 <Form.Group controlId="street_name">
                     <Form.Label>Street</Form.Label>
                     <Form.Control type="text" onChange={handleChange} name='street_name' required/>
@@ -308,7 +316,7 @@ const SetOcularForm = () => {
                     </Form.Control.Feedback>
                  </Form.Group>
             </Col>
-            <Col lg="3">
+            <Col lg="2">
                 <Form.Group controlId="province">
                     <Form.Label>Province</Form.Label>
                     <Form.Control as="select" onChange={handleChange} name='addr_province_id'  required>
@@ -322,7 +330,7 @@ const SetOcularForm = () => {
                     </Form.Control.Feedback>
                  </Form.Group>
             </Col>
-            <Col lg="3">
+            <Col lg="2">
                 <Form.Group controlId="city">
                     <Form.Label>City</Form.Label>
                     <Form.Control as="select" onChange={handleChange} name='addr_municipality_id'  required>
@@ -336,7 +344,7 @@ const SetOcularForm = () => {
                     </Form.Control.Feedback>
                  </Form.Group>
             </Col>
-            <Col lg="3">
+            <Col lg="2">
                 <Form.Group controlId="barangay">
                     <Form.Label>Barangay</Form.Label>
                     <Form.Control as="select" onChange={handleChange} name='addr_barangay_id' required>
@@ -352,7 +360,7 @@ const SetOcularForm = () => {
             </Col>
         </Row>
 
-        <Row className="mt-2">
+        <Row className="mt-2 mb-5">
              <Col lg="3">
                 <Form.Group controlId="date">
                     <Form.Label>Ocular Date</Form.Label>
@@ -380,7 +388,7 @@ const SetOcularForm = () => {
                             <option key={tech.technician_id} value={tech.technician_id}>{tech.complete_name}</option>
                         ))}
                     </Form.Control>
-                    {mod ? (<p>One or more technicians are unavailable with the given schedule</p>) : null}
+                    {mod ? (<p>Some technicians are unavailable</p>) : null}
                     <Form.Control.Feedback type="invalid">
                         Please choose a technician.
                     </Form.Control.Feedback>
@@ -389,7 +397,15 @@ const SetOcularForm = () => {
             </Col>
         </Row>
 
-        <Row className="mt-5">
+        {errorMessage ? 
+                <Row className="mb-1">
+                    <Col lg="3" className="text-center">
+                        <span style={{ color: "#FF0000" }}> {errorMessage} </span> 
+                    </Col>
+                </Row> 
+            : null}
+
+        <Row>
             <Col lg="3">
                 <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
                 {React.createElement(FaCalendarDay, { size: 18, style: { marginRight: '5px' } })}   Schedule New Ocular
