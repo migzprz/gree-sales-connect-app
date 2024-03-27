@@ -6,6 +6,7 @@ import { FaEdit, FaSearch, FaCheck, FaPlus} from 'react-icons/fa';
 import { Row, Col, Card, CardBody, CardHeader, Table, Form, InputGroup } from 'react-bootstrap';
 import '../index.css';
 import axios from 'axios';
+import useAvailableTechnicians from '../hooks/useAvailableTechnicians';
 
 const ClaimWarrantyForm= () => {
 
@@ -14,7 +15,12 @@ const ClaimWarrantyForm= () => {
     const [warrantySearchData, setWarrantySearchData] = useState([]);
     const [validated, setValidated] = useState(false);
 
-    
+    // const [technicians, setTechnicians] = useState([])
+    const [inputDateTimeInspection, setInputDateTimeInspection] = useState(null)
+    const [inputDateTimeService, setInputDateTimeService] = useState(null)
+    const { technicians, mod } = useAvailableTechnicians(inputDateTimeInspection)
+    const { technicians: technicians2, mod: mod2} = useAvailableTechnicians(inputDateTimeService)
+
     const [formData, setFormData] = useState({
         // new user data
         is_completed: 0,
@@ -29,6 +35,31 @@ const ClaimWarrantyForm= () => {
         inspection_technician_id: '',
         claimed_units: []
     })
+
+
+    useEffect(() => {
+        console.log(formData.inspection_dateonly, formData.inspection_time)
+        if (formData.inspection_dateonly && formData.inspection_time) {
+            // Both date and time are present, update inputDateTime
+            const newInputDateTime = formData.inspection_dateonly + "T" + formData.inspection_time;
+            setInputDateTimeInspection(newInputDateTime);
+        }
+    }, [formData.inspection_dateonly, formData.inspection_time])
+    useEffect(() => {
+        console.log(inputDateTimeInspection)
+    }, [inputDateTimeInspection])
+
+    useEffect(() => {
+        console.log(formData.service_dateonly, formData.service_time)
+        if (formData.service_dateonly && formData.service_time) {
+            // Both date and time are present, update inputDateTime
+            const newInputDateTime = formData.service_dateonly + "T" + formData.service_time;
+            setInputDateTimeService(newInputDateTime);
+        }
+    }, [formData.service_dateonly, formData.service_time])
+    useEffect(() => {
+        console.log(inputDateTimeService)
+    }, [inputDateTimeService])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -265,9 +296,11 @@ const ClaimWarrantyForm= () => {
                                     <Form.Label>Assigned Technician</Form.Label>
                                     <Form.Control as="select" name="inspection_technician_id" value={formData.inspection_technician_id} onChange={(e) => handleChangeTechnician(e, 'inspection_technician_id')} required>
                                         <option value=""> Select </option>
-                                        <option value="1"> Zara </option>
-                                        <option value="2"> Split Type </option>
+                                        {technicians.map((t, index) =>(
+                                            <option key={index} value={t.technician_id}>{t.complete_name}</option>
+                                        ))}
                                     </Form.Control>
+                                    {mod ? (<p>One or more technicians are unavailable with the given schedule</p>) : null}
                                     <Form.Control.Feedback type="invalid">
                                         Please select technician.
                                     </Form.Control.Feedback>
@@ -300,9 +333,11 @@ const ClaimWarrantyForm= () => {
                                 <Form.Label>Assigned Technician</Form.Label>
                                 <Form.Control as="select" name="service_technician_id" value={formData.service_technician_id} onChange={(e) => handleChangeTechnician(e, 'service_technician_id')} required>
                                     <option value=""> Select </option>
-                                    <option value="1"> Zara </option>
-                                    <option value="2"> Split Type </option>
+                                    {technicians2.map((t, index) =>(
+                                        <option key={index} value={t.technician_id}>{t.complete_name}</option>
+                                    ))}
                                 </Form.Control>
+                                {mod2 ? (<p>One or more technicians are unavailable with the given schedule</p>) : null}
                                 <Form.Control.Feedback type="invalid">
                                     Please select technician.
                                 </Form.Control.Feedback>

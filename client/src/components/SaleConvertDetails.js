@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { FaBriefcase} from 'react-icons/fa';
 import { Row, Col, Form, InputGroup } from 'react-bootstrap';
 import '../index.css';
-import ReturningClientModal from './ReturningClientModal';
 import axios from 'axios';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import useAvailableTechnicians from '../hooks/useAvailableTechnicians';
 
 const SaleConvertDetails = () => {
     
@@ -37,9 +37,9 @@ const SaleConvertDetails = () => {
         try {
             const fetchdata = async () => {
                 const res = await axios.get(`http://localhost:4000/api/getModeOfPayments`)
-                const res2 = await axios.get(`http://localhost:4000/api/getTechnicians`)
+                // const res2 = await axios.get(`http://localhost:4000/api/getTechnicians`)
                 setMop(res.data)
-                setTechnicians(res2.data)
+                // setTechnicians(res2.data)
             }
             fetchdata()
         } catch (error) {
@@ -51,7 +51,14 @@ const SaleConvertDetails = () => {
     const [hasService, setHasService] = useState(false)
     const [serviceOnlyState, setServiceOnlyState] = useState(false)
     const [validated, setValidated] = useState(false);
-    const [technicians, setTechnicians] = useState([])
+
+    // const [technicians, setTechnicians] = useState([])
+    const [inputDateTimeInstallation, setInputDateTimeInstallation] = useState(null)
+    const [inputDateTimeService, setInputDateTimeService] = useState(null)
+    const { technicians, mod } = useAvailableTechnicians(inputDateTimeInstallation)
+    const { technicians: technicians2, mod: mod2} = useAvailableTechnicians(inputDateTimeService)
+
+
     const [mop, setMop] = useState([])
     const [payment, setPayments] = useState({
         amount: totalPrice
@@ -59,6 +66,32 @@ const SaleConvertDetails = () => {
     const [delivery, setDelivery] = useState({})
     const [installation, setInstallation] = useState({})
     const [services, setServices] = useState({})
+
+    // Technician Availability for Installation
+    useEffect(() => {
+        console.log(installation.installationSDate, installation.installationSTime)
+        if (installation.installationSDate && installation.installationSTime) {
+            // Both date and time are present, update inputDateTime
+            const newInputDateTime = installation.installationSDate + "T" + installation.installationSTime;
+            setInputDateTimeInstallation(newInputDateTime);
+        }
+    }, [installation.installationSDate, installation.installationSTime])
+    useEffect(() => {
+        console.log(inputDateTimeInstallation)
+    }, [inputDateTimeInstallation])
+
+    // Technician Availability for Services
+    useEffect(() => {
+        console.log(services.serviceDate, services.serviceTime)
+        if (services.serviceDate && services.serviceTime) {
+            // Both date and time are present, update inputDateTime
+            const newInputDateTime = services.serviceDate + "T" + services.serviceTime;
+            setInputDateTimeService(newInputDateTime);
+        }
+    }, [services.serviceDate, services.serviceTime])
+    useEffect(() => {
+        console.log(inputDateTimeService)
+    }, [inputDateTimeService])
 
 
     const handleChange = (e) => {
@@ -118,11 +151,16 @@ const SaleConvertDetails = () => {
       setValidated(true);
       try {
         const res = await axios.post(`http://localhost:4000/api/convertToSale/${type === 'add' ? 'add' : 'new'}`, { id, payment, delivery, installation, services, sales })
+        console.log(res)
         navigate('/viewsales')
       } catch (error) {
         console.error(error)
       }
     };
+
+    const handleCancel = () => {
+        navigate('/viewquotations')
+    }
 
     useEffect(() => {
         console.log(payment)
@@ -365,6 +403,7 @@ const SaleConvertDetails = () => {
                                         <option key={index} value={t.technician_id}>{t.complete_name}</option>
                                     ))}
                                 </Form.Control>
+                                {mod ? (<p>One or more technicians are unavailable with the given schedule</p>) : null}
                                 <Form.Control.Feedback type="invalid">
                                     Please choose a mode of payment.
                                 </Form.Control.Feedback>
@@ -405,10 +444,11 @@ const SaleConvertDetails = () => {
                                 <Form.Label>Technician</Form.Label>
                                 <Form.Control as="select" name='serviceTechnician' onChange={handleChange} required>
                                     <option value=""> Select </option>
-                                    {technicians.map((t, index) =>(
+                                    {technicians2.map((t, index) =>(
                                         <option key={index} value={t.technician_id}>{t.complete_name}</option>
                                     ))}
                                 </Form.Control>
+                                {mod2 ? (<p>One or more technicians are unavailable with the given schedule</p>) : null}
                                 <Form.Control.Feedback type="invalid">
                                     Please choose a mode of payment.
                                 </Form.Control.Feedback>
@@ -424,30 +464,20 @@ const SaleConvertDetails = () => {
                 <Col lg="2"/>
 
                 <Col lg="2">
-                    <button className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
+                    <button type='submit' className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
                     {React.createElement(FaBriefcase, { size: 18, style: { marginRight: '5px' } })}   Convert to Sale
                     </button>
                 </Col>
 
                 <Col lg="2">
-                    <button className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}}>
+                    <button onClick={handleCancel} className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}}>
                     Cancel
                     </button>
                 </Col>
             </Row>
-            
-        
     </Form>
 
-
-       
-        
-
-        
-           
-
-
-        </div>
+    </div>
     );
 };
 
