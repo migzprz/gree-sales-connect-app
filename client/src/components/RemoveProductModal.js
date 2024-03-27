@@ -84,7 +84,7 @@ const RemoveProductModal = ({ id, type }) => {
             } catch (error) {
                 console.error('Error: Problem encountered when posting data', error);
             }
-        } else if (form.checkValidity() && type === 'Parts') {
+        } else if (form.checkValidity() && type === 'AC Parts') {
             try {
                 const postResponse = await axios.patch(`http://localhost:4000/api/changePartState/${id}/0`);
                 console.log(postResponse);
@@ -130,7 +130,7 @@ const RemoveProductModal = ({ id, type }) => {
                                     </Col>
                                     <Col>
                                         {type === 'Window Type AC' || type === 'Split Type AC' ? record.unit_model :
-                                        type === 'Parts' ? record.name :
+                                        type === 'AC Parts' ? record.name :
                                         type === 'Services' ? "-" :
                                         null}
                                     </Col>
@@ -151,7 +151,7 @@ const RemoveProductModal = ({ id, type }) => {
                                     </Col>
                                     <Col>
                                         {type === 'Window Type AC' || type === 'Split Type AC' ? record.product_srp :
-                                        type === 'Parts' ? record.parts_srp :
+                                        type === 'AC Parts' ? record.parts_srp :
                                         type === 'Services' ? record.service_srp :
                                         null}
                                     </Col>

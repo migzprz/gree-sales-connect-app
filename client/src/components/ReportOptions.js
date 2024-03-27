@@ -164,7 +164,7 @@ const ReportOptions = () => {
                     </Col>
                 </Row>
 
-                {errorMessage ? 
+            {errorMessage ? 
                 <Row className="mt-2">
                     <Col lg="6"/>
                     <Col lg="6" className="text-center">

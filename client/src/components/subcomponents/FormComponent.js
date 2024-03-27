@@ -124,7 +124,7 @@ export default function FormComponent({ formData, setFormData, handleChange, val
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
-                    <Col className="ms-5" lg="4">
+                    <Col lg="3">
                         <Form.Group controlId="companyName">
                             <Form.Label>Company Name</Form.Label>
                             <Form.Control type="text" disabled={!isNew} value={formData.returningClientCompanyName || null }onChange={handleChange} name='companyName' placeholder="optional"/>
@@ -154,7 +154,7 @@ export default function FormComponent({ formData, setFormData, handleChange, val
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
-                    <Col className="ms-5"  lg="4">
+                    <Col lg="3">
                         <Form.Group controlId="tin">
                             <Form.Label>Company TIN ID</Form.Label>
                             <Form.Control type="text" disabled={!isNew} value={formData.returningClientCompanyTin || null } placeholder="optional" name='tin' onChange={handleChange}/>
@@ -166,7 +166,7 @@ export default function FormComponent({ formData, setFormData, handleChange, val
                 </Row>
 
                 <Row className="mt-3">
-                    <Col lg="4">
+                    <Col lg="3">
                         <Form.Group controlId="bldg_no">
                             <Form.Label>Unit No.</Form.Label>
                             <Form.Control type="text" onChange={handleChange} name='bldg_no' required/>
@@ -175,7 +175,7 @@ export default function FormComponent({ formData, setFormData, handleChange, val
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
-                    <Col lg="4">
+                    <Col lg="3">
                         <Form.Group controlId="street_name">
                             <Form.Label>Street</Form.Label>
                             <Form.Control type="text" onChange={handleChange} name='street_name' required/>
@@ -212,7 +212,7 @@ export default function FormComponent({ formData, setFormData, handleChange, val
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
-                    <Col lg="3">
+                    <Col lg="2">
                         <Form.Group controlId="province">
                             <Form.Label>Province</Form.Label>
                             <Form.Control as="select" onChange={handleChange} name='addr_province_id'  required>
@@ -226,7 +226,7 @@ export default function FormComponent({ formData, setFormData, handleChange, val
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
-                    <Col lg="3">
+                    <Col lg="2">
                         <Form.Group controlId="city">
                             <Form.Label>City</Form.Label>
                             <Form.Control as="select" onChange={handleChange} name='addr_municipality_id'  required>
@@ -240,7 +240,7 @@ export default function FormComponent({ formData, setFormData, handleChange, val
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
-                    <Col lg="3">
+                    <Col lg="2">
                         <Form.Group controlId="barangay">
                             <Form.Label>Barangay</Form.Label>
                             <Form.Control as="select" onChange={handleChange} name='addr_barangay_id' required>
@@ -255,6 +255,7 @@ export default function FormComponent({ formData, setFormData, handleChange, val
                         </Form.Group>
                     </Col>
                 </Row>
+                
             </Form>
         </>
     )

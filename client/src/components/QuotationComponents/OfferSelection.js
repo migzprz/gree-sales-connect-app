@@ -8,9 +8,12 @@ import axios from 'axios';
 const OfferSelection = ({offerList, onOfferSubmission, type, id }) => {
     const [hasItems, setHasItems] = useState(false);
     const [isFullView, setIsFullView] = useState(true);
+    const [filteredOffers, setFilteredOffers] = useState(null);
     const [validated, setValidated] = useState(false);
     const [itemList, setItemList] = useState([]);
     const [itemListTotals, setItemListTotals] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+
 
     useEffect(() => {
         if (type === 'edit') {
@@ -46,10 +49,13 @@ const OfferSelection = ({offerList, onOfferSubmission, type, id }) => {
         setValidated(true);
     };
 
-
-
-
     
+    const [filterOption, setFilterOption] = useState('');
+
+    useEffect(() => {
+        console.log(filterOption)
+    }, [filterOption])
+
 
     //Rendering Transition Logic for Alternating Views
     const [shouldRender, setShouldRender] = useState(false);
@@ -134,6 +140,57 @@ const OfferSelection = ({offerList, onOfferSubmission, type, id }) => {
         totalDisc: totalDisc
         });
     };
+
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+
+    
+    useEffect(() => {
+        if (typeof offerList === 'object' && offerList !== null) {
+            const filteredOffers = {
+                products: [],
+                services: [],
+                parts: []
+            };
+    
+            // Iterate over each property of offerList
+            for (const key in offerList) {
+                // Check if the property is an array and filter based on its fields
+                if (Array.isArray(offerList[key])) {
+                    offerList[key].forEach(offer => {
+                        let matches = false;
+                        if (key === 'products') {
+                            matches = offer.display.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                      offer.unit_model.toLowerCase().includes(searchTerm.toLowerCase());
+                        } else if (key === 'services') {
+                            matches = offer.description.toLowerCase().includes(searchTerm.toLowerCase());
+                        } else if (key === 'parts') {
+                            matches = offer.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                      offer.name.toLowerCase().includes(searchTerm.toLowerCase());
+                        }
+                        if (matches) {
+                            filteredOffers[key].push(offer);
+                        }
+                    });
+                }
+            }
+            setFilteredOffers(filteredOffers);
+        } else {
+            console.error("offerList is not an object or is null.");
+        }
+    }, [offerList, searchTerm]);
+    
+
+    
+
+    useEffect(() => {
+        console.log(filteredOffers)
+      }, [offerList, filteredOffers])
+
+    
+
   
   
 
@@ -162,60 +219,48 @@ const OfferSelection = ({offerList, onOfferSubmission, type, id }) => {
                     <h6>Please do not reload or go to the previous page.</h6>
                 </Col>
                 <Col className="d-flex align-items-end justify-content-end">
-                    <div className="mt-auto">
-                        <button className="btn" style={{ color: "white", backgroundColor: "#014c91" }} onClick={() => {setIsFullView(!isFullView)
-                                                                                                                        setShouldRender(false)}}>
-                            {isFullView ? (
-                                <>
-                                    {React.createElement(FaEyeSlash, { size: 18, style: { marginRight: '5px' } })}
-                                    Hide Offerings
-                                </>
-                            ) : (
-                                <>
-                                    {React.createElement(FaEye, { size: 18, style: { marginRight: '5px' } })}
-                                    View Offerings
-                                </>
-                            )}
-                        </button>
-                    </div>
+                    {itemList.length > 0 &&
+                        <div className="mt-auto">
+                            <button className="btn" style={{ color: "white", backgroundColor: "#014c91" }} onClick={() => {setIsFullView(!isFullView)
+                                                                                                                            setShouldRender(false)}}>
+                                
+                                
+                                        {isFullView ? (
+                                            <>
+                                                {React.createElement(FaEyeSlash, { size: 18, style: { marginRight: '5px' } })}
+                                                Hide Offerings
+                                            </>
+                                        ) : (
+                                            <>
+                                                {React.createElement(FaEye, { size: 18, style: { marginRight: '5px' } })}
+                                                View Offerings
+                                            </>
+                                        )}
+                                
+                            </button>
+                        </div>
+                    }
                 </Col>
                 <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
             </Row>
 
                 {/* Navigation Mechanism */}
-                {itemList.length == 0 && (
+                {itemList.length === 0 && (
                     <Row>
-                        <Col lg="4">
-                        <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
-                                                                            backgroundColor: "#014c91", borderRadius: "10px",
-                                                                            overflow: "hidden"}}>
-                                <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
-                                    <div style={{padding: "5px", color: 'white'}}>
-                                        {React.createElement(FaSearch, { size: 20 })}
-                                    </div>  
-                                </div>
-                                <input type="search" className="form-control" placeholder="Search"/>
+                        <Col lg="6">
+                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
+                                                                    backgroundColor: "#014c91", borderRadius: "10px", 
+                                                                    overflow: "hidden"}}>
+                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>
+                            <div style={{padding: "5px", color: 'white'}}>
+                                {React.createElement(FaSearch, { size: 20 })}
                             </div>
-                        </Col>
-                        <Col lg="4">
-                            <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
-                                                                            backgroundColor: "#014c91", borderRadius: "10px", 
-                                                                            overflow: "hidden"}}>
-                                <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>
-                                    <div style={{padding: "5px", color: 'white'}}>
-                                        {React.createElement(FaSort, { size: 20 })}
-                                    </div>
-                                </div>
-                                <select className="form-select">
-                                    <option value="">Sort by Name (A-Z)</option>
-                                    <option value="1">Sort by Name (Z-A)</option>
-                                    <option value="2">Sort by Price (A-Z)</option>
-                                    <option value="3">Sort by Price (Z-A)</option>
-                                </select>
-                            </div>
+                        </div>
+                        <input type="search" className="form-control" placeholder="Search" value={searchTerm} onChange={handleSearch}/>
+                    </div>
                         </Col>
                         {/*Filtering Mechanism*/ }
-                        <Col lg="4">
+                        <Col lg="6">
                             <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
                                                                             backgroundColor: "#014c91", borderRadius: "10px",
                                                                             overflow: "hidden"}}>
@@ -224,16 +269,16 @@ const OfferSelection = ({offerList, onOfferSubmission, type, id }) => {
                                         {React.createElement(FaFilter, { size: 20 })}
                                     </div>  
                                 </div>
-                                <select className="form-select">
-                                    <option value="">All Products/Services</option>
-                                    <option value="0">Window-type Products</option>
-                                    <option value="1">Split-type Products</option>
-                                    <option value="2">Product Parts</option>
-                                    <option value="3">Services</option>
+                                <select className="form-select" value={filterOption} onChange={(e) => {setFilterOption(e.target.value)}}>
+                                    <option value="">All Offerings</option>
+                                    <option value="products">Products Only</option>
+                                    <option value="parts">AC Parts Only</option>
+                                    <option value="services">Services Only</option>
+                                    
                                 </select>
+
                             </div>
                         </Col>
-                        
                     </Row>
 
                     )}
@@ -241,48 +286,77 @@ const OfferSelection = ({offerList, onOfferSubmission, type, id }) => {
             <Row>
 
                 {/* Initial View Display */}
-                {itemList.length == 0 ? (
+                {itemList.length === 0 ? (
                     
                     <Col lg="12">
                         <Row>
-                        {(offerList.products).map((offer, index) => (
-                            <Col className="mt-3" lg="2" key={index}>
-                            <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
-                                <Card.Title>{offer.display}</Card.Title>
-                                <Card.Text>
-                                {offer.unit_model} <br />
-                                <strong>₱ {formatNumber(offer.product_srp)}  </strong><br />
-                                {offer.product_type.toUpperCase()}
-                                </Card.Text>
-                            </Card>
-                            </Col>
-                        ))}
-                        {(offerList.services).map((offer, index) => (
-                            <Col className="mt-3" lg="2" key={index}>
-                            <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
-                                <Card.Title>{offer.description}</Card.Title>
-                                <Card.Text>
-                                --- <br />
-                                <strong>₱ {formatNumber(offer.service_srp)}  </strong><br />
-                                {offer.unit.toUpperCase()}
-                                </Card.Text>
-                            </Card>
-                            </Col>
-                        ))}
-                        {(offerList.parts).map((offer, index) => (
-                            <Col className="mt-3" lg="2" key={index}>
-                            <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
-                                <Card.Title>{offer.description}</Card.Title>
-                                <Card.Text>
-                                {offer.name} <br />
-                                <strong>₱ {formatNumber(offer.parts_srp)}  </strong><br />
-                                {offer.unit.toUpperCase()}
-                                </Card.Text>
-                            </Card>
-                            </Col>
-                        ))}
+                        {filteredOffers &&
+                        <>  
+                            {(filterOption === 'products' || filterOption === '') &&
+                                <>
+                                    {(filteredOffers.products).map((offer, index) => (
+                                        <Col className="mt-3" lg="2" key={index}>
+                                        <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
+                                            <Card.Title>{offer.display}</Card.Title>
+                                            <Card.Text>
+                                            {offer.unit_model} <br />
+                                            <strong>₱ {formatNumber(offer.product_srp)}  </strong><br />
+                                            {offer.product_type.toUpperCase()}
+                                            </Card.Text>
+                                        </Card>
+                                        </Col>
+                                    ))}
+                                </>
+                            }
+                            {(filterOption === 'parts' || filterOption === '') &&
+                                <>
+                                    {(filteredOffers.services).map((offer, index) => (
+                                        <Col className="mt-3" lg="2" key={index}>
+                                        <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
+                                            <Card.Title>{offer.description}</Card.Title>
+                                            <Card.Text>
+                                            --- <br />
+                                            <strong>₱ {formatNumber(offer.service_srp)}  </strong><br />
+                                            {offer.unit.toUpperCase()}
+                                            </Card.Text>
+                                        </Card>
+                                        </Col>
+                                    ))}
+                                </>
+                            }
+                            {(filterOption === 'services' || filterOption === '') &&
+                                <>
+                                    {(filteredOffers.parts).map((offer, index) => (
+                                        <Col className="mt-3" lg="2" key={index}>
+                                        <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
+                                            <Card.Title>{offer.description}</Card.Title>
+                                            <Card.Text>
+                                            {offer.name} <br />
+                                            <strong>₱ {formatNumber(offer.parts_srp)}  </strong><br />
+                                            {offer.unit.toUpperCase()}
+                                            </Card.Text>
+                                        </Card>
+                                        </Col>
+                                    ))}
+                                </>
+                            }
+                        </>}
+
+                          
+
                         </Row>
-                  </Col>
+                        {filteredOffers &&
+                            <>
+                                {filteredOffers.products.length === 0 && filteredOffers.services.length === 0 && filteredOffers.parts.length === 0 && 
+                                <Card style={{ borderRadius: '20px', marginTop: '20px', textAlign: 'center' }}>
+                                    <CardBody style={{ padding:'100px', color: '#014c91'}}>
+                                        <h1 className="mt-3"> <FaSearch size={50} className="me-2" />No Offerings Found  </h1>
+                                    </CardBody>
+                                </Card>
+                                }
+                            </>
+                        }
+                    </Col>
                 ):(
                     
                 <>
@@ -385,23 +459,18 @@ const OfferSelection = ({offerList, onOfferSubmission, type, id }) => {
                     <Col lg="5" >
 
                     {/* Navigation Mechanism */}
-                     <Row>
+                    <Row>
                         <Col lg="6">
-                            <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
-                                                                            backgroundColor: "#014c91", borderRadius: "10px", 
-                                                                            overflow: "hidden"}}>
-                                <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>
-                                    <div style={{padding: "5px", color: 'white'}}>
-                                        {React.createElement(FaSort, { size: 20 })}
-                                    </div>
-                                </div>
-                                <select className="form-select">
-                                    <option value="">Sort by Name (A-Z)</option>
-                                    <option value="1">Sort by Name (Z-A)</option>
-                                    <option value="2">Sort by Price (A-Z)</option>
-                                    <option value="3">Sort by Price (Z-A)</option>
-                                </select>
+                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
+                                                                    backgroundColor: "#014c91", borderRadius: "10px", 
+                                                                    overflow: "hidden"}}>
+                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>
+                            <div style={{padding: "5px", color: 'white'}}>
+                                {React.createElement(FaSearch, { size: 20 })}
                             </div>
+                        </div>
+                        <input type="search" className="form-control" placeholder="Search" value={searchTerm} onChange={handleSearch}/>
+                    </div>
                         </Col>
                         {/*Filtering Mechanism*/ }
                         <Col lg="6">
@@ -413,72 +482,89 @@ const OfferSelection = ({offerList, onOfferSubmission, type, id }) => {
                                         {React.createElement(FaFilter, { size: 20 })}
                                     </div>  
                                 </div>
-                                <select className="form-select">
-                                    <option value="">All Products/Services</option>
-                                    <option value="0">Window-type Products</option>
-                                    <option value="1">Split-type Products</option>
-                                    <option value="2">Product Parts</option>
-                                    <option value="3">Services</option>
+                                <select className="form-select" value={filterOption} onChange={(e) => {setFilterOption(e.target.value)}}>
+                                    <option value="">All Offerings</option>
+                                    <option value="products">Products Only</option>
+                                    <option value="parts">AC Parts Only</option>
+                                    <option value="services">Services Only</option>
+                                    
                                 </select>
+
                             </div>
                         </Col>
                     </Row>
-
-                    <Row>
-                        {/*Search Bar*/ }
-                        <Col lg="12">
-                        <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
-                                                                            backgroundColor: "#014c91", borderRadius: "10px",
-                                                                            overflow: "hidden"}}>
-                                <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
-                                    <div style={{padding: "5px", color: 'white'}}>
-                                        {React.createElement(FaSearch, { size: 20 })}
-                                    </div>  
-                                </div>
-                                <input type="search" className="form-control" placeholder="Search"/>
-                            </div>
-                        </Col>
-                    </Row>
-
 
                     <div style={{ maxHeight: '78vh', overflowY: 'auto', overflowX:'hidden' }}>
                         <Row>
-                        {(offerList.products).map((offer, index) => (
-                            <Col className="mt-3" lg="4" key={index}>
-                            <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
-                                <Card.Title>{offer.display}</Card.Title>
-                                <Card.Text>
-                                {offer.unit_model} <br />
-                                <strong>₱ {formatNumber(offer.product_srp)}  </strong><br />
-                                {offer.product_type.toUpperCase()}
-                                </Card.Text>
-                            </Card>
+                            <Col lg="12">
+                                <Row>
+                                {filteredOffers &&
+                                <>  
+                                    {(filterOption === 'products' || filterOption === '') &&
+                                        <>
+                                            {(filteredOffers.products).map((offer, index) => (
+                                                <Col className="mt-3" lg="4" key={index}>
+                                                <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
+                                                    <Card.Title>{offer.display}</Card.Title>
+                                                    <Card.Text>
+                                                    {offer.unit_model} <br />
+                                                    <strong>₱ {formatNumber(offer.product_srp)}  </strong><br />
+                                                    {offer.product_type.toUpperCase()}
+                                                    </Card.Text>
+                                                </Card>
+                                                </Col>
+                                            ))}
+                                        </>
+                                    }
+                                    {(filterOption === 'parts' || filterOption === '') &&
+                                        <>
+                                            {(filteredOffers.services).map((offer, index) => (
+                                                <Col className="mt-3" lg="4" key={index}>
+                                                <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
+                                                    <Card.Title>{offer.description}</Card.Title>
+                                                    <Card.Text>
+                                                    --- <br />
+                                                    <strong>₱ {formatNumber(offer.service_srp)}  </strong><br />
+                                                    {offer.unit.toUpperCase()}
+                                                    </Card.Text>
+                                                </Card>
+                                                </Col>
+                                            ))}
+                                        </>
+                                    }
+                                    {(filterOption === 'services' || filterOption === '') &&
+                                        <>
+                                            {(filteredOffers.parts).map((offer, index) => (
+                                                <Col className="mt-3" lg="4" key={index}>
+                                                <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
+                                                    <Card.Title>{offer.description}</Card.Title>
+                                                    <Card.Text>
+                                                    {offer.name} <br />
+                                                    <strong>₱ {formatNumber(offer.parts_srp)}  </strong><br />
+                                                    {offer.unit.toUpperCase()}
+                                                    </Card.Text>
+                                                </Card>
+                                                </Col>
+                                            ))}
+                                        </>
+                                    }
+                                </>}
+
+                                
+
+                                </Row>
+                                {filteredOffers &&
+                                    <>
+                                        {filteredOffers.products.length === 0 && filteredOffers.services.length === 0 && filteredOffers.parts.length === 0 && 
+                                        <Card style={{ borderRadius: '20px', marginTop: '20px', textAlign: 'center' }}>
+                                            <CardBody style={{ padding:'100px', color: '#014c91'}}>
+                                                <h1 className="mt-3"> <FaSearch size={50} className="me-2" />No Offerings Found  </h1>
+                                            </CardBody>
+                                        </Card>
+                                        }
+                                    </>
+                                }
                             </Col>
-                        ))}
-                        {(offerList.services).map((offer, index) => (
-                            <Col className="mt-3" lg="4" key={index}>
-                            <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
-                                <Card.Title>{offer.description}</Card.Title>
-                                <Card.Text>
-                                --- <br />
-                                <strong>₱ {formatNumber(offer.service_srp)}  </strong><br />
-                                {offer.unit.toUpperCase()}
-                                </Card.Text>
-                            </Card>
-                            </Col>
-                        ))}
-                        {(offerList.parts).map((offer, index) => (
-                            <Col className="mt-3" lg="4" key={index}>
-                            <Card style={{ height: '100%',cursor: 'pointer', padding: '20px', background: 'white', color: '#014c91' }} onClick={() => handleAddToItemList(offer)}>
-                                <Card.Title>{offer.description}</Card.Title>
-                                <Card.Text>
-                                {offer.name} <br />
-                                <strong>₱ {formatNumber(offer.parts_srp)}  </strong><br />
-                                {offer.unit.toUpperCase()}
-                                </Card.Text>
-                            </Card>
-                            </Col>
-                        ))}
                         </Row>
                     </div>
                     </Col>
