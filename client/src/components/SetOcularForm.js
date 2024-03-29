@@ -319,7 +319,7 @@ const SetOcularForm = () => {
             <Col lg="2">
                 <Form.Group controlId="province">
                     <Form.Label>Province</Form.Label>
-                    <Form.Control as="select" onChange={handleChange} name='addr_province_id'  required>
+                    <Form.Control disabled={!formData.addr_region_id} as="select" onChange={handleChange} name='addr_province_id'  required>
                         <option value=""> Select </option>
                         {filteredProvince.map((prov) => (
                             <option key={prov.province_id} value={prov.province_id}>{prov.name}</option>
@@ -333,7 +333,7 @@ const SetOcularForm = () => {
             <Col lg="2">
                 <Form.Group controlId="city">
                     <Form.Label>City</Form.Label>
-                    <Form.Control as="select" onChange={handleChange} name='addr_municipality_id'  required>
+                    <Form.Control disabled={!formData.addr_province_id} as="select" onChange={handleChange} name='addr_municipality_id'  required>
                         <option value=""> Select </option>
                         {filteredCity.map((cit) => (
                             <option key={cit.municipality_id} value={cit.municipality_id}>{cit.name}</option>
@@ -347,7 +347,7 @@ const SetOcularForm = () => {
             <Col lg="2">
                 <Form.Group controlId="barangay">
                     <Form.Label>Barangay</Form.Label>
-                    <Form.Control as="select" onChange={handleChange} name='addr_barangay_id' required>
+                    <Form.Control disabled={!formData.addr_municipality_id} as="select" onChange={handleChange} name='addr_barangay_id' required>
                         <option value=""> Select </option>
                         {filteredBarangay.map((bar) => (
                             <option key={bar.barangay_id} value={bar.barangay_id}>{bar.name}</option> 
@@ -382,13 +382,13 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="technician">
                     <Form.Label>Assigned Technician</Form.Label>
-                    <Form.Control as="select" onChange={handleChange} name='technician' required>
+                    <Form.Control disabled={!formData.date || !formData.time}as="select" onChange={handleChange} name='technician' required>
                         <option value="">Select</option>
                         {technicians.map((tech) => (
                             <option key={tech.technician_id} value={tech.technician_id}>{tech.complete_name}</option>
                         ))}
                     </Form.Control>
-                    {mod ? (<p>Some technicians are unavailable</p>) : null}
+                    {technicians.length === 0 ? (<p style={{color: 'red'}}>No technicians are available</p>) : mod ? (<p>Some technicians are unavailable</p>) : null}
                     <Form.Control.Feedback type="invalid">
                         Please choose a technician.
                     </Form.Control.Feedback>
