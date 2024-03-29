@@ -84,7 +84,8 @@ const QuotationForm = () => {
         offer: offerData,
         terms: termsData,
         id: client_id,
-        sales_id: salesId
+        sales_id: salesId,
+        login_id: sessionStorage.getItem('login_id')
       }
 
       console.log('POST DATA FOR QUOTATION SUBMISSION', data)

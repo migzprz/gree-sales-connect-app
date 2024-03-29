@@ -15,6 +15,8 @@ const SaleConvertDetails = () => {
     const type = searchParams.get('type')
     const sales = searchParams.get('sales')
 
+    const login_id = sessionStorage.getItem('login_id')
+
     useEffect(() => {
         const fetchData = async () => {
             try {

@@ -51,8 +51,7 @@ const SetOcularForm = () => {
         // ocular data (transform date and time into datetime)
         date: null,
         time: null,
-        technician: null,
-        login_id: 1,
+        technician: null
 
     })
     useEffect(() => {
@@ -161,7 +160,8 @@ const SetOcularForm = () => {
       // add ocular_date by concat date and time
       const data = {
         ...formData,
-        ocular_date: formData.date+"T"+formData.time
+        ocular_date: formData.date+"T"+formData.time,
+        login_id: sessionStorage.getItem('login_id')
       }
 
       console.log(data)

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
+import axios from 'axios';
 
 const MainHeader = () => {
 
@@ -14,7 +15,9 @@ const MainHeader = () => {
     };
 
     const handleLogout = () => {
+        const res = axios.get('http://localhost:4000/api/logout/')
         navigate('/'); // Navigate to the login page after logout
+        
     };
 
     return (
