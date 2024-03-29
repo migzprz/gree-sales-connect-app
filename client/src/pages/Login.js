@@ -18,6 +18,11 @@ const LoginScreen = () => {
         try {
             const response = await axios.post('http://localhost:4000/api/login', { username, password });
             if (response.data.message === "Login successful") {
+                const {sales_access, aftersales_access, exec_access, sysad_access, first_name, last_name} = response.data.user
+                const accessString = `${sales_access}${aftersales_access}${exec_access}${sysad_access}`;
+                const name = `${last_name}, ${first_name}`
+                sessionStorage.setItem('accessString', accessString)
+                sessionStorage.setItem('userName', name)
                 navigate('/home');
             } else {
                 alert('Incorrect username or password');

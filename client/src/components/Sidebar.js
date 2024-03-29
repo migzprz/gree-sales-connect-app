@@ -10,36 +10,78 @@ const Sidebar = ({ children }) => {
   const [menuItem, setMenuItem] = useState([]);
 
   const [userType, setUserType] = useState(1)
+  const access = sessionStorage.getItem('accessString')
+  console.log('accessString', access)
 
   useEffect(() => {
-  if(userType === 1){
-    setMenuItem([
-      { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
+    if (access) {
+      if(access[0] === 1){
+        console.log('access sales', access[0])
+        setMenuItem([
+          { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
+          { name: 'Oculars', icon: FaEye, link: '', submenuNames: ['Manage Oculars', 'Set Ocular'], submenuLinks: ['/viewoculars', '/setocular']},
+          { name: 'Quotations', icon: FaScroll, link: '', submenuNames: ['Manage Quotations', 'Generate Quotation'], submenuLinks: ['/viewquotations','/generatequotation'] },
+          { name: 'Sales', icon: FaBriefcase, link: '/viewsales', submenuNames: [], submenuLinks: []},
+          { name: 'Clients', icon: FaUserTie, link: '/viewclients', submenuNames: [], submenuLinks: [] }
+        ])
+      }  
+      if(access[1] === 1){
+        console.log('access aftersales', access[1])
+        setMenuItem([
+          { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
+          { name: 'Warranties', icon: FaShieldAlt, link: '', submenuNames: ['Manage Warranties', 'Set Warranty'], submenuLinks: ['/viewwarranties', '/searchwarranty']}
+        ])
+      } 
+      if(access[2] === 1){
+        console.log('access exec', access[2])
+        setMenuItem([
+          { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
+          { name: 'Expenses', icon: FaMoneyCheckAlt, link: '', submenuNames: ['Manage Expenses', 'Record Expenses'], submenuLinks: ['/viewexpenses', '/recordexpenses']},
+          { name: 'Reports', icon: FaChartLine, link: '/report', submenuNames: [], submenuLinks: []}
+        ])
+      }
+      if (access[3] === 1) {
+        console.log('access sysad', access[3])
+        setMenuItem([
+          { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
+          { name: 'Products', icon: FaTag, link: '/viewproducts', submenuNames: [], submenuLinks: []},
+          { name: 'Employees', icon: FaUsers, link: '', submenuNames: ['Manage System Users', 'Manage Technicians'], submenuLinks: ['/viewusers', '/viewtechnicians']}
+        ])
+      }
+    }
+  }, [access]);
+
+  useEffect(() => {
+    const menuList = []
+    if (access) {
+      menuList.push({ name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] })
+    }
+    if (access[0] === '1') {
+      menuList.push(
       { name: 'Oculars', icon: FaEye, link: '', submenuNames: ['Manage Oculars', 'Set Ocular'], submenuLinks: ['/viewoculars', '/setocular']},
       { name: 'Quotations', icon: FaScroll, link: '', submenuNames: ['Manage Quotations', 'Generate Quotation'], submenuLinks: ['/viewquotations','/generatequotation'] },
       { name: 'Sales', icon: FaBriefcase, link: '/viewsales', submenuNames: [], submenuLinks: []},
-      { name: 'Clients', icon: FaUserTie, link: '/viewclients', submenuNames: [], submenuLinks: [] }
-    ])
-  } else if(userType === 2){
-    setMenuItem([
-      { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
-      { name: 'Warranties', icon: FaShieldAlt, link: '', submenuNames: ['Manage Warranties', 'Set Warranty'], submenuLinks: ['/viewwarranties', '/searchwarranty']}
-    ])
-  } else if(userType === 3){
-    setMenuItem([
-      { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
-      { name: 'Expenses', icon: FaMoneyCheckAlt, link: '', submenuNames: ['Manage Expenses', 'Record Expenses'], submenuLinks: ['/viewexpenses', '/recordexpenses']},
-      { name: 'Reports', icon: FaChartLine, link: '/report', submenuNames: [], submenuLinks: []}
-    ])
-  } else {
-    setMenuItem([
-      { name: 'Home', icon: FaHome, link:'/home', submenuNames: [], submenuLinks: [] },
-      { name: 'Products', icon: FaTag, link: '/viewproducts', submenuNames: [], submenuLinks: []},
-      { name: 'Employees', icon: FaUsers, link: '', submenuNames: ['Manage System Users', 'Manage Technicians'], submenuLinks: ['/viewusers', '/viewtechnicians']}
-    ])
-  }
-}, [userType]);
-
+      { name: 'Clients', icon: FaUserTie, link: '/viewclients', submenuNames: [], submenuLinks: [] })
+    }
+    if (access[1] === '1') {
+      menuList.push(
+        { name: 'Warranties', icon: FaShieldAlt, link: '', submenuNames: ['Manage Warranties', 'Set Warranty'], submenuLinks: ['/viewwarranties', '/searchwarranty']}
+      )
+    }
+    if (access[2] === '1') {
+      menuList.push(
+        { name: 'Expenses', icon: FaMoneyCheckAlt, link: '', submenuNames: ['Manage Expenses', 'Record Expenses'], submenuLinks: ['/viewexpenses', '/recordexpenses']},
+        { name: 'Reports', icon: FaChartLine, link: '/report', submenuNames: [], submenuLinks: []}
+      )
+    }
+    if (access[3] === '1') {
+      menuList.push(
+        { name: 'Products', icon: FaTag, link: '/viewproducts', submenuNames: [], submenuLinks: []},
+        { name: 'Employees', icon: FaUsers, link: '', submenuNames: ['Manage System Users', 'Manage Technicians'], submenuLinks: ['/viewusers', '/viewtechnicians']}
+      )
+    }
+    setMenuItem(menuList)
+  }, [access])
 
   const [expandedMenuIndex, setExpandedMenuIndex] = useState(null);
   const toggleSubMenu = (index) => setExpandedMenuIndex(expandedMenuIndex === index ? null : index);
