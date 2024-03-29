@@ -15,6 +15,8 @@ const SaleConvertDetails = () => {
     const type = searchParams.get('type')
     const sales = searchParams.get('sales')
 
+    const login_id = sessionStorage.getItem('login_id')
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -150,7 +152,7 @@ const SaleConvertDetails = () => {
       event.preventDefault();
       setValidated(true);
       try {
-        const res = await axios.post(`http://localhost:4000/api/convertToSale/${type === 'add' ? 'add' : 'new'}`, { id, payment, delivery, installation, services, sales })
+        const res = await axios.post(`http://localhost:4000/api/convertToSale/${type === 'add' ? 'add' : 'new'}`, { id, payment, delivery, installation, services, sales, login_id })
         console.log(res)
         navigate('/viewsales')
       } catch (error) {

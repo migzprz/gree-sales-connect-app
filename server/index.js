@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const mysql = require('mysql2/promise')
+const session = require('express-session'); // Add this line to import the session middleware
 
 // api route imports
 const Oculars = require('./routes/oculars')
@@ -71,6 +72,17 @@ app.use((req, res, next) => {
     console.log(req.path, req.method);
     next();
 });
+
+// Configure session middleware
+app.use(session({
+    secret: 'mysecret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
+        sameSite: 'None'
+    }
+}));
 
 // API
 app.use('/api', Oculars(query));

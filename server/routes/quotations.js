@@ -210,7 +210,7 @@ module.exports = (query) => {
 
     router.post('/postQuotation', async (req, res) => {
 
-        const { offer, terms, id, sales_id } = req.body
+        const { offer, terms, id, sales_id, login_id } = req.body
 
         try {
             
@@ -234,13 +234,13 @@ module.exports = (query) => {
             let quo_id, quo_data
             if (sales_id) {
                 console.log('STEP 2.1: sales id detected')
-                const quo_query = 'INSERT INTO td_quotations (date_created, login_id, tnc_id, is_cancelled, quotation_client_id, sales_id) VALUES (NOW(), 1, ?, 0, ?, ?)'
-                quo_data = await query(quo_query, [tnc_id, id, sales_id])
+                const quo_query = 'INSERT INTO td_quotations (date_created, login_id, tnc_id, is_cancelled, quotation_client_id, sales_id) VALUES (NOW(), ?, ?, 0, ?, ?)'
+                quo_data = await query(quo_query, [login_id, tnc_id, id, sales_id])
                 quo_id = quo_data.insertId
             } else {
                 console.log('STEP 2.1: creating new quotations')
-                const quo_query = 'INSERT INTO td_quotations (date_created, login_id, tnc_id, is_cancelled, quotation_client_id) VALUES (NOW(), 1, ?, 0, ?)'
-                quo_data = await query(quo_query, [tnc_id, id])
+                const quo_query = 'INSERT INTO td_quotations (date_created, login_id, tnc_id, is_cancelled, quotation_client_id) VALUES (NOW(), ?, ?, 0, ?)'
+                quo_data = await query(quo_query, [login_id, tnc_id, id])
                 quo_id = quo_data.insertId
             }
 

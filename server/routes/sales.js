@@ -58,7 +58,7 @@ module.exports = (query) => {
     }
 
     router.post('/convertToSale/:type', async (req, res) => {
-        const { id, delivery, installation, services, payment, sales } = req.body
+        const { id, delivery, installation, services, payment, sales, login_id } = req.body
         const { type } = req.params
         
         // post order: sales, delivery, installation, payment
@@ -75,7 +75,7 @@ module.exports = (query) => {
                 console.log('STEP 1: Attempting to post SALES record...')
                 const salesQuery = 'INSERT INTO td_sales (date_created, login_id, main_quotation_id, is_completed) VALUES (NOW(), ?, ?, ?)'
                 console.log(id)
-                const salesResponse = await query(salesQuery, [1, id, 0])
+                const salesResponse = await query(salesQuery, [login_id, id, 0])
                 console.log('SALES SUCCESSFULL: ', salesResponse)
                 salesId = salesResponse.insertId
                 step++

@@ -1,20 +1,7 @@
 const express = require('express');
-const session = require('express-session'); // Add this line to import the session middleware
 const router = express.Router();
 
 module.exports = (query) => {
-
-    // Configure session middleware
-    router.use(session({
-        secret: 'mysecret',
-        resave: false,
-        saveUninitialized: true,
-        cookie: {
-            maxAge: 24 * 60 * 60 * 1000, // 1 day
-            sameSite: 'None',
-            secure: true
-        }
-    }));
 
     router.post('/login', async (req, res) => {
         const password = req.body.password;
@@ -42,6 +29,7 @@ module.exports = (query) => {
                         exec_access,
                         sysad_access,
                     };
+                    
                     console.log('User logged in:', req.session.user); // Add this console log to see the user object
                     res.json({ message: "Login successful", user: req.session.user });
                 } else {
@@ -54,6 +42,18 @@ module.exports = (query) => {
             res.status(500).json("Login Failed");
         }
     });
+
+    router.get('/logout', (req, res) => {
+        // Destroy the session
+        req.session.destroy(err => {
+            if (err) {
+                console.error('Error destroying session:', err);
+                return res.status(500).json({ message: 'Logout failed' });
+            }
+            // Redirect to login page or any other appropriate action after logout
+        });
+    });
+    
     
 
 
