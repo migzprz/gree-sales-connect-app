@@ -308,7 +308,7 @@ const OfferSelection = ({offerList, onOfferSubmission, type, id }) => {
                                     ))}
                                 </>
                             }
-                            {(filterOption === 'parts' || filterOption === '') &&
+                            {(filterOption === 'services' || filterOption === '') &&
                                 <>
                                     {(filteredOffers.services).map((offer, index) => (
                                         <Col className="mt-3" lg="2" key={index}>
@@ -324,7 +324,7 @@ const OfferSelection = ({offerList, onOfferSubmission, type, id }) => {
                                     ))}
                                 </>
                             }
-                            {(filterOption === 'services' || filterOption === '') &&
+                            {(filterOption === 'parts' || filterOption === '') &&
                                 <>
                                     {(filteredOffers.parts).map((offer, index) => (
                                         <Col className="mt-3" lg="2" key={index}>
@@ -516,7 +516,7 @@ const OfferSelection = ({offerList, onOfferSubmission, type, id }) => {
                                             ))}
                                         </>
                                     }
-                                    {(filterOption === 'parts' || filterOption === '') &&
+                                    {(filterOption === 'services' || filterOption === '') &&
                                         <>
                                             {(filteredOffers.services).map((offer, index) => (
                                                 <Col className="mt-3" lg="4" key={index}>
@@ -532,7 +532,7 @@ const OfferSelection = ({offerList, onOfferSubmission, type, id }) => {
                                             ))}
                                         </>
                                     }
-                                    {(filterOption === 'services' || filterOption === '') &&
+                                    {(filterOption === 'parts' || filterOption === '') &&
                                         <>
                                             {(filteredOffers.parts).map((offer, index) => (
                                                 <Col className="mt-3" lg="4" key={index}>

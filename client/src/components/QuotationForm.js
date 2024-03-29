@@ -146,6 +146,8 @@ const QuotationForm = () => {
       return 'Editing Existing Record'
     } else if (type === 'add' || salesId) {
       return 'Adding Quotation to Existing Sales Record'
+    } else if (type === 'view') {
+      return 'View Quotation'
     } else {
       return 'Generate A New Quotation'
     }

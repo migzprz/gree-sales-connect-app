@@ -57,10 +57,18 @@ const TermsAndConditions = ({ onTermsSubmission }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log("Terms submitted:", terms);
-        // Implement your form submission logic here
+        const form = event.currentTarget;
 
-        onTermsSubmission(terms)
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      setValidated(true);
+      if (form.checkValidity()) {
+            onTermsSubmission(terms)
+          }
+        
     };
 
     return (

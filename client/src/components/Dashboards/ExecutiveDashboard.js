@@ -158,10 +158,10 @@ const ExecutiveDashboard = () => {
 
             <Row>
                 <Col lg="4">
-                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
+                    <Card style={{color: '#014c91', overflow: 'hidden', height: '100%'}}>
                         <CardBody>
-                             <h5>Total Expenses Incurred</h5>
-                             <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(expenseTotal)}</h1>
+                             <h5>Total Profits</h5>
+                             <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(profitTotal)}</h1>
                         </CardBody>
                     </Card>
                 </Col>
@@ -174,13 +174,14 @@ const ExecutiveDashboard = () => {
                     </Card>
                 </Col>
                 <Col lg="4">
-                    <Card style={{color: '#014c91', overflow: 'hidden', height: '100%'}}>
+                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
                         <CardBody>
-                             <h5>Total Profits</h5>
-                             <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(profitTotal)}</h1>
+                             <h5>Total Expenses Incurred</h5>
+                             <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(expenseTotal)}</h1>
                         </CardBody>
                     </Card>
                 </Col>
+                
             </Row>
 
             <Row className="mt-3">

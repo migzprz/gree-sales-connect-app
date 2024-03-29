@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState, useEffect } from 'react';
-import { FaDownload, FaEye } from 'react-icons/fa';
+import { FaDownload, FaSave } from 'react-icons/fa';
 import { Row, Col, Card, Table } from 'react-bootstrap';
 import '../index.css';
 import PreviewReport from './Reports/SalesReport';
@@ -84,10 +84,11 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
     
     
     return (
-        <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
-            <h1>Preview Generated Quotation</h1>
-            <h5>View or download generated quotation and terms & conditions</h5>
-            <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
+        <>
+            <Row>
+                <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
+            </Row>
+
 
             <Card className="quotation-file" style={{ width: '8.5in', height: '11in', padding: '0.5in' }}>
             <Row>
@@ -444,7 +445,21 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
             <button className="mt-4 btn w-40" onClick={handleSubmit} disabled={(loader)} style={{color: "white", backgroundColor: "#014c91"}}>
                 
                 {!loader?(
-                    <span> {React.createElement(FaDownload, { size: 18, style: { marginRight: '5px' } })}  {type && type === 'view' ? 'Download' : 'Submit' } Forms </span>
+                   <span>
+                   {type && type === 'view' ? (
+                     <>
+                       {React.createElement(FaDownload, { size: 18, style: { marginRight: '5px' } })}
+                       Download Forms
+                     </>
+                   ) : (
+                     <>
+                       {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })}
+                       Save Forms
+                     </>
+                   )}
+                    
+                 </span>
+                 
                 ):(
                   <span> <Spinner animation="border" size="sm" />  Downloading </span>
                 )}
@@ -452,14 +467,14 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
             </button>
             {type === 'view' ? (
                 <>
-                    <button className="mt-4 btn w-40" onClick={handleBack} disabled={(loader)} style={{color: "white", backgroundColor: "#014c91"}}>
-                        <span> {React.createElement(MdArrowBack, { size: 18, style: { marginRight: '5px' } })}  Back </span>
+                    <button className="mt-4 ms-2 btn w-40" onClick={handleBack} disabled={(loader)}  style={{color: "white", backgroundColor: "#6c757d"}}>
+                        <span>  Go Back </span>
                     </button>
                     
                 </>
             ) : (<Form><Form.Check type='checkbox' id='downloadCheckbox' label='Download Form as PDF?' onClick={handleCheckboxChange} checked={checkDl}/></Form>)}
             
-        </div>
+        </>
     );
 };
 

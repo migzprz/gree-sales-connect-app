@@ -198,7 +198,7 @@ const InvoiceDetails = () => {
                     {type !== 'view' ? (
                         <Col lg="2">
                             <Link to={`/converttosale?id=${id}${type === 'add' ? `&type=add&sales=${sales}` : ''}`} className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
-                                {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })}   Proceed to Sale
+                                Proceed to Sale
                             </Link>
                         </Col>
                     ) : <Col lg="2"></Col>}

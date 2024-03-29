@@ -243,25 +243,37 @@ const ClaimWarrantyForm= () => {
                             <Form.Group controlId="inverter">
                                 <Form.Label>For Inspection</Form.Label>
                                 <div>
-                                    <Form.Check
-                                        type="radio"
-                                        id="yes"
-                                        label="Yes"
-                                        name="inverter"
-                                        checked={forInspection}
-                                        onChange={() => setForInspection(true)}
-                                        required
-                                    />
-                                    <Form.Check
-                                        type="radio"
-                                        id="no"
-                                        label="No"
-                                        name="inverter"
-                                        checked={!forInspection}
-                                        // TODO: set formdata values related to technician to blank if turned no
-                                        onChange={() => {setForInspection(false)}}
-                                        required
-                                    />
+                                <Form.Check
+                                    type="radio"
+                                    id="yes"
+                                    label="Yes"
+                                    name="inverter"
+                                    checked={forInspection}
+                                    onChange={() => {
+                                        setForInspection(true);
+                                        setFormData(prevState => ({
+                                            ...prevState,
+                                            for_inspection: 1
+                                        }));
+                                    }}
+                                    required
+                                />
+                                <Form.Check
+                                    type="radio"
+                                    id="no"
+                                    label="No"
+                                    name="inverter"
+                                    checked={!forInspection}
+                                    onChange={() => {
+                                        setForInspection(false);
+                                        setFormData(prevState => ({
+                                            ...prevState,
+                                            for_inspection: 0
+                                        }));
+                                    }}
+                                    required
+                                />
+
 
                                 </div>
                                 <Form.Control.Feedback type="invalid">

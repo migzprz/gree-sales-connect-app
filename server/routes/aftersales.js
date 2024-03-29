@@ -150,7 +150,7 @@ module.exports = (query) => {
             const warranty_data = await query(`INSERT INTO td_warranty (date_created, login_id, quotation_id, is_completed) VALUES (NOW(), '${data.login_id}', '${data.quotation_id}', '${data.is_completed}')`);
             const warranty_id = warranty_data.insertId;
 
-            if(data.installation_date !== null){
+            if(data.for_inspection){
                 const installation_data = await query(`INSERT INTO td_warranty_inspection (warranty_id, inspection_date, technician_id, is_completed) VALUES ('${warranty_id}', '${data.inspection_date}', '${data.inspection_technician_id}', '${data.is_completed}')`);
             }
 
@@ -226,8 +226,8 @@ module.exports = (query) => {
         ) ws ON w.warranty_id = ws.warranty_id
         WHERE w.is_completed = 0
     ORDER BY
-        wi.inspection_date DESC,
-        ws.service_date DESC
+        wi.inspection_date ASC,
+        ws.service_date ASC
     
     `, [])
             console.log(data)
@@ -260,9 +260,9 @@ module.exports = (query) => {
             ws.service_completed,
             wi.inspection_completed,
             w.is_completed                            AS warranty_completed,
-            Concat(ts.last_name, ",", ts.first_name) AS
+            Concat(ts.last_name, ", ", ts.first_name) AS
             service_technician_name,
-            Concat(ti.last_name, ",", ti.first_name) AS
+            Concat(ti.last_name, ", ", ti.first_name) AS
             inspection_technician_name
 FROM   td_sales s
    JOIN td_quotations q

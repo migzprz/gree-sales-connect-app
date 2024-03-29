@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { useState, useEffect } from 'react'; 
 import { FaEllipsisH, FaFilter, FaSort, FaSearch, FaCheck, FaClock} from 'react-icons/fa';
-import { Row, Col, Card, CardBody, CardHeader, Table, Dropdown } from 'react-bootstrap';
+import { Row, Col, Card, CardBody, CardHeader, Table, Dropdown, Pagination} from 'react-bootstrap';
 import '../index.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -11,6 +11,10 @@ const SalesList = () => {
 
     const [sales, setSales] = useState([])
     const [activeDropdown, setActiveDropdown] = useState(null);
+    const [sortOption, setSortOption] = useState('');
+    const [filterOption, setFilterOption] = useState('');
+    const [filterOption2, setFilterOption2] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,21 +31,42 @@ const SalesList = () => {
         console.log(sales)
     }, [sales])
 
-    const handleEllipsisClick = (index) => {
-        setActiveDropdown(index === activeDropdown ? null : index);
+    //Navigation Functions
+
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value);
+        setCurrentPage(1);
     };
 
-    const renderDropdown = (index) => {
-    if (index === activeDropdown) {
-        return (
-        <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-            <Dropdown.Item>Convert to Sale</Dropdown.Item>
-            <Dropdown.Item>Cancel Quotation</Dropdown.Item>
-        </Dropdown.Menu>
-        );
-    }
-    return null;
+    const handleSort = (e) => {
+        setSortOption(e.target.value);
     };
+
+    let sortedSales = [...sales];
+    if (sortOption === 'delivdate-asc') {
+        sortedSales.sort((a, b) => new Date(a.latest_delivery_date) - new Date(b.latest_delivery_date));
+    } else if (sortOption === 'delivdate-desc') {
+        sortedSales.sort((a, b) => new Date(b.latest_delivery_date) - new Date(a.latest_delivery_date));
+    } else if (sortOption === 'installdate-asc') {
+        sortedSales.sort((a, b) => new Date(a.latest_installation_date) - new Date(b.latest_installation_date));
+    } else if (sortOption === 'installdate-desc') {
+        sortedSales.sort((a, b) => new Date(b.latest_installation_date) - new Date(a.latest_installation_date));
+    } else if (sortOption === 'servicedate-asc') {
+        sortedSales.sort((a, b) => new Date(a.latest_service_date) - new Date(b.latest_service_date));
+    } else if (sortOption === 'servicedate-desc') {
+        sortedSales.sort((a, b) => new Date(b.latest_service_date) - new Date(a.latest_service_date));
+    }
+        
+
+    const filteredSales = sortedSales.filter(sale => (
+        (filterOption === '' || sale.hasService.toString() === filterOption) &&
+        (filterOption2 === '' || sale.hasDelivery.toString() === filterOption2) &&
+        (sale.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        sale.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        sale.contact_number.toLowerCase().includes(searchTerm.toLowerCase()) )
+    ));
+
+
     
      //Date Conversion Function
      function formatDate(dateString) {
@@ -61,6 +86,18 @@ const SalesList = () => {
         // Format date in desired format
         return `${formattedDay}-${months[monthIndex]}-${year}`;
     }
+
+     //Pagination Functionality
+     const [currentPage, setCurrentPage] = useState(1);
+     const [itemsPerPage, setItemsPerPage] = useState(8); // Change this number as needed
+     const indexOfLastItem = currentPage * itemsPerPage;
+     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+     const currentItems = filteredSales.slice(indexOfFirstItem, indexOfLastItem);
+     const totalPages = Math.ceil( filteredSales.length / itemsPerPage);
+ 
+     const handlePageChange = (pageNumber) => {
+         setCurrentPage(pageNumber);
+     };
     
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
@@ -72,21 +109,20 @@ const SalesList = () => {
             {/*Navigation Forms*/ }
             <Row>
                 {/*Search Bar*/ }
-                <Col lg="4">
-                    <form>
-                        <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", borderRadius: "10px", 
-                                                                        overflow: "hidden"}} >
-                            <input type="search" className="form-control" placeholder="Search"/>
-                            <button className="btn me-auto" style={{color: "white", backgroundColor: "#014c91"}}>
-                                <div style={{color: 'white'}}>
-                                    {React.createElement(FaSearch, { size: 20 })}
-                                </div>
-                            </button>
+                <Col lg="3">
+                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
+                                                                    backgroundColor: "#014c91", borderRadius: "10px", 
+                                                                    overflow: "hidden"}}>
+                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>
+                            <div style={{padding: "5px", color: 'white'}}>
+                                {React.createElement(FaSearch, { size: 20 })}
+                            </div>
                         </div>
-                    </form>
+                        <input type="search" className="form-control" placeholder="Search" value={searchTerm} onChange={handleSearch}/>
+                    </div>
                 </Col>
                 {/*Sorting Mechanism*/ }
-                <Col lg="4">
+                <Col lg="3">
                     <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
                                                                     backgroundColor: "#014c91", borderRadius: "10px", 
                                                                     overflow: "hidden"}}>
@@ -95,14 +131,18 @@ const SalesList = () => {
                                 {React.createElement(FaSort, { size: 20 })}
                             </div>
                         </div>
-                        <select className="form-select">
-                            <option value="">Sort by Date and Time (A-Z)</option>
-                            <option value="1">Sort by Date and Time (Z-A)</option>
+                        <select className="form-select" value={sortOption} onChange={handleSort}>
+                            <option value="delivdate-asc">Sort by Delivery Date (A-Z)</option>
+                            <option value="delivdate-desc">Sort by Delivery Date (Z-A)</option>
+                            <option value="installdate-asc">Sort by Installation Date (A-Z)</option>
+                            <option value="installdate-desc">Sort by Installation Date (Z-A)</option>
+                            <option value="servicedate-asc">Sort by Service Date (A-Z)</option>
+                            <option value="servicedate-desc">Sort by Service Date (Z-A)</option>
                         </select>
                     </div>
                 </Col>
                 {/*Filtering Mechanism*/ }
-                <Col lg="4">
+                <Col lg="3">
                     <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
                                                                     backgroundColor: "#014c91", borderRadius: "10px",
                                                                     overflow: "hidden"}}>
@@ -111,17 +151,37 @@ const SalesList = () => {
                                 {React.createElement(FaFilter, { size: 20 })}
                             </div>  
                         </div>
-                        <select className="form-select">
-                            <option value="">All Sales</option>
-                            <option value="1">Active</option>
-                            <option value="0">Expired</option>
+                        <select className="form-select" value={filterOption} onChange={(e) => {setFilterOption(e.target.value); setCurrentPage(1);}}>
+                            <option value="">All Sales (Service)</option>
+                            <option value="1">With Services</option>
+                            <option value="0">With No Services</option>
+                            
                         </select>
+
+                    </div>
+                </Col>
+                <Col lg="3">
+                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
+                                                                    backgroundColor: "#014c91", borderRadius: "10px",
+                                                                    overflow: "hidden"}}>
+                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
+                            <div style={{padding: "5px", color: 'white'}}>
+                                {React.createElement(FaFilter, { size: 20 })}
+                            </div>  
+                        </div>
+                        <select className="form-select" value={filterOption2} onChange={(e) => {setFilterOption2(e.target.value); setCurrentPage(1);}}>
+                            <option value="">All Sales (Delivery and Installation)</option>
+                            <option value="1">With Delivery and Installation</option>
+                            <option value="0">With No Delivery and Installation</option>
+                            
+                        </select>
+
                     </div>
                 </Col>
             </Row>
 
         
-            {/*Table for page content*/}
+            {filteredSales.length > 0 ? (
             <Card style={{ borderRadius: '20px', marginTop: '20px' }}>
                 <CardBody>
                     <Table>
@@ -137,7 +197,7 @@ const SalesList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {sales.map((sales, index) => (
+                            {currentItems.map((sales, index) => (
                                 <React.Fragment key={sales.sales_id}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                         <td style={{ color: '#014c91' }}>
@@ -166,7 +226,7 @@ const SalesList = () => {
                                             ) : ''}
                                         </td>
                                         <td style={{color: sales.hasService && sales.allServiceCompleted ? '#008000' : (sales.hasService && !sales.allServiceCompleted ? '#DC6601' : '#014c91')}}>
-                                            {sales.hasService && sales.allServiceCompleted ? (<FaCheck size={20} className="me-1"/>) : (sales.hasService && !sales.allServiceCompleted ? (<FaClock size={20} className="me-1"/>) : 'No Scheduled Service ')}
+                                            {sales.hasService && sales.allServiceCompleted ? (<FaCheck size={20} className="me-1"/>) : (sales.hasService && !sales.allServiceCompleted ? (<FaClock size={20} className="me-1"/>) : null)}
                                             {sales.latest_service_date ? (
                                                 <>
                                                     {formatDate(new Date(sales.latest_service_date))}{' '}
@@ -180,8 +240,29 @@ const SalesList = () => {
                             ))}
                         </tbody>
                     </Table>
+
+                    <Row className="mt-3">
+                        <Col className="d-flex justify-content-end">
+                            {totalPages > 1 && (
+                                <Pagination>
+                                    {[...Array(totalPages)].map((_, index) => (
+                                        <Pagination.Item key={index + 1} active={currentPage === index + 1} onClick={() => handlePageChange(index + 1)}>
+                                            {index + 1}
+                                        </Pagination.Item>
+                                    ))}
+                                </Pagination>
+                            )}
+                        </Col>
+                    </Row>
                 </CardBody>
             </Card>
+             ):(
+                <Card style={{ borderRadius: '20px', marginTop: '20px', textAlign: 'center' }}>
+                    <CardBody style={{ padding:'100px', color: '#014c91'}}>
+                        <h1 className="mt-3"> <FaSearch size={50} className="me-2" />No Sales Found  </h1>
+                    </CardBody>
+                </Card>
+            )}
 
             
 

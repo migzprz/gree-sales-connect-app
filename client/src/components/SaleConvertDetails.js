@@ -149,13 +149,16 @@ const SaleConvertDetails = () => {
       }
       event.preventDefault();
       setValidated(true);
-      try {
-        const res = await axios.post(`http://localhost:4000/api/convertToSale/${type === 'add' ? 'add' : 'new'}`, { id, payment, delivery, installation, services, sales })
-        console.log(res)
-        navigate('/viewsales')
-      } catch (error) {
-        console.error(error)
-      }
+      
+      if (form.checkValidity() === true) {
+        try {
+            const res = await axios.post(`http://localhost:4000/api/convertToSale/${type === 'add' ? 'add' : 'new'}`, { id, payment, delivery, installation, services, sales })
+            console.log(res)
+            navigate('/viewsales')
+          } catch (error) {
+            console.error(error)
+          }
+    }
     };
 
     const handleCancel = () => {
@@ -365,7 +368,22 @@ const SaleConvertDetails = () => {
                                 </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
+                        {installation.installationType === '1' ? (
+                        <Col lg="2">
+                                <Form.Group controlId="installationTechnician">
+                                <Form.Label>Technician</Form.Label>
+                                <Form.Control as="select" disabled={!installation.installationSDate || !installation.installationSTime} name='installationTechnician' onChange={handleChange} required>
+                                    <option value=""> Select </option>
+                                    {technicians.map((t, index) =>(
+                                        <option key={index} value={t.technician_id}>{t.complete_name}</option>
+                                    ))}
+                                </Form.Control>
+                                {technicians.length === 0 ? (<p style={{color: 'red'}}>No technicians are available</p>) : mod ? (<p>Some technicians are unavailable</p>) : null}
+                            </Form.Group>
+                        </Col>
+                        ) : null}
                     </Row>
+                   
 
                     <Row>
                         <Col lg="2"/>
@@ -390,25 +408,23 @@ const SaleConvertDetails = () => {
                                         </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>
+                                <Col lg="2">
+                                    <Form.Group controlId="installationTechnician">
+                                        <Form.Label>Technician</Form.Label>
+                                        <Form.Control as="select" disabled={!installation.installationSDate || !installation.installationSTime} name='installationTechnician' onChange={handleChange} required>
+                                            <option value=""> Select </option>
+                                            {technicians.map((t, index) =>(
+                                                <option key={index} value={t.technician_id}>{t.complete_name}</option>
+                                            ))}
+                                        </Form.Control>
+                                        {technicians.length === 0 ? (<p style={{color: 'red'}}>No technicians are available</p>) : mod ? (<p>Some technicians are unavailable</p>) : null}
+                                    </Form.Group>
+                                </Col>
                             </>
                         ) : null}
                         
 
-                        <Col lg="2">
-                            <Form.Group controlId="installationTechnician">
-                                <Form.Label>Technician</Form.Label>
-                                <Form.Control as="select" name='installationTechnician' onChange={handleChange} required>
-                                    <option value=""> Select </option>
-                                    {technicians.map((t, index) =>(
-                                        <option key={index} value={t.technician_id}>{t.complete_name}</option>
-                                    ))}
-                                </Form.Control>
-                                {mod ? (<p>One or more technicians are unavailable with the given schedule</p>) : null}
-                                <Form.Control.Feedback type="invalid">
-                                    Please choose a mode of payment.
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
+                        
                     </Row>
                 </>
             ) : null}
@@ -470,7 +486,7 @@ const SaleConvertDetails = () => {
                 </Col>
 
                 <Col lg="2">
-                    <button onClick={handleCancel} className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}}>
+                    <button onClick={(e) => { e.preventDefault(); handleCancel(); }} className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}}>
                     Cancel
                     </button>
                 </Col>

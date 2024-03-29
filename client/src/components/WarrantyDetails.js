@@ -194,7 +194,8 @@ const WarrantyDetails= () => {
                                     <h3>{React.createElement(FaShoppingBag, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Requested Parts </h3>
                                 </Col>
                             </Row>
-
+                            
+                            {requestedPartsData.length>0 ?
                             <Table>
                                     <thead>
                                         <tr>
@@ -222,16 +223,17 @@ const WarrantyDetails= () => {
                                         ))}
                                         
                                     </tbody>
-                            </Table>
+                            </Table> :
+                            <strong>No Requested Parts </strong>}
 
                         
 
-                            
+                            {!warrantyData.service_completed &&
                             <Row className="mt-2">
                                 <Col>
                                     <AddWarrantyPartModal id={id}/>
                                 </Col>
-                            </Row>
+                            </Row>}
                         </Card>
                     </Card>
                 </Col>

@@ -59,8 +59,8 @@ const QuotationList = () => {
         if (index === activeDropdown) {
             return (
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
-                <Dropdown.Item><Link to={`/generatequotation?id=${id}&type=edit`} style={{ color: '#014c91'}}>Edit Quotation</Link></Dropdown.Item>
-                <Dropdown.Item><Link to={`/generateinvoice?id=${id}`} style={{ color: '#014c91'}}>Convert To Sale</Link></Dropdown.Item>
+                <Dropdown.Item><Link to={`/generatequotation?id=${id}&type=edit`} style={{ color: 'black', textDecoration: 'none' }}>Edit Quotation</Link></Dropdown.Item>
+                <Dropdown.Item><Link to={`/generateinvoice?id=${id}`} style={{ color: 'black', textDecoration: 'none' }}>Convert To Sale</Link></Dropdown.Item>
                 <CancelQuotationModal id={id}/>
             </Dropdown.Menu>
             );
@@ -222,7 +222,7 @@ const QuotationList = () => {
                             {currentItems.map((quotation, index) => (
                                 <React.Fragment key={quotation.quotation_id}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                        <td style={{color: '#014c91'}}><Link to={`/generatequotation/${quotation.quotation_id}?type=view`}>#{String(quotation.quotation_id).padStart(4, '0')}</Link></td>
+                                        <td ><Link to={`/generatequotation/${quotation.quotation_id}?type=view`} style={{color: '#014c91'}}>#{String(quotation.quotation_id).padStart(4, '0')}</Link></td>
                                         <td style={{color: '#014c91'}}>{quotation.client_name}</td>
                                         <td style={{color: '#014c91'}}>{quotation.company_name}</td>
                                         <td style={{color: '#014c91'}}>{quotation.client_number}</td>

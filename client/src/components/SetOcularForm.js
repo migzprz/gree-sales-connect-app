@@ -123,7 +123,27 @@ const SetOcularForm = () => {
 
     const handleOptionClick = (option) => {
         setActiveOption(option);
-        setIsNew(option === 'newClient');
+        if (option === 'newClient') {
+            setFormData({
+                firstName: '',
+                lastName: '',
+                companyName: '',
+                contactNumber: '',
+                email: '',
+                tin: ''
+            });
+            setIsNew(true);
+        } else {
+            setFormData({
+                firstName: '',
+                lastName: '',
+                companyName: '',
+                contactNumber: '',
+                email: '',
+                tin: ''
+            });
+            setIsNew(false);
+        }
     };
 
     const [validated, setValidated] = useState(false);
@@ -213,7 +233,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="firstName">
                     <Form.Label>First Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientFirstName || null } onChange={handleChange} name='firstName' required/>
+                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientFirstName || formData.firstName } onChange={handleChange} name='firstName' required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide first name.
                     </Form.Control.Feedback>
@@ -222,7 +242,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="lastName">
                 <Form.Label>Last Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientLastName || null } onChange={handleChange} name='lastName' required/>
+                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientLastName || formData.lastName  } onChange={handleChange} name='lastName' required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide last name.
                     </Form.Control.Feedback>
@@ -231,7 +251,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                  <Form.Group controlId="companyName">
                     <Form.Label>Company Name</Form.Label>
-                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientCompanyName || null }onChange={handleChange} name='companyName' placeholder="optional"/>
+                    <Form.Control type="text" disabled={!isNew} value={formData.returningClientCompanyName || formData.companyName }onChange={handleChange} name='companyName' placeholder="optional"/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid company.
                     </Form.Control.Feedback>
@@ -243,7 +263,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="contactNumber">
                     <Form.Label>Contact Number</Form.Label>
-                    <Form.Control type="text" pattern="[0-9]{11}" placeholder="e.g. 09123456789" disabled={!isNew} value={formData.returningClientContactNumber || null } onChange={handleChange} name='contactNumber' required />
+                    <Form.Control type="text" pattern="[0-9]{11}" placeholder="e.g. 09123456789" disabled={!isNew} value={formData.returningClientContactNumber || formData.contactNumber } onChange={handleChange} name='contactNumber' required />
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid Contact No.
                     </Form.Control.Feedback>
@@ -252,7 +272,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="email">
                     <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" disabled={!isNew} value={formData.returningClientEmail || null } onChange={handleChange} name='email' required/>
+                    <Form.Control type="email" disabled={!isNew} value={formData.returningClientEmail || formData.email } onChange={handleChange} name='email' required/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid Email
                     </Form.Control.Feedback>
@@ -261,7 +281,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                  <Form.Group controlId="tin">
                     <Form.Label>Company TIN ID</Form.Label>
-                    <Form.Control type="text" pattern="[0-9]{9,12}" disabled={!isNew} value={formData.returningClientCompanyTin || null } placeholder="optional" name='tin' onChange={handleChange}/>
+                    <Form.Control type="text" pattern="[0-9]{9,12}" disabled={!isNew} value={formData.returningClientCompanyTin || formData.tin } placeholder="optional" name='tin' onChange={handleChange}/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid TIN
                     </Form.Control.Feedback>
@@ -382,7 +402,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                 <Form.Group controlId="technician">
                     <Form.Label>Assigned Technician</Form.Label>
-                    <Form.Control disabled={!formData.date || !formData.time}as="select" onChange={handleChange} name='technician' required>
+                    <Form.Control disabled={!formData.date || !formData.time} as="select" onChange={handleChange} name='technician' required>
                         <option value="">Select</option>
                         {technicians.map((tech) => (
                             <option key={tech.technician_id} value={tech.technician_id}>{tech.complete_name}</option>

@@ -252,7 +252,7 @@ const SaleDetails= () => {
 
                 <Col lg="4">
                     <Card style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9', display: 'flex', flexDirection: 'column', height: '100%'}}>
-                        <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91',display: 'flex', flexDirection: 'column', height: '100%'}}>
+                        <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91',display: 'flex', flexDirection: 'column', height: '100%', overflow: 'auto'}}>
                             <Row>
                                 <Col lg="9">
                                     <h3>{React.createElement(FaMoneyBillWave, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Payment History</h3>
@@ -261,7 +261,7 @@ const SaleDetails= () => {
 
                             {payments && payments.length > 0 ? (
                                 <>
-                                    <Table>
+                                    <Table className="w-full">
                                         <thead>
                                             <tr>
                                                 <th style={{color: '#014c91'}}>Date</th>
@@ -319,7 +319,7 @@ const SaleDetails= () => {
 
                 <Col lg="5">
                     <Card style={{padding: '15px', borderRadius: '20px', background:'#CCDBE9', display: 'flex', flexDirection: 'column', height: '100%'}}>
-                        <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91',display: 'flex', flexDirection: 'column', height: '100%'}}>
+                        <Card style={{padding: '15px', borderRadius: '20px', color: '#014c91',display: 'flex', flexDirection: 'column', height: '100%', overflow: 'auto'}}>
                             <Row>
                                 <Col lg="9">
                                     <h3>{React.createElement(FaShoppingBag, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Purchase Summary</h3>
