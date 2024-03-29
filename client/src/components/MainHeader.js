@@ -7,6 +7,7 @@ const MainHeader = () => {
     const [showDropdown, setShowDropdown] = useState(false);
 
     const navigate = useNavigate();
+    const name = sessionStorage.getItem('userName')
 
     const handleDropdownToggle = () => {
         setShowDropdown(!showDropdown);
@@ -21,7 +22,7 @@ const MainHeader = () => {
             <div style={{ fontSize: '28px', fontWeight: 'bold' }}>GreeSales Connect</div>
             <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', position: 'relative' }} onClick={handleDropdownToggle}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <FaUser size={20} style={{ marginRight: '5px' }} /> User
+                    <FaUser size={20} style={{ marginRight: '5px' }} /> {name ?? 'Error Missing Name'}
                     <div style={{ marginRight: '10px' }}></div>
                 </div>
                 <span>&#9662;</span>

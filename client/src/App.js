@@ -29,6 +29,40 @@ import ViewReport from './pages/ViewReport';
 import Restriction from './pages/Restriction';
 import Error404 from './pages/Error404';
 
+import WithAuth from './withAuth'
+
+// Sales Routes
+const ViewOcularsWithAccess = WithAuth(ViewOculars, 0)
+const SetOcularWithAccess = WithAuth(SetOcular, 0)
+const GenerateQuotationWithAccess = WithAuth(GenerateQuotation, 0)
+const ViewQuotationsWithAccess = WithAuth(ViewQuotations, 0)
+const GenerateInvoiceWithAccess = WithAuth(GenerateInvoice, 0)
+const ConvertToSaleWithAccess = WithAuth(ConvertToSale, 0);
+const ViewSalesWithAccess = WithAuth(ViewSales, 0);
+const ViewSaleDetailsWithAccess = WithAuth(ViewSaleDetails, 0);
+const ViewClientsWithAccess = WithAuth(ViewClients, 0);
+const ViewClientDetailsWithAccess = WithAuth(ViewClientDetails, 0);
+const DownloadQuotationWithAccess = WithAuth(DownloadQuotation, 0);
+
+// After-Sales Routes
+const ViewWarrantiesWithAccess = WithAuth(ViewWarranties, 1);
+const ViewWarrantyDetailsWithAccess = WithAuth(ViewWarrantyDetails, 1);
+const SearchWarrantyWithAccess = WithAuth(SearchWarranty, 1);
+const ClaimWarrantyWithAccess = WithAuth(ClaimWarranty, 1);
+
+// Executive Routes
+const GenerateReportWithAccess = WithAuth(GenerateReport, 2);
+const ViewReportWithAccess = WithAuth(ViewReport, 2);
+const ViewExpensesWithAccess = WithAuth(ViewExpenses, 2);
+const ViewExpenseDetailsWithAccess = WithAuth(ViewExpenseDetails, 2);
+const RecordExpensesWithAccess = WithAuth(RecordExpenses, 2);
+
+// SysAd Routes
+const ViewProductsWithAccess = WithAuth(ViewProducts, 3);
+const ViewUsersWithAccess = WithAuth(ViewUsers, 3);
+const ViewTechniciansWithAccess = WithAuth(ViewTechnicians, 3);
+
+
 function App() {
   return (
     <>
@@ -41,37 +75,37 @@ function App() {
                     <Route path="/home" element={<Home/>}/>
 
                     {/* Sales Module */}
-                    <Route path="/viewoculars" element={<ViewOculars/>}/> 
-                    <Route path="/setocular" element={<SetOcular/>}/> 
-                    <Route path="/generatequotation" element={<GenerateQuotation/>}/> 
-                    <Route path="/generatequotation/:id" element={<GenerateQuotation/>}/> 
-                    <Route path="/viewquotations" element={<ViewQuotations/>}/> 
-                    <Route path="/generateinvoice" element={<GenerateInvoice/>}/> 
-                    <Route path="/converttosale" element={<ConvertToSale/>}/> 
-                    <Route path="/viewsales" element={<ViewSales/>}/> 
-                    <Route path="/viewsaledetails" element={<ViewSaleDetails/>}/>    
-                    <Route path="/viewclients" element={<ViewClients/>}/>
-                    <Route path="/viewclientdetails/:id" element={<ViewClientDetails/>}/>
-                    <Route path="/downloadquotation" element={<DownloadQuotation/>}/>
+                    <Route path="/viewoculars" element={<ViewOcularsWithAccess />}/> 
+                    <Route path="/setocular" element={<SetOcularWithAccess/>}/> 
+                    <Route path="/generatequotation" element={<GenerateQuotationWithAccess/>}/> 
+                    <Route path="/generatequotation/:id" element={<GenerateQuotationWithAccess/>}/> 
+                    <Route path="/viewquotations" element={<ViewQuotationsWithAccess/>}/> 
+                    <Route path="/generateinvoice" element={<GenerateInvoiceWithAccess/>}/> 
+                    <Route path="/converttosale" element={<ConvertToSaleWithAccess />} />
+                    <Route path="/viewsales" element={<ViewSalesWithAccess />} />
+                    <Route path="/viewsaledetails" element={<ViewSaleDetailsWithAccess />} />
+                    <Route path="/viewclients" element={<ViewClientsWithAccess />} />
+                    <Route path="/viewclientdetails/:id" element={<ViewClientDetailsWithAccess />} />
+                    <Route path="/downloadquotation" element={<DownloadQuotationWithAccess />} />
 
                     {/* Aftersales Module */}
-                    <Route path="/viewwarranties" element={<ViewWarranties/>}/>
-                    <Route path="/viewwarrantydetails/:id" element={<ViewWarrantyDetails/>}/>
-                    <Route path="/searchwarranty" element={<SearchWarranty/>}/>
-                    <Route path="/claimwarranty/:id" element={<ClaimWarranty/>}/>
+                    <Route path="/viewwarranties" element={<ViewWarrantiesWithAccess />} />
+                    <Route path="/viewwarrantydetails/:id" element={<ViewWarrantyDetailsWithAccess />} />
+                    <Route path="/searchwarranty" element={<SearchWarrantyWithAccess />} />
+                    <Route path="/claimwarranty/:id" element={<ClaimWarrantyWithAccess />} />
 
                     {/* Executive Module */}
-                    <Route path="/report" element={<GenerateReport/>}/> 
-                    <Route path="/viewreport/:type/:syear/:smonth/:sday/:eyear/:emonth/:eday" element={<ViewReport/>}/>
-                    <Route path="/viewreport/:type/:syear/:smonth/:sday/:eyear/:emonth/:eday/:id/:producttype" element={<ViewReport/>}/>
-                    <Route path="/viewexpenses" element={<ViewExpenses/>}/>
-                    <Route path="/viewexpensedetails/:id" element={<ViewExpenseDetails/>}/>
-                    <Route path="/recordexpenses" element={<RecordExpenses/>}/>
+                    <Route path="/report" element={<GenerateReportWithAccess />} />
+                    <Route path="/viewreport/:type/:syear/:smonth/:sday/:eyear/:emonth/:eday" element={<ViewReportWithAccess />} />
+                    <Route path="/viewreport/:type/:syear/:smonth/:sday/:eyear/:emonth/:eday/:id/:producttype" element={<ViewReportWithAccess />} />
+                    <Route path="/viewexpenses" element={<ViewExpensesWithAccess />} />
+                    <Route path="/viewexpensedetails/:id" element={<ViewExpenseDetailsWithAccess />} />
+                    <Route path="/recordexpenses" element={<RecordExpensesWithAccess />} />
 
                     {/* SysAd Module */}
-                    <Route path="/viewproducts" element={<ViewProducts/>}/>
-                    <Route path="/viewusers" element={<ViewUsers/>}/>
-                    <Route path="/viewtechnicians" element={<ViewTechnicians/>}/>
+                    <Route path="/viewproducts" element={<ViewProductsWithAccess />} />
+                    <Route path="/viewusers" element={<ViewUsersWithAccess />} />
+                    <Route path="/viewtechnicians" element={<ViewTechniciansWithAccess />} />
 
                     {/* Security Pages */}
                     <Route path="/unauthorized" element={<Restriction/>}/>
