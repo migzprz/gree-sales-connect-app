@@ -111,9 +111,12 @@ module.exports = (query) => {
             req.body.email
         ]
 
+        // Handle case where no company is assigned to the client
+        const companyName = req.body.companyName || null
+        const companyTin = req.body.tin || null
         const com_values = [
-            req.body.companyName,
-            req.body.tin
+            companyName,
+            companyTin
         ]
 
         const ocu_values = [

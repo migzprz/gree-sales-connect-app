@@ -202,7 +202,7 @@ const OcularList = () => {
                                 <React.Fragment key={ocular.ocular_id}>
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                         <td style={{color: '#014c91'}}>{ocular.client_name}</td>
-                                        <td style={{color: '#014c91'}}>{ocular.company_name}</td>
+                                        <td style={{color: '#014c91'}}>{ocular.company_name ?? '--'}</td>
                                         <td style={{color: '#014c91'}}>{ocular.client_number}</td>
                                         <td style={{color: '#014c91'}}>{ocular.site_address}</td>
                                         <td style={{color: '#014c91'}}>{formatDate(ocular.ocular_date)}</td>

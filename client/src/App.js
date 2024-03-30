@@ -63,6 +63,9 @@ const ViewProductsWithAccess = WithAuth(ViewProducts, 3);
 const ViewUsersWithAccess = WithAuth(ViewUsers, 3);
 const ViewTechniciansWithAccess = WithAuth(ViewTechnicians, 3);
 
+// Home Page 
+const HomeWithAccess = WithAuth(Home, 999)
+
 
 function App() {
   return (
@@ -73,7 +76,7 @@ function App() {
 
                     {/* General Pages */}
                     <Route path="/" element={<Login/>} />
-                    <Route path="/home" element={<Home/>}/>
+                    <Route path="/home" element={<HomeWithAccess/>}/>
 
                     {/* Sales Module */}
                     <Route path="/viewoculars" element={<ViewOcularsWithAccess />}/> 
