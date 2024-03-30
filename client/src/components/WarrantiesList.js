@@ -92,7 +92,7 @@ const WarrantiesList = () => {
 
      //Pagination Functionality
      const [currentPage, setCurrentPage] = useState(1);
-     const [itemsPerPage, setItemsPerPage] = useState(8); // Change this number as needed
+     const [itemsPerPage, setItemsPerPage] = useState(10); // Change this number as needed
      const indexOfLastItem = currentPage * itemsPerPage;
      const indexOfFirstItem = indexOfLastItem - itemsPerPage;
      const currentItems = filteredWarranties.slice(indexOfFirstItem, indexOfLastItem);

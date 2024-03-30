@@ -49,6 +49,26 @@ const ExpenseDetails = () => {
     const formatNumber = (number) => {
         return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
+
+    //Date Conversion Function
+    function formatDate(dateString) {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        // Parse the date string to a Date object
+        const date = new Date(dateString);
+        
+        // Get day, month, and year from the date object
+        const day = date.getDate();
+        const monthIndex = date.getMonth();
+        const year = date.getFullYear();
+        
+        // Format day with leading zero if necessary
+        const formattedDay = day < 10 ? '0' + day : day;
+        
+        // Format date in desired format
+        return `${formattedDay}-${months[monthIndex]}-${year}`;
+    }
+
     
     
 
@@ -65,7 +85,7 @@ const ExpenseDetails = () => {
                         <CardHeader>
                             <Row>
                                 <Col>
-                                    Date Recorded: <strong> {expenseData.date_created} </strong>
+                                    Date Recorded: <strong> {formatDate(expenseData.date_created)} </strong>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
                                     <EditExpensesModal id={id}/>
@@ -99,7 +119,7 @@ const ExpenseDetails = () => {
                                         {opExpenseData.map((subexpense, subindex) => (
                                             <tr key={subindex}>
                                                 <td></td>
-                                                <td style={{color: '#014c91' }}>{subexpense.expense_date}</td>
+                                                <td style={{color: '#014c91' }}>{formatDate(subexpense.expense_date)}</td>
                                                 <td style={{color: '#014c91' }}>{subexpense.name}</td>
                                                 <td style={{color: '#014c91' }}>{subexpense.description}</td>
                                                 <td style={{color: '#014c91' }}>₱ {formatNumber(subexpense.amount)}</td>
@@ -117,7 +137,7 @@ const ExpenseDetails = () => {
                                         {nonopExpenseData.map((subexpense, subindex) => (
                                             <tr key={subindex}>
                                                 <td></td>
-                                                <td style={{color: '#014c91' }}>{subexpense.expense_date}</td>
+                                                <td style={{color: '#014c91' }}>{formatDate(subexpense.expense_date)}</td>
                                                 <td style={{color: '#014c91' }}>{subexpense.name}</td>
                                                 <td style={{color: '#014c91' }}>{subexpense.description}</td>
                                                 <td style={{color: '#014c91' }}>₱ {formatNumber(subexpense.amount)}</td>
@@ -130,7 +150,7 @@ const ExpenseDetails = () => {
                                         <td colSpan="4" style={{ textAlign: 'right', color: '#014c91'  }}>
                                             <strong>Total:</strong>
                                         </td>
-                                        <td style={{color: '#014c91' }}>{expenseData.totalAmount}</td>
+                                        <td style={{color: '#014c91' }}>₱ {expenseData.totalAmount && formatNumber(expenseData.totalAmount)}</td>
                                     </tr>
                                 </tbody>
                             </Table>
