@@ -226,7 +226,7 @@ module.exports = (query) => {
                             WHERE s.sales_id = ?`
         const detailsResponse = await query(detailsQuery, [id])
 
-        const deliveryQuery = `SELECT d.delivery_date, d.delivery_id, d.is_pickup
+        const deliveryQuery = `SELECT d.delivery_date, d.delivery_id, d.is_pickup, d.quotation_id
                                 FROM td_quotations q
                                 JOIN md_deliveries d ON q.quotation_id = d.quotation_id
                                 WHERE q.sales_id = ?
@@ -234,7 +234,7 @@ module.exports = (query) => {
                                 ORDER BY d.delivery_date ASC`
         const deliveryRespponse = await query(deliveryQuery, [id])
 
-        const installationQuery = `SELECT i.installation_id, i.start_installation_date, i.end_installation_date, CONCAT(t.last_name, ", ", t.first_name) as technician_name
+        const installationQuery = `SELECT i.installation_id, i.start_installation_date, i.end_installation_date, CONCAT(t.last_name, ", ", t.first_name) as technician_name, i.quotation_id
                                     FROM td_quotations q
                                     JOIN md_installations i ON q.quotation_id = i.quotation_id
                                     JOIN md_technicians t ON i.technician_id = t.technician_id
@@ -243,7 +243,7 @@ module.exports = (query) => {
                                     ORDER BY i.start_installation_date ASC`
         const installationResponse = await query(installationQuery, [id])
 
-        const serviceQuery = `SELECT ss.service_schedule_id, ss.service_date, CONCAT(t.last_name, ", ", t.first_name) as technician_name
+        const serviceQuery = `SELECT ss.service_schedule_id, ss.service_date, CONCAT(t.last_name, ", ", t.first_name) as technician_name, ss.quotation_id
                                 FROM td_quotations q
                                 JOIN md_service_schedules ss ON q.quotation_id = ss.quotation_id
                                 JOIN md_technicians t ON ss.technician_id = t.technician_id
@@ -371,6 +371,72 @@ module.exports = (query) => {
             console.error('Error: ', error)
             res.status(400).json({message: `Error... Failed to update service... ${error}`})
         }
+    })
+
+    // Updating a delivery, installation or service schedule for a particular sales id
+    router.patch('/updateSalesDetail/:id/:type', async (req, res) => {
+        const id = req.params.id
+        const type = req.params.type
+        const { date, time, endDate, endTime, technician_id } = req.body
+        const datetime = new Date(date+'T'+time)
+        console.log(id, type, date, time, endDate, endTime, technician_id)
+
+        let q
+        let val = []
+        if (type === 'pickup' || type === 'delivery') {
+            q = 'UPDATE md_deliveries SET delivery_date = ? WHERE quotation_id = ?'
+            val = [datetime, id]
+        }
+        if (type === 'installation') {
+            val.push(datetime)
+            let endDatetime = null
+            // create end datetime if values are present
+            if (endDate && endTime) { 
+                endDatetime = new Date(endDate+'T'+endTime) 
+                val.push(endDatetime)
+            }
+
+            if (technician_id) {
+                val.push(technician_id)
+            }
+
+            val.push(id)
+            
+            // form the installation update script, skipping the end datetime and the technician id if no changes were made
+            q = `UPDATE md_installations 
+                SET start_installation_date = ? 
+                ${endDatetime ? ', end_installation_date = ?': ''} 
+                ${technician_id ? ', technician_id = ?' : ''}
+                WHERE quotation_id = ?`
+        }
+        if (type === 'service') {
+            val.push(datetime)
+
+            if (technician_id) {
+                val.push(technician_id)
+            }
+
+            val.push(id)
+
+            q = `UPDATE md_service_schedules 
+                SET service_date = ? 
+                ${technician_id ? ', technician_id = ?': ''}
+                WHERE quotation_id = ?`
+        }
+        const qlen = (q.match(/\?/g)).length
+        console.log('checking values: ', q, val, qlen , val.length )
+        if (qlen === val.length) {
+            try {
+                console.log('Number of parameters matches val array length, proceeding with query')
+                const res = await query(q, val)
+                res.status(200).json({message: 'Record successfully updated'})
+            } catch (error) {
+                res.status(400).json({message: 'Error encountered in request', error: error})
+            }
+        } else {
+            res.status(400).json({message: 'Number of parameters needed does not match the val array len, please check request'})
+        }
+
     })
 
     return router

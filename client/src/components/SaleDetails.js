@@ -27,24 +27,22 @@ const SaleDetails= () => {
     const [quotations, setQuotations] = useState([])
 
     useEffect(() => {
-        if (id===null) (
-            navigate('/error')
-        )
-    }, [id])
-
-    useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = (await axios.get(`http://localhost:4000/api/getSalesById/${id}`)).data
-                console.log(response)
-                setDetail(response.detail[0])
-                setDeliveries(response.delivery)
-                setInstallations(response.installation)
-                setServices(response.service)
-                setPayments(response.payment)
-                setQuotations(response.quotation)
-            } catch (error) {
-                console.error('Error fetching data: ', error)
+            if (id !== null) {
+                try {
+                    const response = (await axios.get(`http://localhost:4000/api/getSalesById/${id}`)).data
+                    console.log(response)
+                    setDetail(response.detail[0])
+                    setDeliveries(response.delivery)
+                    setInstallations(response.installation)
+                    setServices(response.service)
+                    setPayments(response.payment)
+                    setQuotations(response.quotation)
+                } catch (error) {
+                    console.error('Error fetching data: ', error)
+                }
+            } else {
+                navigate('/error')
             }
         }
         fetchData()
@@ -115,7 +113,8 @@ const SaleDetails= () => {
                                     <EditServiceDetailsModal 
                                         type={deliveries && deliveries[0]?.is_pickup ? "pickup" : "delivery"} 
                                         is_completed={!deliveries || deliveries.length === 0}
-                                        id={id}
+                                        id={deliveries[0]?.quotation_id}
+                                        date={deliveries[0]?.delivery_date}
                                     />
                                 
                                 </Col>
@@ -159,7 +158,12 @@ const SaleDetails= () => {
                                         <h3>{React.createElement(FaScrewdriver, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Installation</h3>
                                     </Col>
                                     <Col className="d-flex justify-content-end">
-                                        <EditServiceDetailsModal type={"installation"} id={id}  is_completed={installations.length === 0} date={installations.start_installation_date} data={installations.end_installation_date || null}/>
+                                        <EditServiceDetailsModal 
+                                            type={"installation"} 
+                                            id={installations[0]?.quotation_id}  
+                                            is_completed={installations.length === 0} 
+                                            date={installations[0]?.start_installation_date} 
+                                            data={installations[0]?.end_installation_date || null}/>
                                        
                                     </Col>
                                 </Row>
@@ -222,7 +226,11 @@ const SaleDetails= () => {
                                     <h3>{React.createElement(FaToolbox, { size: 25, style: { marginRight: '5px', marginBottom: '5px' }})}Service</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
-                                    <EditServiceDetailsModal id={id} type={"service"} is_completed={services.length === 0} date={services.service_date}/>
+                                    <EditServiceDetailsModal 
+                                        id={services[0]?.quotation_id} 
+                                        type={"service"} 
+                                        is_completed={services.length === 0} 
+                                        date={services[0]?.service_date}/>
                                 </Col>
                             </Row>
                             
@@ -308,13 +316,7 @@ const SaleDetails= () => {
                                         </tbody>
                                     </Table>
                                 </>
-                            ) : (
-                                <Row>
-                                        <Col>
-                                            No Payments Made Yet
-                                        </Col>
-                                </Row>
-                            )}
+                            ) : null}
 
                             {}
                             <Row className="mt-2">
