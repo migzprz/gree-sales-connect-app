@@ -103,6 +103,7 @@ const SaleConvertDetails = () => {
         const del = ['isPickup', 'deliveryDate', 'deliveryTime']
         const ins = ['installationType', 'installationSDate', 'installationSTime', 'installationEDate', 'installationETime', 'installationTechnician']
         const ser = ['serviceDate', 'serviceTime', 'serviceTechnician']
+        
 
         if (pay.includes(name)) {
             if (name === 'isInstallment') {
@@ -154,7 +155,7 @@ const SaleConvertDetails = () => {
       
       if (form.checkValidity() === true) {
         try {
-            const res = await axios.post(`http://localhost:4000/api/convertToSale/${type === 'add' ? 'add' : 'new'}`, { id, payment, delivery, installation, services, sales })
+            const res = await axios.post(`http://localhost:4000/api/convertToSale/${type === 'add' ? 'add' : 'new'}`, { id, payment, delivery, installation, services, sales, login_id })
             console.log(res)
             navigate('/viewsales')
           } catch (error) {
