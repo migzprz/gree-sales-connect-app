@@ -3,7 +3,7 @@ import { Row, Col, Button, Modal, Form,  InputGroup, Dropdown } from 'react-boot
 import { FaSave, FaPlus} from 'react-icons/fa';
 import axios from 'axios'
 
-const ResetPasswordModal = ({id}) => {
+const ResetPasswordModal = ({type, id}) => {
     const [showModal, setShowModal] = useState(false);
 
     const handleShowModal = () => {
@@ -85,14 +85,19 @@ const ResetPasswordModal = ({id}) => {
 
     return (
         <div>
+
+            {type === "reset" ?
             <>
                 <Dropdown.Item onClick={handleShowModal}>Reset Password</Dropdown.Item>
-            </>
+            </> :
+             <>
+                <Dropdown.Item onClick={handleShowModal}>Edit Password</Dropdown.Item>
+            </>}
             
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header style={{color: "white", backgroundColor: "#014c91"}}>
-                    <Modal.Title>Reset Password</Modal.Title>
+                    <Modal.Title>{type === "reset" ? 'Reset Password' : 'Edit Password'}</Modal.Title>
                 </Modal.Header>
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
                     <Modal.Body style={{color: "#014c91", backgroundColor: "#E5EDF4"}}>
@@ -110,7 +115,7 @@ const ResetPasswordModal = ({id}) => {
                             <Col lg="6">
                                 <Form.Group controlId="description">
                                     <Form.Label>Confirm Password</Form.Label>
-                                    <Form.Control type="text" name="confirm" value={editData.confirm} pattern={editData.password} onChange={handleChange} required/>
+                                    <Form.Control type="password" name="confirm" value={editData.confirm} pattern={editData.password} onChange={handleChange} required/>
                                     <Form.Control.Feedback type="invalid">
                                         Password does not match
                                     </Form.Control.Feedback>
@@ -122,7 +127,7 @@ const ResetPasswordModal = ({id}) => {
                     <Modal.Footer style={{backgroundColor: "#E5EDF4"}}>
 
                             <button className="btn" style={{color: "white", backgroundColor: "#014c91"}}>
-                            {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })} Reset Password
+                            {React.createElement(FaSave, { size: 18, style: { marginRight: '5px' } })} {type === "reset" ? 'Reset Password' : "Edit Password"}
                             </button>
 
                             <button className="btn" onClick={(e) => { e.preventDefault(); handleCloseModal(); }} style={{color: "white", backgroundColor: "#6c757d"}}>

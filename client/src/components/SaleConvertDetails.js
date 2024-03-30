@@ -370,7 +370,7 @@ const SaleConvertDetails = () => {
                                 </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
-                        {installation.installationType === '1' ? (
+                        {!installation.installationType || installation.installationType === '1' ? (
                         <Col lg="2">
                                 <Form.Group controlId="installationTechnician">
                                 <Form.Label>Technician</Form.Label>

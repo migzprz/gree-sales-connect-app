@@ -45,12 +45,12 @@ const CompleteSalesModal = ({ id }) => {
         <div>
             <button className="btn w-40" onClick={handleShowModal} style={{color: "white", backgroundColor: "#014c91"}}>
                 {React.createElement(FaCheck, { size: 18, style: { marginRight: '5px' } })} 
-                Complete Warranty
+                Complete Sale
             </button>
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header style={{color: "white", backgroundColor: "#014c91"}}>
-                    <Modal.Title> Complete Warranty</Modal.Title>
+                    <Modal.Title> Complete Sale</Modal.Title>
                 </Modal.Header>
 
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>

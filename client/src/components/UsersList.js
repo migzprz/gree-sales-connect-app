@@ -71,7 +71,7 @@ const UsersList = () => {
           return (
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '0px' }}>
               <EditUserModal id={id}/>
-              <ResetPasswordModal id={id}/>
+              <ResetPasswordModal type={"reset"} id={id}/>
               <UpdateUserStatusModal id={id}/>
             </Dropdown.Menu>
           );
