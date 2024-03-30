@@ -3,7 +3,7 @@ import { Row, Col, Button, Modal, Form,  InputGroup, Dropdown } from 'react-boot
 import { FaSave, FaPlus} from 'react-icons/fa';
 import axios from 'axios'
 
-const ResetPasswordModal = ({type, id}) => {
+const ResetPasswordModal = ({type, id, onClose}) => {
     const [showModal, setShowModal] = useState(false);
 
     const handleShowModal = () => {
@@ -16,6 +16,7 @@ const ResetPasswordModal = ({type, id}) => {
         setEditData({
         password: '',
         confirm: ''});
+        onClose();
     };
 
     const [record, setRecord] = useState({})
@@ -73,7 +74,7 @@ const ResetPasswordModal = ({type, id}) => {
     
         if (form.checkValidity()) {
             try {
-                const postReponse = await axios.patch(`http://localhost:4000/api/changePassword/${record.login_id}`, editData)
+                const postReponse = await axios.patch(`http://localhost:4000/api/changePassword/${id}`, editData)
                 console.log(postReponse)
                 window.location.reload()
             } catch (error) {

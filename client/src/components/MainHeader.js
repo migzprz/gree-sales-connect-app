@@ -11,7 +11,6 @@ const MainHeader = () => {
 
     const navigate = useNavigate();
     const name = sessionStorage.getItem('userName')
-
     const handleDropdownToggle = () => {
         setShowDropdown(!showDropdown);
     };
@@ -25,7 +24,7 @@ const MainHeader = () => {
     const renderDropdown = (index, id) => {
           return (
             <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '20px' }}>
-              <ResetPasswordModal type={"edit"} id={id}/>
+              <ResetPasswordModal type={"edit"} id={sessionStorage.getItem('login_id')}/>
               <Dropdown.Item onClick={handleLogout}>Log Out</Dropdown.Item>
             </Dropdown.Menu>
           );
