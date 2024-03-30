@@ -1,10 +1,12 @@
 import MainHeader from "../components/MainHeader"
-import OcularList from "../components/OcularList";
+import React, { useState, useEffect } from 'react';
 import Dashboard from "../components/Dashboard";
 import Sidebar from "../components/Sidebar";
 import '../index.css';
+import LoadingScreen from "../components/LoadingScreen";
 
 const Home = () => {
+
     return (
         <>
             <MainHeader/>

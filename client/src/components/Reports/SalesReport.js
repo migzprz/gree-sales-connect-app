@@ -94,7 +94,7 @@ const SalesReport = () => {
 
     useEffect(() => {
         const splitDataIntoPages = async () => {
-            const itemsPerPage = 16;
+            const itemsPerPage = 12;
             const totalPages = Math.ceil(productData.length / itemsPerPage);
             const pagesArray = Array.from({ length: totalPages }, (_, index) => {
                 const startIndex = index * itemsPerPage;
@@ -192,15 +192,16 @@ const SalesReport = () => {
             <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
 
             {pages.map((item, index) => (    
-            <Card className={`quotation-file mt-2 page-${index}`} style={{ width: '8.5in', height: '11in', padding: '0.5in' }}>
+            <Card className={`quotation-file mt-2 page-${index}`} style={{ width: '8.5in', height: '11in', padding: '0.5in', overflow: 'auto' }}>
                 <Row>
                     <Col lg="7">
-                    <img src={logo} style={{ width: '100%', height: 'auto', opacity: '1', paddingBottom: '7px' }} alt="Banner" />
+                        <img src={logo} style={{ maxWidth: '100%', height: 'auto', opacity: '1', paddingBottom: '7px' }} alt="Banner" />
                     </Col>
                     <Col lg="5" style={{ textAlign: 'right' }}>
                         <h1 className="me-2" style={{ fontFamily: 'Cambria', color: '#0070c0', fontSize: '2em', fontWeight: 'bold' }}>SALES REPORT</h1>
                     </Col>
                 </Row>
+
                 <Table style={{ fontSize:"13px", borderCollapse: 'collapse', width: '100%', border: 'none' }}>
                     <tbody>
                         <tr>

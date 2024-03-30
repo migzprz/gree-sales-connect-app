@@ -8,11 +8,12 @@ import { useParams } from 'react-router-dom';
 import AddProductModal from './AddProductModal';
 import axios from 'axios'
 import EditExpensesModal from './EditExpensesModal';
+import LoadingScreen from './LoadingScreen';
 
 const ExpenseDetails = () => {
 
     const { id } = useParams();
-    
+    const [loading, setLoading] = useState(true);
     const [expenseData, setExpenseData] = useState([]);
     const [opExpenseData, setOpExpenseData] = useState([]);
     const [nonopExpenseData, setNonopExpenseData] = useState([]);
@@ -26,6 +27,8 @@ const ExpenseDetails = () => {
                 setOpExpenseData(response2.data)
                 const response3 = await axios.get(`http://localhost:4000/api/getNonOperatingExpenses/${id}`)
                 setNonopExpenseData(response3.data)
+
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching data: ', error)
             }
@@ -73,6 +76,9 @@ const ExpenseDetails = () => {
     
 
     return (
+        <>
+        {loading ? 
+        <LoadingScreen/> :
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
             <h1>Manage Detailed Expenses</h1>
             <h5>View and manage an expense record</h5>
@@ -166,7 +172,8 @@ const ExpenseDetails = () => {
             
 
 
-        </div>
+        </div> }
+        </>
     );
 };
 

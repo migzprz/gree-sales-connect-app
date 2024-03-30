@@ -4,9 +4,11 @@ import { Legend, Tooltip, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Line
 import { Row, Col, Card, CardBody} from 'react-bootstrap';
 import { FaFilter } from 'react-icons/fa';
 import axios from 'axios'
+import LoadingScreen from '../LoadingScreen';
 
 const SalesDashboard = () => {
 
+        const [loading, setLoading] = useState(true);
         const [yearOptions, setYearOptions] = useState([]);
 
         const [ocularData, setOcularData] = useState([]);
@@ -156,9 +158,26 @@ const SalesDashboard = () => {
                 }
             };
         
-            fetchRevenueData();
-            fetchOcularData();
-            fetchQuotationData();
+            const fetchData = async () => {
+                try {
+                    // Initiate all fetch operations simultaneously
+                    const [revenueResponse, ocularResponse, quotationResponse] = await Promise.all([
+                        fetchRevenueData(),
+                        fetchOcularData(),
+                        fetchQuotationData()
+                    ]);
+    
+                    // Process the responses if needed
+    
+                    // Trigger onLoad() function
+                    setLoading(false)
+                } catch (error) {
+                    console.error('Error fetching data: ', error);
+                }
+            };
+
+            fetchData();
+    
         }, [yearFilter, monthFilter]);
         
         
@@ -193,125 +212,130 @@ const SalesDashboard = () => {
     
     return (
         <>
-            <Row className="mb-3">
-                <Col lg="3">
-                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
-                                                                    backgroundColor: "#014c91", borderRadius: "10px",
-                                                                    overflow: "hidden"}}>
-                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
-                            <div style={{padding: "5px", color: 'white'}}>
-                                {React.createElement(FaFilter, { size: 20 })}
-                            </div>  
+            {loading ? 
+            <LoadingScreen/> :
+            <>
+                <Row className="mb-3">
+                    <Col lg="3">
+                        <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
+                                                                        backgroundColor: "#014c91", borderRadius: "10px",
+                                                                        overflow: "hidden"}}>
+                            <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
+                                <div style={{padding: "5px", color: 'white'}}>
+                                    {React.createElement(FaFilter, { size: 20 })}
+                                </div>  
+                            </div>
+                            <select className="form-select" value={yearFilter} onChange={(e) => setYearFilter(e.target.value)}>
+                                {yearOptions.map((year) => (
+                                    <option value={year}>{year}</option>
+                                ))}
+                            </select>
+
                         </div>
-                        <select className="form-select" value={yearFilter} onChange={(e) => setYearFilter(e.target.value)}>
-                            {yearOptions.map((year) => (
-                                <option value={year}>{year}</option>
-                            ))}
-                        </select>
+                    </Col>
+                    <Col lg="3">
+                        <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
+                                                                        backgroundColor: "#014c91", borderRadius: "10px",
+                                                                        overflow: "hidden"}}>
+                            <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
+                                <div style={{padding: "5px", color: 'white'}}>
+                                    {React.createElement(FaFilter, { size: 20 })}
+                                </div>  
+                            </div>
+                            <select className="form-select" value={monthFilter} onChange={(e) => setMonthFilter(parseInt(e.target.value))}>
+                                <option value="0">All Months</option>
+                                {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                                    <option key={month} value={month}>{new Date(2024, month - 1, 1).toLocaleString('default', { month: 'short' })}</option>
+                                ))}
+                            </select>
 
-                    </div>
-                </Col>
-                <Col lg="3">
-                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
-                                                                    backgroundColor: "#014c91", borderRadius: "10px",
-                                                                    overflow: "hidden"}}>
-                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
-                            <div style={{padding: "5px", color: 'white'}}>
-                                {React.createElement(FaFilter, { size: 20 })}
-                            </div>  
+
                         </div>
-                        <select className="form-select" value={monthFilter} onChange={(e) => setMonthFilter(parseInt(e.target.value))}>
-                            <option value="0">All Months</option>
-                            {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
-                                <option key={month} value={month}>{new Date(2024, month - 1, 1).toLocaleString('default', { month: 'short' })}</option>
-                            ))}
-                        </select>
+                    </Col>
+                </Row>
+
+                <Row>
+                    <Col lg="3">
+                        <Card style={{color: '#014c91', overflow: 'hidden'}}>
+                            <CardBody>
+                                <h5>Total Oculars Scheduled</h5>
+                                <h1 style={{fontSize:'48px'}}> {ocularTotal}</h1>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    <Col lg="3">
+                        <Card style={{color: '#014c91', overflow: 'hidden'}}>
+                            <CardBody>
+                                <h5>Total Quotations Generated</h5>
+                                <h1 style={{fontSize:'48px'}}> {quotationTotal}</h1>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    <Col lg="3">
+                        <Card style={{color: '#014c91', overflow: 'hidden'}}>
+                            <CardBody>
+                                <h5>Total Sale Orders Made</h5>
+                                <h1 style={{fontSize:'48px'}}> {salesTotal}</h1>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    <Col lg="3">
+                        <Card style={{color: '#014c91', overflow: 'hidden', height: '100%'}}>
+                            <CardBody>
+                                <h5>Total Revenue Generated</h5>
+                                <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(revenueTotal)}</h1>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                </Row>
+
+                <Row className="mt-3">
+                    <Col lg="6">
+                        <Card style={{color: '#014c91', overflow: 'hidden'}}>
+                            <CardBody className="mb-5">
+                                <ResponsiveContainer width='100%' height={300}>
+                                <h5>Scheduled Oculars over Time</h5>
+                                    <LineChart data={ocularData}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name"/>
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Legend />
+                                        {Object.keys(ocularLinesVisibility).map((key, index) => (
+                                            ocularLinesVisibility[key] && (
+                                                <Line key={key} type="monotone" dataKey={key} stroke={'#E26014'}/>
+                                            )
+                                        ))}
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    <Col lg="6">
+                        <Card style={{ color: '#014c91', overflow: 'hidden' }}>
+                            <CardBody className="mb-5">
+                                <ResponsiveContainer width='100%' height={300}>
+                                    <h5>Quotations Generated and Sale Conversion over Time</h5>
+                                    <LineChart data={quotationData}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Legend />
+                                        <Line type="monotone" dataKey="quotation" name="Quotations Generated" stroke="#1427E2" />
+                                        <Line type="monotone" dataKey="sales" name="Converted to Sale" stroke="#097969" />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </CardBody>
+                        </Card>
+                    </Col>
+
+                </Row>
 
 
-                    </div>
-                </Col>
-            </Row>
+                
+            </>}
 
-            <Row>
-                <Col lg="3">
-                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
-                        <CardBody>
-                             <h5>Total Oculars Scheduled</h5>
-                             <h1 style={{fontSize:'48px'}}> {ocularTotal}</h1>
-                        </CardBody>
-                    </Card>
-                </Col>
-                <Col lg="3">
-                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
-                        <CardBody>
-                             <h5>Total Quotations Generated</h5>
-                             <h1 style={{fontSize:'48px'}}> {quotationTotal}</h1>
-                        </CardBody>
-                    </Card>
-                </Col>
-                <Col lg="3">
-                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
-                        <CardBody>
-                             <h5>Total Sale Orders Made</h5>
-                             <h1 style={{fontSize:'48px'}}> {salesTotal}</h1>
-                        </CardBody>
-                    </Card>
-                </Col>
-                <Col lg="3">
-                    <Card style={{color: '#014c91', overflow: 'hidden', height: '100%'}}>
-                        <CardBody>
-                             <h5>Total Revenue Generated</h5>
-                             <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(revenueTotal)}</h1>
-                        </CardBody>
-                    </Card>
-                </Col>
-            </Row>
-
-            <Row className="mt-3">
-                <Col lg="6">
-                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
-                        <CardBody className="mb-5">
-                            <ResponsiveContainer width='100%' height={300}>
-                            <h5>Scheduled Oculars over Time</h5>
-                                <LineChart data={ocularData}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name"/>
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Legend />
-                                    {Object.keys(ocularLinesVisibility).map((key, index) => (
-                                        ocularLinesVisibility[key] && (
-                                            <Line key={key} type="monotone" dataKey={key} stroke={'#E26014'}/>
-                                        )
-                                    ))}
-                                </LineChart>
-                            </ResponsiveContainer>
-                        </CardBody>
-                    </Card>
-                </Col>
-                <Col lg="6">
-                    <Card style={{ color: '#014c91', overflow: 'hidden' }}>
-                        <CardBody className="mb-5">
-                            <ResponsiveContainer width='100%' height={300}>
-                                <h5>Quotations Generated and Sale Conversion over Time</h5>
-                                <LineChart data={quotationData}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Line type="monotone" dataKey="quotation" name="Quotations Generated" stroke="#1427E2" />
-                                    <Line type="monotone" dataKey="sales" name="Converted to Sale" stroke="#097969" />
-                                </LineChart>
-                            </ResponsiveContainer>
-                        </CardBody>
-                    </Card>
-                </Col>
-
-            </Row>
-
-
-            
         </>
     );
 };

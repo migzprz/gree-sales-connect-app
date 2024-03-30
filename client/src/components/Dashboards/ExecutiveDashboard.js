@@ -4,9 +4,11 @@ import { Legend, Tooltip, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Line
 import { Row, Col, Card, CardBody} from 'react-bootstrap';
 import { FaFilter } from 'react-icons/fa';
 import axios from 'axios'
+import LoadingScreen from '../LoadingScreen';
 
 const ExecutiveDashboard = () => {
 
+        const [loading, setLoading] = useState(true);
         const [yearOptions, setYearOptions] = useState([]);
 
         const [salesAndExpenseData, setSalesAndExpenseData] = useState([]);
@@ -85,7 +87,23 @@ const ExecutiveDashboard = () => {
                 }
             };
 
-            fetchSalesAndExpenseData();
+            const fetchData = async () => {
+                try {
+                    // Initiate all fetch operations simultaneously
+                    const [salesAndExpenseResponse] = await Promise.all([
+                        fetchSalesAndExpenseData()
+                    ]);
+    
+                    // Process the responses if needed
+    
+                    // Trigger onLoad() function
+                    setLoading(false)
+                } catch (error) {
+                    console.error('Error fetching data: ', error);
+                }
+            };
+
+            fetchData();
         }, [yearFilter, monthFilter]);
         
         
@@ -117,97 +135,101 @@ const ExecutiveDashboard = () => {
     
     return (
         <>
-            <Row className="mb-3">
-                <Col lg="3">
-                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
-                                                                    backgroundColor: "#014c91", borderRadius: "10px",
-                                                                    overflow: "hidden"}}>
-                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
-                            <div style={{padding: "5px", color: 'white'}}>
-                                {React.createElement(FaFilter, { size: 20 })}
-                            </div>  
+            {loading ? 
+            <LoadingScreen/> :
+            <>
+                <Row className="mb-3">
+                    <Col lg="3">
+                        <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
+                                                                        backgroundColor: "#014c91", borderRadius: "10px",
+                                                                        overflow: "hidden"}}>
+                            <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
+                                <div style={{padding: "5px", color: 'white'}}>
+                                    {React.createElement(FaFilter, { size: 20 })}
+                                </div>  
+                            </div>
+                            <select className="form-select" value={yearFilter} onChange={(e) => setYearFilter(e.target.value)}>
+                                {yearOptions.map((year) => (
+                                    <option value={year}>{year}</option>
+                                ))}
+                            </select>
+
                         </div>
-                        <select className="form-select" value={yearFilter} onChange={(e) => setYearFilter(e.target.value)}>
-                            {yearOptions.map((year) => (
-                                <option value={year}>{year}</option>
-                            ))}
-                        </select>
+                    </Col>
+                    <Col lg="3">
+                        <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
+                                                                        backgroundColor: "#014c91", borderRadius: "10px",
+                                                                        overflow: "hidden"}}>
+                            <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
+                                <div style={{padding: "5px", color: 'white'}}>
+                                    {React.createElement(FaFilter, { size: 20 })}
+                                </div>  
+                            </div>
+                            <select className="form-select" value={monthFilter} onChange={(e) => setMonthFilter(parseInt(e.target.value))}>
+                                <option value="0">All Months</option>
+                                {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                                    <option key={month} value={month}>{new Date(2024, month - 1, 1).toLocaleString('default', { month: 'short' })}</option>
+                                ))}
+                            </select>
 
-                    </div>
-                </Col>
-                <Col lg="3">
-                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
-                                                                    backgroundColor: "#014c91", borderRadius: "10px",
-                                                                    overflow: "hidden"}}>
-                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
-                            <div style={{padding: "5px", color: 'white'}}>
-                                {React.createElement(FaFilter, { size: 20 })}
-                            </div>  
+
                         </div>
-                        <select className="form-select" value={monthFilter} onChange={(e) => setMonthFilter(parseInt(e.target.value))}>
-                            <option value="0">All Months</option>
-                            {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
-                                <option key={month} value={month}>{new Date(2024, month - 1, 1).toLocaleString('default', { month: 'short' })}</option>
-                            ))}
-                        </select>
+                    </Col>
+                </Row>
+
+                <Row>
+                    <Col lg="4">
+                        <Card style={{color: '#014c91', overflow: 'hidden', height: '100%'}}>
+                            <CardBody>
+                                <h5>Total Profits</h5>
+                                <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(profitTotal)}</h1>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    <Col lg="4">
+                        <Card style={{color: '#014c91', overflow: 'hidden'}}>
+                            <CardBody>
+                                <h5>Total Sales Revenue Generated</h5>
+                                <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(revenueTotal)}</h1>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    <Col lg="4">
+                        <Card style={{color: '#014c91', overflow: 'hidden'}}>
+                            <CardBody>
+                                <h5>Total Expenses Incurred</h5>
+                                <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(expenseTotal)}</h1>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    
+                </Row>
+
+                <Row className="mt-3">
+                    <Col lg="12">
+                        <Card style={{ color: '#014c91', overflow: 'hidden' }}>
+                            <CardBody className="mb-5">
+                                <ResponsiveContainer width='100%' height={300}>
+                                    <h5>Expenses Incurred and Revenue Generated over Time</h5>
+                                    <LineChart data={salesAndExpenseData}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Legend />
+                                        <Line type="monotone" dataKey="expense" name="Expenses Incurred" stroke="#1427E2" />
+                                        <Line type="monotone" dataKey="revenue" name="Revenue Generated" stroke="#097969" />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </CardBody>
+                        </Card>
+                    </Col>
+
+                </Row>
 
 
-                    </div>
-                </Col>
-            </Row>
-
-            <Row>
-                <Col lg="4">
-                    <Card style={{color: '#014c91', overflow: 'hidden', height: '100%'}}>
-                        <CardBody>
-                             <h5>Total Profits</h5>
-                             <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(profitTotal)}</h1>
-                        </CardBody>
-                    </Card>
-                </Col>
-                <Col lg="4">
-                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
-                        <CardBody>
-                             <h5>Total Sales Revenue Generated</h5>
-                             <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(revenueTotal)}</h1>
-                        </CardBody>
-                    </Card>
-                </Col>
-                <Col lg="4">
-                    <Card style={{color: '#014c91', overflow: 'hidden'}}>
-                        <CardBody>
-                             <h5>Total Expenses Incurred</h5>
-                             <h1 style={{fontSize:'40px'}}> ₱ {formatNumber(expenseTotal)}</h1>
-                        </CardBody>
-                    </Card>
-                </Col>
                 
-            </Row>
-
-            <Row className="mt-3">
-                <Col lg="12">
-                    <Card style={{ color: '#014c91', overflow: 'hidden' }}>
-                        <CardBody className="mb-5">
-                            <ResponsiveContainer width='100%' height={300}>
-                                <h5>Expenses Incurred and Revenue Generated over Time</h5>
-                                <LineChart data={salesAndExpenseData}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Line type="monotone" dataKey="expense" name="Expenses Incurred" stroke="#1427E2" />
-                                    <Line type="monotone" dataKey="revenue" name="Revenue Generated" stroke="#097969" />
-                                </LineChart>
-                            </ResponsiveContainer>
-                        </CardBody>
-                    </Card>
-                </Col>
-
-            </Row>
-
-
-            
+            </>}
         </>
     );
 };
