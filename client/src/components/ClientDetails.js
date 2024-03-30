@@ -6,6 +6,8 @@ import { FaEdit, FaCheck, FaTruck, FaPlus, FaShoppingBag, FaUserTie} from 'react
 import { Row, Col, Card, CardBody, CardHeader, Table, Form, Dropdown } from 'react-bootstrap';
 import '../index.css';
 import axios from 'axios'
+import EditClientDetailsModal from './EditClientDetailsModal';
+import TransferCompanyModal from './TransferCompanyModal';
 
 const ClientDetails= () => {
 
@@ -45,19 +47,24 @@ const ClientDetails= () => {
                                     <h3>{React.createElement(FaUserTie, { size: 50, style: { marginRight: '5px', marginBottom: '5px'  }})}{clientData.client_name}</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
-                                    {React.createElement(FaEdit, { size: 18 })}
+                                    <EditClientDetailsModal id={id}/> <TransferCompanyModal className="ms-4" contact_person_id={clientData.contact_person_id}/>
                                 </Col>
                             </Row>
+                            {clientData.company_name &&
                             <Row>
                                 <Col>
                                     Company: <strong> {clientData.company_name} </strong>
                                 </Col>
                             </Row>
-                            <Row>
+                            }
+                            {clientData.tin &&
+                           <Row>
                                 <Col>
                                     TIN ID: <strong> {clientData.tin} </strong>
                                 </Col>
                             </Row>
+                            }
+                            
                             <Row>
                                 <Col>
                                     Contact Number: <strong> {clientData.contact_number}</strong>

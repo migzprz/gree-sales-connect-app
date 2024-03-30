@@ -39,15 +39,27 @@ const ClientsList = () => {
     };
 
     let sortedClients = [...clientData];
+
     if (sortOption === 'client-asc') {
         sortedClients.sort((a, b) => a.client_name.localeCompare(b.client_name));
     } else if (sortOption === 'client-desc') {
         sortedClients.sort((a, b) => b.client_name.localeCompare(a.client_name));
     } else if (sortOption === 'company-asc') {
-        sortedClients.sort((a, b) => a.company_name.localeCompare(b.company_name));
+        sortedClients.sort((a, b) => {
+            if (a.company_name === null && b.company_name === null) return 0;
+            if (a.company_name === null) return 1;
+            if (b.company_name === null) return -1;
+            return a.company_name.localeCompare(b.company_name);
+        });
     } else if (sortOption === 'company-desc') {
-        sortedClients.sort((a, b) => b.company_name.localeCompare(a.company_name));
+        sortedClients.sort((a, b) => {
+            if (a.company_name === null && b.company_name === null) return 0;
+            if (a.company_name === null) return -1;
+            if (b.company_name === null) return 1;
+            return b.company_name.localeCompare(a.company_name);
+        });
     }
+    
 
     const filteredClients = sortedClients.filter(client => (
         client.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -119,7 +131,7 @@ const ClientsList = () => {
                                 <tr>
                                     <th style={{color: '#014c91'}}>Client</th>
                                     <th style={{color: '#014c91'}}>Company</th>
-                                    <th style={{color: '#014c91'}}>TIN ID</th>
+                                    <th style={{color: '#014c91'}}>Company TIN ID</th>
                                     <th style={{color: '#014c91'}}>Contact Number</th>
                                     <th style={{color: '#014c91'}}>Email Address</th>
                                 </tr>
@@ -131,8 +143,8 @@ const ClientsList = () => {
                                                 <td style={{ color: '#014c91' }}>
                                                     <Link to={`/viewclientdetails/${client.client_id}`} style={{ color: '#014c91'}}>{client.client_name}</Link>
                                                 </td>
-                                                <td style={{color: '#014c91'}}>{client.company_name}</td>
-                                                <td style={{color: '#014c91'}}>{client.tin}</td>
+                                                <td style={{color: '#014c91'}}>{client.company_name ? client.company_name : '-'}</td>
+                                                <td style={{color: '#014c91'}}>{client.tin ? client.tin : '-'}</td>
                                                 <td style={{color: '#014c91'}}>{client.contact_number}</td>
                                                 <td style={{color: '#014c91'}}>{client.email}</td>
                                             </tr>
