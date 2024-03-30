@@ -238,7 +238,7 @@ const TechniciansList = () => {
                         <h1 className="mt-3"> <FaSearch size={50} className="me-2" />No Technicians Found  </h1>
                         <Row className="mt-3">
                             <Col>
-                                <AddUserModal/>
+                                <AddTechnicianModal/>
                             </Col>
                         </Row>
                     </CardBody>

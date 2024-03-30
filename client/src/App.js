@@ -30,6 +30,7 @@ import Restriction from './pages/Restriction';
 import Error404 from './pages/Error404';
 
 import WithAuth from './withAuth'
+import Notifications from './pages/Notifications';
 
 // Sales Routes
 const ViewOcularsWithAccess = WithAuth(ViewOculars, 0)
@@ -110,6 +111,8 @@ function App() {
                     {/* Security Pages */}
                     <Route path="/unauthorized" element={<Restriction/>}/>
                     <Route path="/error" element={<Error404/>}/>
+
+                    <Route path="/notifications" element={<Notifications/>}/>
 
                   </Routes>
           </BrowserRouter>

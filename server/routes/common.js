@@ -700,5 +700,130 @@ module.exports = (query) => {
         res.send(validDateCheck)
     })
 
+
+
+
+    //NOTIFICATION ROUTES
+    router.get('/getSalesNotifications', async (req, res) => {
+        try {const data = await query(` SELECT *
+                                                FROM (
+                                                    SELECT 1 AS description, 1 AS user_type, COUNT(o.ocular_id) AS count
+                                                    FROM td_oculars o
+                                                    JOIN md_quotation_clients qc ON qc.ocular_id = o.ocular_id
+                                                    LEFT JOIN td_quotations q ON q.quotation_client_id = qc.quotation_client_id
+                                                    WHERE DATE(ocular_date) = CURDATE() AND q.quotation_id IS NULL AND o.is_active = 1
+                                                                                                    
+                                                    UNION ALL
+                                                                                                    
+                                                    SELECT 2 AS description, 1 AS user_type, COUNT(o.ocular_id) AS count
+                                                    FROM td_oculars o
+                                                    JOIN md_quotation_clients qc ON qc.ocular_id = o.ocular_id
+                                                    JOIN md_technicians t ON o.technician_id = t.technician_id
+                                                    JOIN md_clients cl ON qc.client_id = cl.client_id
+                                                    JOIN md_contactperson cp ON cl.contact_person_id = cp.contact_person_id
+                                                    JOIN md_companies co ON cl.company_id = co.company_id
+                                                    JOIN md_locations loc ON qc.location_id = loc.location_id
+                                                    JOIN md_provinces p ON loc.addr_province_id = p.province_id
+                                                    JOIN md_municipalities m ON loc.addr_municipality_id = m.municipality_id
+                                                    JOIN md_barangays b ON loc.addr_barangay_id = b.barangay_id
+                                                    LEFT JOIN td_quotations q ON q.quotation_client_id = qc.quotation_client_id
+                                                    WHERE DATE(ocular_date) <= DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND q.quotation_id IS NULL AND o.is_active = 1
+                                                
+                                                UNION ALL
+                                                
+                                                SELECT 3 AS description, 1 AS user_type, COUNT(quotation_id) AS count
+                                                FROM td_quotations
+                                                WHERE sales_id IS NULL AND DATE(date_created) <= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+                                                
+                                                UNION ALL
+                                                
+                                                SELECT 4 AS description, 1 AS user_type, COUNT(delivery_id) AS count
+                                                FROM md_deliveries
+                                                WHERE DATE(delivery_date) = CURDATE()
+                                                
+                                                UNION ALL
+                                                
+                                                SELECT 5 AS description, 1 AS user_type, COUNT(delivery_id) AS count
+                                                FROM md_deliveries
+                                                WHERE DATE(delivery_date) <= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+                                                
+                                                UNION ALL
+                                                
+                                                SELECT 6 AS description, 1 AS user_type, COUNT(installation_id) AS count
+                                                FROM md_installations
+                                                WHERE DATE(start_installation_date) = CURDATE()
+                                                
+                                                UNION ALL
+                                                
+                                                SELECT 7 AS description, 1 AS user_type, COUNT(installation_id) AS count
+                                                FROM md_installations
+                                                WHERE DATE(start_installation_date) <= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+                                                
+                                                UNION ALL
+                                                
+                                                SELECT 8 AS description, 1 AS user_type, COUNT(service_schedule_id) AS count
+                                                FROM md_service_schedules
+                                                WHERE DATE(service_date) = CURDATE()
+                                                
+                                                UNION ALL
+                                                
+                                                SELECT 9 AS description, 1 AS user_type, COUNT(service_schedule_id) AS count
+                                                FROM md_service_schedules
+                                                WHERE DATE(service_date) <= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+                                                ) AS combined_data
+                                        `, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getAfterSalesNotifications', async (req, res) => {
+                try {const data = await query(` SELECT DISTINCT cp.contact_person_id, CONCAT(cp.last_name, ', ', cp.first_name) as client_name, cp.contact_number
+                                                    FROM td_sales s 
+                                                    JOIN td_quotations q ON q.sales_id = s.sales_id
+                                                    JOIN md_installations i ON q.quotation_id = i.quotation_id
+                                                    JOIN md_quotation_clients qc ON qc.quotation_client_id = q.quotation_client_id
+                                                    JOIN md_clients c ON c.client_id = qc.client_id
+                                                    JOIN md_contactperson cp ON cp.contact_person_id = c.contact_person_id
+                                                    WHERE s.is_completed = 1 
+                                                    AND i.start_installation_date <= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+                                                    AND i.start_installation_date > DATE_SUB(DATE_SUB(CURDATE(), INTERVAL 6 MONTH), INTERVAL 1 WEEK)
+                
+                                        `, [])
+            console.log(data)
+            res.send(data)
+        } catch (error) {
+            console.error('Error: ', error)
+            throw error
+        }
+    })
+
+    router.get('/getExecutiveNotifications', async (req, res) => {
+        try {const data = await query(` SELECT 
+                                            IFNULL(
+                                                CASE 
+                                                    WHEN DATEDIFF(CURDATE(), MAX(date_created)) < 30 THEN 0
+                                                    ELSE FLOOR(DATEDIFF(CURDATE(), MAX(date_created)) / 30)
+                                                END,
+                                                0
+                                            ) AS months_since_last_expense
+                                        FROM 
+                                            td_expenses;
+        
+                                `, [])
+                console.log(data)
+                res.send(data)
+            } catch (error) {
+                console.error('Error: ', error)
+                throw error
+            }
+            })
+
+        
+        
+
     return router;
 }
