@@ -66,8 +66,14 @@ const SaleConvertDetails = () => {
         amount: totalPrice
     })
     const [delivery, setDelivery] = useState({})
-    const [installation, setInstallation] = useState({})
+    const [installation, setInstallation] = useState({
+        installationType: '1'
+    })
     const [services, setServices] = useState({})
+
+    // extra logic state handlers
+    const [serviceAsInstallation, setServiceAsInstallation] = useState(false)
+
 
     // Technician Availability for Installation
     useEffect(() => {
@@ -166,6 +172,27 @@ const SaleConvertDetails = () => {
 
     const handleCancel = () => {
         navigate('/viewquotations')
+    }
+
+    const handleCheckClick = () => {
+        const isSame = !serviceAsInstallation
+        setServiceAsInstallation((prev) => !prev)
+
+        if (isSame) {
+            setServices((prev) => ({
+                ...prev, 
+                serviceDate: installation.installationSDate ,
+                serviceTime: installation.installationSTime,
+                serviceTechnician: installation.installationTechnician
+            }))
+        } else {
+            setServices((prev) => {
+                const { serviceDate, serviceTime, serviceTechnician, ...rest } = prev;
+                return rest;
+            });
+            
+        }
+
     }
 
     useEffect(() => {
@@ -334,6 +361,7 @@ const SaleConvertDetails = () => {
                                         name="installationType"
                                         value='1'
                                         onChange={handleChange}
+                                        checked={installation.installationType === '1'}
                                         required
                                     />
                                     <Form.Check
@@ -441,17 +469,20 @@ const SaleConvertDetails = () => {
                         <Col lg="2">
                             <Form.Group controlId="installstartdate">
                                 <Form.Label>Service Date</Form.Label>
-                                <Form.Control type="date" name='serviceDate' onChange={handleChange} required/>
+                                <Form.Control type="date" name='serviceDate' onChange={handleChange} defaultValue={services.serviceDate} required/>
                                 <Form.Control.Feedback type="invalid">
                                     Please choose a valid date.
                                 </Form.Control.Feedback>
+                                {installation && installation.installationSDate && installation.installationSTime ? (
+                                    <Form.Check type='checkbox' label='Same as installation?' name='serviceAsInstallation' checked={serviceAsInstallation} onClick={handleCheckClick} />
+                                ) : null }
                             </Form.Group>
                         </Col>
 
                         <Col lg="2">
                             <Form.Group controlId="installstarttime">
                                 <Form.Label>Service Time</Form.Label>
-                                <Form.Control type="time" name='serviceTime' onChange={handleChange} required/>
+                                <Form.Control type="time" name='serviceTime' onChange={handleChange} defaultValue={services.serviceTime} required/>
                                 <Form.Control.Feedback type="invalid">
                                     Please choose a valid time.
                                 </Form.Control.Feedback>
@@ -461,13 +492,13 @@ const SaleConvertDetails = () => {
                         <Col lg="2">
                             <Form.Group controlId="paymentMode">
                                 <Form.Label>Technician</Form.Label>
-                                <Form.Control as="select" name='serviceTechnician' onChange={handleChange} required>
+                                <Form.Control as="select" name='serviceTechnician' disabled={ !services.serviceDate || !services.serviceTime } onChange={handleChange} defaultValue={services.serviceTechnician} required>
                                     <option value=""> Select </option>
                                     {technicians2.map((t, index) =>(
                                         <option key={index} value={t.technician_id}>{t.complete_name}</option>
                                     ))}
                                 </Form.Control>
-                                {mod2 ? (<p>One or more technicians are unavailable with the given schedule</p>) : null}
+                                {mod2 ? (<p>Some technicians are unavailable</p>) : null}
                                 <Form.Control.Feedback type="invalid">
                                     Please choose a mode of payment.
                                 </Form.Control.Feedback>

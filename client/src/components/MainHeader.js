@@ -17,7 +17,8 @@ const MainHeader = () => {
 
     const handleLogout = () => {
         const res = axios.get('http://localhost:4000/api/logout/')
-        navigate('/'); // Navigate to the login page after logout
+        sessionStorage.clear()
+        navigate('/'); // Navigate to the login page after logout   
         
     };
 

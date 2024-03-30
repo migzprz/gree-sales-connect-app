@@ -13,7 +13,7 @@ const ReturningClientModal = ({ formData, setFormData }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const clientResponse = await axios.get('http://localhost:4000/api/getClients/')
+                const clientResponse = await axios.get('http://localhost:4000/api/getAllClients/')
                 setClients(clientResponse.data)
             } catch (error) {
                 console.error('Error fetching client data: ', error)
@@ -109,7 +109,7 @@ const ReturningClientModal = ({ formData, setFormData }) => {
                                 <tbody>
                                     {filteredClients.map((client, index) => (
                                         <tr key={index} onClick={() => handleOnClick(index, client)} className={index === selectedRowIndex ? 'bg-gray-200': ''}>
-                                            <td>{client.company_name}</td>
+                                            <td>{client.company_name ?? '--'}</td>
                                             <td>{client.client_name}</td>
                                             <td>{client.email}</td>
                                             <td>{client.contact_number}</td>

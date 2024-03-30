@@ -11,9 +11,11 @@ import EditServiceDetailsModal from './EditServiceDetailsModal';
 import { useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import CompleteSalesModal from './CompleteSalesModal';
+import { useNavigate } from 'react-router-dom';
 
 const SaleDetails= () => {
 
+    const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const id = searchParams.get('id')
 
@@ -23,6 +25,12 @@ const SaleDetails= () => {
     const [services, setServices] = useState([])
     const [payments, setPayments] = useState([])
     const [quotations, setQuotations] = useState([])
+
+    useEffect(() => {
+        if (id===null) (
+            navigate('/error')
+        )
+    }, [id])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -53,6 +61,7 @@ const SaleDetails= () => {
         return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
 
+    
     return (
         <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
             <h1>Sale Ref. #{String(detail.sales_id).padStart(4, '0')}</h1>
@@ -102,11 +111,13 @@ const SaleDetails= () => {
                                     <h3>{React.createElement(FaTruck, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Delivery</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
-                                <EditServiceDetailsModal 
-                                    type={deliveries && deliveries[0]?.is_pickup ? "pickup" : "delivery"} 
-                                    is_completed={!deliveries || deliveries.length === 0}
-                                />
-
+                               
+                                    <EditServiceDetailsModal 
+                                        type={deliveries && deliveries[0]?.is_pickup ? "pickup" : "delivery"} 
+                                        is_completed={!deliveries || deliveries.length === 0}
+                                        id={id}
+                                    />
+                                
                                 </Col>
                             </Row>
 
@@ -148,7 +159,7 @@ const SaleDetails= () => {
                                         <h3>{React.createElement(FaScrewdriver, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Installation</h3>
                                     </Col>
                                     <Col className="d-flex justify-content-end">
-                                        <EditServiceDetailsModal type={"installation"}  is_completed={installations.length === 0} date={installations.start_installation_date}/>
+                                        <EditServiceDetailsModal type={"installation"} id={id}  is_completed={installations.length === 0} date={installations.start_installation_date} data={installations.end_installation_date || null}/>
                                        
                                     </Col>
                                 </Row>
@@ -211,7 +222,7 @@ const SaleDetails= () => {
                                     <h3>{React.createElement(FaToolbox, { size: 25, style: { marginRight: '5px', marginBottom: '5px' }})}Service</h3>
                                 </Col>
                                 <Col className="d-flex justify-content-end">
-                                    <EditServiceDetailsModal type={"service"} is_completed={services.length === 0} date={services.service_date}/>
+                                    <EditServiceDetailsModal id={id} type={"service"} is_completed={services.length === 0} date={services.service_date}/>
                                 </Col>
                             </Row>
                             

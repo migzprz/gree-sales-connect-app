@@ -224,7 +224,7 @@ const QuotationList = () => {
                                     <tr style={{ borderRadius: '20px', padding: '10px' }}>
                                         <td ><Link to={`/generatequotation/${quotation.quotation_id}?type=view`} style={{color: '#014c91'}}>#{String(quotation.quotation_id).padStart(4, '0')}</Link></td>
                                         <td style={{color: '#014c91'}}>{quotation.client_name}</td>
-                                        <td style={{color: '#014c91'}}>{quotation.company_name}</td>
+                                        <td style={{color: '#014c91'}}>{quotation.company_name ?? '--'}</td>
                                         <td style={{color: '#014c91'}}>{quotation.client_number}</td>
                                         <td style={{color: '#014c91'}}>{formatDate(quotation.date_created)} {new Date(quotation.date_created).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
                                         <td style={{color: '#014c91'}}>₱ {formatNumber(quotation.totalPrice)}</td>
