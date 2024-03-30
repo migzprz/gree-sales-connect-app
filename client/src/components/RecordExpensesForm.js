@@ -1,12 +1,15 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { useState, useEffect } from 'react'; 
+import { useNavigate } from 'react-router-dom';
 import { FaSave, FaSearch, FaCheck, FaTruck, FaClock, FaChevronRight, FaPlus, FaMoneyBillWave, FaShoppingBag, FaTrash} from 'react-icons/fa';
 import { Row, Col, Button, CardBody, CardHeader, Table, Form, InputGroup, Card } from 'react-bootstrap';
 import '../index.css';
 import axios from 'axios'
 
 const RecordExpensesForm = () => {
+
+    const navigate = useNavigate()
 
     const [validated, setValidated] = useState(false);
     const [userId, setUserId] = useState(1);
@@ -50,7 +53,7 @@ const RecordExpensesForm = () => {
             try {
                 const postReponse = await axios.post(`http://localhost:4000/api/postExpenses/${userId}`, {expenseList})
                 console.log(postReponse)
-                window.location.reload()
+                navigate('/viewexpenses')
             } catch (error) {
                 console.error('Error: Problem encountered when posting data', error)
             }
