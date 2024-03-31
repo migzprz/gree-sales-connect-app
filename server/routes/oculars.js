@@ -29,7 +29,7 @@ module.exports = (query) => {
                                         CONCAT(t.last_name, ", ", t.first_name) as technician_name,
                                         CONCAT(cp.last_name, ", ", cp.first_name) as client_name, cp.contact_number as client_number,
                                         co.company_name,
-                                        CONCAT(loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address,
+                                        CONCAT(loc.addr_bldg_no, " ", loc.addr_street_name, " ", b.name, ", ", m.name, ", ", loc.zipcode, " ", p.name) as site_address,
                                         o.ocular_id, qt.quotation_id
                                         FROM td_oculars o 
                                         JOIN md_quotation_clients qc ON o.ocular_id = qc.ocular_id
