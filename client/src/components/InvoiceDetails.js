@@ -194,7 +194,7 @@ const InvoiceDetails = () => {
                 </Col>
             </Row>
                 <Row className="mt-3">
-                    <Col lg="4"/>
+                    <Col lg={type !== 'add' ? '4' : '6'}/>
                     {type !== 'view' ? (
                         <Col lg="2">
                             <Link to={`/converttosale?id=${id}${type === 'add' ? `&type=add&sales=${sales}` : ''}`} className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
@@ -203,11 +203,13 @@ const InvoiceDetails = () => {
                         </Col>
                     ) : <Col lg="2"></Col>}
                     
-                    <Col lg="2">
-                        <button className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}} onClick={handleBack}>
-                            {type && type === 'view' ? 'Back' : 'Cancel'}
-                        </button>
-                    </Col>
+                    {type !== 'add' ? (
+                        <Col lg="2">
+                            <button className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}} onClick={handleBack}>
+                                {type && type === 'view' ? 'Back' : 'Cancel'}
+                            </button>
+                        </Col>
+                    ) : null}
                 </Row>
             
 
