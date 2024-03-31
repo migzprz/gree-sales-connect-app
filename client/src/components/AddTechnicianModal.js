@@ -112,7 +112,7 @@ const AddTechnicianModal = () => {
                             <Col lg="6">
                                 <Form.Group controlId="description">
                                     <Form.Label>Email</Form.Label>
-                                    <Form.Control type="text" name="email" value={formData.email} onChange={handleChange} required/>
+                                    <Form.Control type="email" name="email" value={formData.email} onChange={handleChange} required/>
                                     <Form.Control.Feedback type="invalid">
                                         Please provide email
                                     </Form.Control.Feedback>
@@ -121,9 +121,9 @@ const AddTechnicianModal = () => {
                             <Col lg="6">
                                 <Form.Group controlId="description">
                                     <Form.Label>Contact Number</Form.Label>
-                                    <Form.Control type="text" name="contact_number" value={formData.contact_number} onChange={handleChange} required/>
+                                    <Form.Control type="text" pattern="[0-9]{11}" name="contact_number" value={formData.contact_number} onChange={handleChange} required/>
                                     <Form.Control.Feedback type="invalid">
-                                        Please provide default password
+                                        Please provide valid contact number
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>

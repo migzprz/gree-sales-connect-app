@@ -112,12 +112,12 @@ const SaleDetails= () => {
                             <Card style={{padding: '15px', borderRadius: '20px', color: deliveries.length > 0 ? '#014c91' : '#008000', background: deliveries.length > 0 ? '' : '#E7FFE2', height: '100%' }}>
                                 <Row>
                                     <Col lg="9">
-                                        <h3>{React.createElement(FaTruck, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}Delivery</h3>
+                                        <h3>{React.createElement(FaTruck, { size: 25, style: { marginRight: '5px', marginBottom: '5px'  }})}{deliveries && deliveries[0].is_pickup ? "Pick Up" : "Delivery"}</h3>
                                     </Col>
                                     <Col className="d-flex justify-content-end">
                                 
                                         <EditServiceDetailsModal 
-                                            type={deliveries && deliveries[0]?.is_pickup ? "pickup" : "delivery"} 
+                                            type={deliveries && deliveries[0].is_pickup ? "pickup" : "delivery"} 
                                             is_completed={!deliveries || deliveries.length === 0}
                                             id={deliveries[0]?.quotation_id}
                                             date={deliveries[0]?.delivery_date}
@@ -145,7 +145,7 @@ const SaleDetails= () => {
                                         </Row>
                                             <Row className="mt-2">
                                                 <Col>
-                                                    <CompleteServiceModal type={"delivery"} id={deliveries[0].delivery_id} refId={String(detail.sales_id).padStart(4, '0')}/>
+                                                    <CompleteServiceModal type={deliveries && deliveries[0].is_pickup ? "pickup" : "delivery"}  id={deliveries[0].delivery_id} refId={String(detail.sales_id).padStart(4, '0')}/>
                                                 </Col>
                                         </Row>
                                     </>

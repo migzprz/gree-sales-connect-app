@@ -35,7 +35,7 @@ const AddProductModal = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        let newData = { ...formData, [name]: value };
+        let newData = { ...formData, [name]: value.toUpperCase() };
     
         // Reset form data based on product_type
         if (name === 'product_type') {
