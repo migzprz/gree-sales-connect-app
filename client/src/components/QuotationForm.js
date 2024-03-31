@@ -9,13 +9,15 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PreviewQuotation from './PreviewQuotation';
 import { useParams, useSearchParams } from 'react-router-dom';
+import LoadingScreen from './LoadingScreen';
 
 const QuotationForm = () => {
 
   const navigate = useNavigate()
   const { id } = useParams();
 
-
+  const [loading, setLoading] = useState(true);
+  const [loading1, setLoading1] = useState(true);
   const [searchParams] = useSearchParams()
   const salesId = searchParams.get('sales')
   const type = searchParams.get('type')
@@ -30,6 +32,8 @@ const QuotationForm = () => {
             setOfferData(res.quotation)
             setTermsData(res.term[0])
             setSelectionType('download')
+
+            setLoading1(false)
         } catch (error) {
             console.log(error)
         }
@@ -38,9 +42,19 @@ const QuotationForm = () => {
     }
   }, [type])
 
+  useEffect(() => {
+      if (loading1) {
+        setLoading(false)
+      }
+
+    
+  }, [loading1])
+
+
+
   const [hasItems, setHasItems] = useState(true);
   const [validated, setValidated] = useState(false);
-  const { products, services, parts } = useProducts()
+  const { products, services, parts } = useProducts(setLoading1)
   const offer = { products, services, parts }
 
   const [offerData, setOfferData] = useState({})
@@ -171,15 +185,21 @@ const QuotationForm = () => {
   }, [id])
 
   return (
-    <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91' }}>
-      <h1>{displayHeader()}</h1>
 
-      {selectionType === 'offer' && <OfferSelection offerList={offer} onOfferSubmission={handleOfferSubmission} type={type} id={quoId} />}
-      {selectionType === 'client' && <ClientSelection onClientSubmission={handleClientSubmission}/>}
-      {selectionType === 'terms' && <TermsAndConditions onTermsSubmission={handleGetTermsData}/>}
-      {selectionType === 'download' && <PreviewQuotation offers={offerData} terms={termsData} client={clientData} POST={handleSubmit} type={type}/>}
+    <>
+      {loading ? 
+        <LoadingScreen/> :
+        <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91' }}>
+          <h1>{displayHeader()}</h1>
 
-    </div>
+          {selectionType === 'offer' && <OfferSelection offerList={offer} onOfferSubmission={handleOfferSubmission} type={type} id={quoId} />}
+          {selectionType === 'client' && <ClientSelection onClientSubmission={handleClientSubmission}/>}
+          {selectionType === 'terms' && <TermsAndConditions onTermsSubmission={handleGetTermsData}/>}
+          {selectionType === 'download' && <PreviewQuotation offers={offerData} terms={termsData} client={clientData} POST={handleSubmit} type={type}/>}
+
+        </div> 
+      }
+    </>
   );
 };
 

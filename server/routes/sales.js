@@ -205,7 +205,8 @@ module.exports = (query) => {
              q.sales_id) AS services ON s.sales_id = services.sales_id
 	WHERE s.is_completed = 0
     GROUP BY 
-        s.sales_id;       
+        s.sales_id
+    ORDER BY latest_delivery_date, latest_installation_date, latest_service_date;       
     `
         const data = await query(salesQuery, [])
 

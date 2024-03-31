@@ -68,6 +68,7 @@ const OcularList = () => {
     };
 
     let sortedOculars = [...ocularData];
+
     if (sortOption === 'date-asc') {
         sortedOculars.sort((a, b) => new Date(a.ocular_date) - new Date(b.ocular_date));
     } else if (sortOption === 'date-desc') {
@@ -77,18 +78,30 @@ const OcularList = () => {
     } else if (sortOption === 'client-desc') {
         sortedOculars.sort((a, b) => b.client_name.localeCompare(a.client_name));
     } else if (sortOption === 'company-asc') {
-        sortedOculars.sort((a, b) => a.company_name.localeCompare(b.company_name));
+        sortedOculars.sort((a, b) => {
+            if (!a.company_name) return -1; // If a's company_name is null, place it before b
+            if (!b.company_name) return 1;  // If b's company_name is null, place it before a
+            return a.company_name.localeCompare(b.company_name);
+        });
     } else if (sortOption === 'company-desc') {
-        sortedOculars.sort((a, b) => b.company_name.localeCompare(a.company_name));
+        sortedOculars.sort((a, b) => {
+            if (!b.company_name) return -1; // If b's company_name is null, place it before a
+            if (!a.company_name) return 1;  // If a's company_name is null, place it before b
+            return b.company_name.localeCompare(a.company_name);
+        });
     }
+    
 
     const filteredOculars = sortedOculars.filter(ocular => (
         (filterOption === '' || ocular.technician_name.toString() === filterOption) &&
-        (ocular.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ocular.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ocular.client_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ocular.site_address.toLowerCase().includes(searchTerm.toLowerCase()) )
+        (
+            ocular.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (ocular.company_name && ocular.company_name.toLowerCase().includes(searchTerm.toLowerCase())) || // Null check for company_name
+            ocular.client_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            ocular.site_address.toLowerCase().includes(searchTerm.toLowerCase())
+        )
     ));
+    
 
     //Date Conversion Function
     function formatDate(dateString) {

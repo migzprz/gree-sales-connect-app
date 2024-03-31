@@ -59,11 +59,14 @@ const ReturningClientModal = ({ formData, setFormData }) => {
     }
 
     const filteredClients = clients.filter(client => (
-        (client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        client.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        client.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        client.contact_number.toLowerCase().includes(searchTerm.toLowerCase()))
+        (
+            client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            client.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (client.company_name && client.company_name.toLowerCase().includes(searchTerm.toLowerCase())) || // Null check for company_name
+            client.contact_number.toLowerCase().includes(searchTerm.toLowerCase())
+        )
     ));
+    
 
     return (
         <div>

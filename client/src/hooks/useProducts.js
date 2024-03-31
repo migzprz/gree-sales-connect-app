@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function useProducts () {
+export default function useProducts (setLoading1) {
     const [products, setProducts] = useState([])
     const [services, setServices] = useState([])
     const [parts, setParts] = useState([])
@@ -27,6 +27,8 @@ export default function useProducts () {
                 setProducts(productsResponse)
                 setServices(servicesResponse)
                 setParts(partsResponse)
+
+                setLoading1(false)
             } catch (error) {
                 console.error('Error fetching data: ', error)
             }
