@@ -38,6 +38,7 @@ const QuotationForm = () => {
     }
   }, [type])
 
+
   const [hasItems, setHasItems] = useState(true);
   const [validated, setValidated] = useState(false);
   const { products, services, parts } = useProducts()
@@ -46,6 +47,7 @@ const QuotationForm = () => {
   const [offerData, setOfferData] = useState({})
   const [clientData, setClientData] = useState({})
   const [termsData, setTermsData] = useState({})
+  
 
   const [selectionType, setSelectionType] = useState('offer'); // Default to offer selection
 
