@@ -52,22 +52,36 @@ const EditExpensesModal = ({id}) => {
             newExpenseList.push(newExpenseType2);
 
             for (let opexpense of opExpenseData) {
+                let formattedDate = new Date(opexpense.expense_date).toLocaleDateString('en-GB', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                }).split('/').reverse().join('-'); // Convert to "yyyy-MM-dd" format
+
                 newExpenseList[0].expense.push({
                     name: opexpense.name,
                     description: opexpense.description,
-                    expense_date: opexpense.expense_date,
+                    expense_date: formattedDate,
                     amount: opexpense.amount
                 });
             }
 
             for (let nonopexpense of nonopExpenseData) {
+                // Format the date to "yyyy-MM-dd" format
+                let formattedDate = new Date(nonopexpense.expense_date).toLocaleDateString('en-GB', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                }).split('/').reverse().join('-'); // Convert to "yyyy-MM-dd" format
+            
                 newExpenseList[1].expense.push({
                     name: nonopexpense.name,
                     description: nonopexpense.description,
-                    expense_date: nonopexpense.expense_date,
+                    expense_date: formattedDate, // Use the formatted date
                     amount: nonopexpense.amount
                 });
             }
+            
             
             return newExpenseList;
         });
@@ -213,7 +227,7 @@ const EditExpensesModal = ({id}) => {
                                             </Col>
                                             <Col lg="3">
                                                 <Form.Group controlId="description">
-                                                    <Form.Control type="text" name="description" value={expenseType.expense[0].description} onChange={(e) => handleChange(e, 0, index)} required />
+                                                    <Form.Control type="text" name="description" value={expenseType.expense[0].description} onChange={(e) => handleChange(e, 0, index)} />
                                                     <Form.Control.Feedback type="invalid">
                                                         Please provide a description
                                                     </Form.Control.Feedback>
@@ -260,7 +274,7 @@ const EditExpensesModal = ({id}) => {
                                                         </Col>
                                                         <Col lg="3">
                                                             <Form.Group controlId="description">
-                                                                <Form.Control type="text" name="description" value={subexpense.description} onChange={(e) => handleChange(e, subindex, index)} required />
+                                                                <Form.Control type="text" name="description" value={subexpense.description} onChange={(e) => handleChange(e, subindex, index)} />
                                                                 <Form.Control.Feedback type="invalid">
                                                                     Please provide a description
                                                                 </Form.Control.Feedback>

@@ -63,12 +63,21 @@ const SalesList = () => {
         
 
     const filteredSales = sortedSales.filter(sale => (
-        (filterOption === '' || sale.hasService.toString() === filterOption) &&
-        (filterOption2 === '' || sale.hasDelivery.toString() === filterOption2) &&
-        (sale.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        sale.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        sale.contact_number.toLowerCase().includes(searchTerm.toLowerCase()) )
+        (
+            filterOption === '' || 
+            sale.hasService.toString() === filterOption
+        ) &&
+        (
+            filterOption2 === '' || 
+            sale.hasDelivery.toString() === filterOption2
+        ) &&
+        (
+            sale.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (sale.company_name && sale.company_name.toLowerCase().includes(searchTerm.toLowerCase())) || // Null check for company_name
+            sale.contact_number.toLowerCase().includes(searchTerm.toLowerCase())
+        )
     ));
+    
 
 
     

@@ -147,17 +147,17 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
 
             <Card className="quotation-file" style={{ width: '8.5in', height: '11in', padding: '0.5in' }}>
             <Row>
-                <Col style={{ textAlign: 'right' }}>
-                    <h1 className="me-2" style={{ fontFamily: 'Cambria', color: '#0070c0', fontSize: '3em', fontWeight: 'bold' }}>{isPurchase ? 'PURCHASE ORDER' : 'PRICE QUOTATION'}</h1>
-                </Col>
-            </Row>
-            <Row style={{ margin: '-0.1in 0' }}>
-                <img src={logo} style={{ width: '70%', height: 'auto', opacity: '1', padding: '0' }} alt="Banner" />
-            </Row>
+                    <Col lg="7">
+                        <img src={logo} style={{ maxWidth: '100%', height: 'auto', opacity: '1', paddingBottom: '7px' }} alt="Banner" />
+                    </Col>
+                    <Col lg="5" style={{ textAlign: 'right' }}>
+                        <h1 className="me-2" style={{ fontFamily: 'Cambria', color: '#0070c0', fontSize: '2em', fontWeight: 'bold' }}>{isPurchase ? 'PURCHASE ORDER' : 'PRICE QUOTATION'}</h1>
+                    </Col>
+                </Row>
                 <Table style={{ fontSize:"13px", borderCollapse: 'collapse', width: '100%', border: 'none' }}>
                     <tbody>
                         <tr>
-                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Address</td> 
+                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>955 Quezon Avenue, Santa Cruz, Lungsod Quezon, Kalakhang Maynila 1104</td> 
                         </tr>
                         <tr>
                             <td style={{ padding: '0', border: 'none'}}><strong>Tel: </strong></td> 
@@ -165,19 +165,19 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
                         </tr>
                         <tr>
                             <td style={{ padding: '0', border: 'none' }}/>
-                            <td colSpan="4" style={{ padding: '0', border: 'none' }}>(02) 8367 8677 (02) 8367 8677</td>
-                            <td style={{ padding: '0', border: 'none', textAlign: 'right' }}><strong>Requested by:</strong></td>
-                            <td style={{ padding: '0', border: 'none', textAlign: 'center'  }}>{userData.username}</td>
-                        </tr>
-                        <tr>
-                            <td colSpan="5" style={{ padding: '0', border: 'none'}}><strong>Office Mobile no.:</strong> 09369573408 , 09688617147</td>
-                            <td style={{ padding: '0', border: 'none', textAlign: 'right' }}><strong>Date:</strong></td>
-                            <td style={{ padding: '0', border: 'none', textAlign: 'center'  }}>{new Date(userData.date_created).toLocaleDateString()}</td>
-                        </tr>
-                        <tr>
-                            <td colSpan="5" style={{ padding: '0', border: 'none'}}><strong>Email:</strong> cfhiairconsolutions@gmail.com</td>
+                            <td colSpan="3" style={{ padding: '0', border: 'none' }}>(02) 8367 8677 (02) 8367 8677</td>
                             <td style={{ padding: '0', border: 'none'}}/>
-                            <td style={{ color:"red", padding: '0', border: 'none', textAlign: 'center'}}><strong>BUYER'S COPY</strong></td>
+                            <td colSpan="2" style={{ padding: '0', border: 'none', textAlign: 'left' }}><strong>Requested by: </strong> {userData.username} </td>
+                        </tr>
+                        <tr>
+                            <td colSpan="4" style={{ padding: '0', border: 'none'}}><strong>Office Mobile no.:</strong> 09369573408 , 09688617147</td>
+                            <td style={{ padding: '0', border: 'none'}}/>
+                            <td colSpan="2" style={{ padding: '0', border: 'none'}}><strong>Date:</strong> {new Date(userData.date_created).toLocaleDateString()}</td>
+                        </tr>
+                        <tr>
+                            <td colSpan="4" style={{ padding: '0', border: 'none'}}><strong>Email:</strong> cfhiairconsolutions@gmail.com</td>
+                            <td style={{ padding: '0', border: 'none'}}/>
+                            <td colSpan="2" style={{ color:"red", padding: '0', border: 'none'}}><strong>BUYER'S COPY</strong></td>
                         </tr>  
                         <tr>
                             <td colSpan="7" style={{ padding: '0', border: 'none', color: 'white', background: '#082464'}}><strong>{'\u00A0'} BILL TO</strong></td>
@@ -336,18 +336,18 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
             </Card>
 
             <Card className="mt-3 terms-file" style={{ width: '8.5in', height: '11in', padding: '0.5in' }}>
-            <Row>
-                <Col style={{ textAlign: 'right' }}>
-                    <h1 className="me-2" style={{ fontFamily: 'Cambria', color: '#0070c0', fontSize: '3em', fontWeight: 'bold' }}>TERMS AND CONDITIONS</h1>
-                </Col>
-            </Row>
-            <Row style={{ margin: '-0.1in 0' }}>
-                <img src={logo} style={{ width: '70%', height: 'auto', opacity: '1', padding: '0' }} alt="Banner" />
-            </Row>
+                <Row>
+                    <Col lg="7">
+                        <img src={logo} style={{ maxWidth: '100%', height: 'auto', opacity: '1', paddingBottom: '7px' }} alt="Banner" />
+                    </Col>
+                    <Col lg="5" style={{ textAlign: 'right' }}>
+                        <h1 className="me-2" style={{ fontFamily: 'Cambria', color: '#0070c0', fontSize: '2em', fontWeight: 'bold' }}>TERMS AND CONDITIONS</h1>
+                    </Col>
+                </Row>
                 <Table style={{ fontSize:"13px", borderCollapse: 'collapse', width: '100%', border: 'none' }}>
                     <tbody>
                         <tr>
-                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>Address</td> 
+                            <td colSpan="7" style={{ padding: '0', border: 'none'}}>955 Quezon Avenue, Santa Cruz, Lungsod Quezon, Kalakhang Maynila 1104</td> 
                         </tr>
                         <tr>
                             <td style={{ padding: '0', border: 'none'}}><strong>Tel: </strong></td> 

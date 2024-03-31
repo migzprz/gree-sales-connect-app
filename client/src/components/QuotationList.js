@@ -82,6 +82,7 @@ const QuotationList = () => {
     };
 
     let sortedQuotations = [...quotations];
+
     if (sortOption === 'date-asc') {
         sortedQuotations.sort((a, b) => new Date(a.date_created) - new Date(b.date_created));
     } else if (sortOption === 'date-desc') {
@@ -91,17 +92,32 @@ const QuotationList = () => {
     } else if (sortOption === 'client-desc') {
         sortedQuotations.sort((a, b) => b.client_name.localeCompare(a.client_name));
     } else if (sortOption === 'company-asc') {
-        sortedQuotations.sort((a, b) => a.company_name.localeCompare(b.company_name));
+        sortedQuotations.sort((a, b) => {
+            if (!a.company_name) return -1; // If a's company_name is null, place it before b
+            if (!b.company_name) return 1;  // If b's company_name is null, place it before a
+            return a.company_name.localeCompare(b.company_name);
+        });
     } else if (sortOption === 'company-desc') {
-        sortedQuotations.sort((a, b) => b.company_name.localeCompare(a.company_name));
+        sortedQuotations.sort((a, b) => {
+            if (!b.company_name) return -1; // If b's company_name is null, place it before a
+            if (!a.company_name) return 1;  // If a's company_name is null, place it before b
+            return b.company_name.localeCompare(a.company_name);
+        });
     }
+    
 
     const filteredQuotations = sortedQuotations.filter(quotation => (
-        (filterOption === '' || quotation.is_cancelled.toString() === filterOption) &&
-        (quotation.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        quotation.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        quotation.client_number.toLowerCase().includes(searchTerm.toLowerCase()) )
+        (
+            filterOption === '' || 
+            quotation.is_cancelled.toString() === filterOption
+        ) &&
+        (
+            quotation.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (quotation.company_name && quotation.company_name.toLowerCase().includes(searchTerm.toLowerCase())) || // Null check for company_name
+            quotation.client_number.toLowerCase().includes(searchTerm.toLowerCase())
+        )
     ));
+    
 
     //Date Conversion Function
     function formatDate(dateString) {
@@ -153,7 +169,7 @@ const QuotationList = () => {
                     {/*Navigation Forms*/ }
                     <Row>
                         {/*Search Bar*/ }
-                        <Col lg="4">
+                        <Col lg="6">
                             <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
                                                                             backgroundColor: "#014c91", borderRadius: "10px", 
                                                                             overflow: "hidden"}}>
@@ -166,7 +182,7 @@ const QuotationList = () => {
                             </div>
                         </Col>
                         {/*Sorting Mechanism*/ }
-                        <Col lg="4">
+                        <Col lg="6">
                             <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
                                                                             backgroundColor: "#014c91", borderRadius: "10px", 
                                                                             overflow: "hidden"}}>
@@ -183,25 +199,6 @@ const QuotationList = () => {
                                     <option value="company-asc">Sort by Company Name (A-Z)</option>
                                     <option value="company-desc">Sort by Company Name (Z-A)</option>
                                 </select>
-                            </div>
-                        </Col>
-                        {/*Filtering Mechanism*/ }
-                        <Col lg="4">
-                            <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
-                                                                            backgroundColor: "#014c91", borderRadius: "10px",
-                                                                            overflow: "hidden"}}>
-                                <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
-                                    <div style={{padding: "5px", color: 'white'}}>
-                                        {React.createElement(FaFilter, { size: 20 })}
-                                    </div>  
-                                </div>
-                                <select className="form-select" value={filterOption} onChange={(e) => {setFilterOption(e.target.value); setCurrentPage(1);}}>
-                                    <option value="">All Status</option>
-                                    <option value="0">Active</option>
-                                    <option value="1">Expired</option>
-                                    
-                                </select>
-
                             </div>
                         </Col>
                     </Row>

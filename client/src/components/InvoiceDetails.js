@@ -6,8 +6,11 @@ import { Row, Col, Card, CardBody, Table, Dropdown, CardHeader } from 'react-boo
 import '../index.css';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios'
+import LoadingScreen from './LoadingScreen';
 
 const InvoiceDetails = () => {
+
+    const [loading, setLoading] = useState(true);
     const [searchParams] = useSearchParams()
     const id = searchParams.get('id')
     const type = searchParams.get('type') // possible: none -> default, for adding new sales, 'add' -> add quotation to existing sale, 'view' viewing a quotation from sales detail
@@ -35,6 +38,8 @@ const InvoiceDetails = () => {
                 setClient(res.client[0])
                 setQuotation(res.quotation)
                 setTotal(res.total)
+
+                setLoading(false);
             } catch (error) {
                 console.log(error)
             }
@@ -73,148 +78,153 @@ const InvoiceDetails = () => {
     }
 
     return (
-        <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
-            <h1>Invoice Details</h1>
-            <h5>View a digital copy of the invoice</h5>
-            <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
+        <>
+        {loading ? 
+            <LoadingScreen/> :
+            <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
+                <h1>Invoice Details</h1>
+                <h5>View a digital copy of the invoice</h5>
+                <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
 
 
-            
-            {/*Invoice*/}
-            <Row>
-                <Col lg="8">
+                
+                {/*Invoice*/}
+                <Row>
+                    <Col lg="8">
 
-                <Card style={{ borderRadius: '20px', marginTop: '20px',color: '#014c91'  }}>
-                    <CardHeader style={{ textAlign: 'center'}} >
-                        <h6>CO FENG HUANG CONDITIONING SUPPLIES</h6>
-                        Owned & Operated by: CO FENG HUANG INC. <br/>
-                        #955 Quezon Avenue Santa Cruz 1104 Quezon City NCR,<br/>
-                        Second District Philippines<br/>
-                        VAT Reg. TIN 722-257-933-00000
-                    </CardHeader>
-                    <CardBody >
-                        <Row>
-                            <Col lg="8">
-                                <strong> SALES INVOICE</strong>
-                            </Col>
-                            <Col lg="4">
-                                <strong> NO. #{String(id).padStart(4, '0')}</strong>
-                            </Col>                        
-                        </Row>
-                        <Row>
-                            <Col lg="8">
-                                Sold To: {client.client_name}
-                            </Col>
-                            <Col lg="4">
-                                Date: {formatDate(new Date(client.date_created))} {new Date(client.date_created).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                            </Col>                        
-                        </Row>
-                        <Row>
-                            <Col lg="8">
-                                Business Style: {client.company_name}
-                            </Col>
-                            <Col lg="4">
-                                TIN: {client.tin}
-                            </Col>                        
-                        </Row>
-                        <Row>
-                            <Col lg="8">
-                                Address: {client.site_address}
-                            </Col>                        
-                        </Row>
+                    <Card style={{ borderRadius: '20px', marginTop: '20px',color: '#014c91'  }}>
+                        <CardHeader style={{ textAlign: 'center'}} >
+                            <h6>CO FENG HUANG CONDITIONING SUPPLIES</h6>
+                            Owned & Operated by: CO FENG HUANG INC. <br/>
+                            #955 Quezon Avenue Santa Cruz 1104 Quezon City NCR,<br/>
+                            Second District Philippines<br/>
+                            VAT Reg. TIN 722-257-933-00000
+                        </CardHeader>
+                        <CardBody >
+                            <Row>
+                                <Col lg="8">
+                                    <strong> SALES INVOICE</strong>
+                                </Col>
+                                <Col lg="4">
+                                    <strong> NO. #{String(id).padStart(4, '0')}</strong>
+                                </Col>                        
+                            </Row>
+                            <Row>
+                                <Col lg="8">
+                                    Sold To: {client.client_name}
+                                </Col>
+                                <Col lg="4">
+                                    Date: {formatDate(new Date(client.date_created))} {new Date(client.date_created).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                </Col>                        
+                            </Row>
+                            <Row>
+                                <Col lg="8">
+                                    Business Style: {client.company_name}
+                                </Col>
+                                <Col lg="4">
+                                    TIN: {client.tin}
+                                </Col>                        
+                            </Row>
+                            <Row>
+                                <Col lg="8">
+                                    Address: {client.site_address}
+                                </Col>                        
+                            </Row>
 
-                        <Table className="mt-2" style={{ borderCollapse: 'collapse', border: '1px solid #ddd' }}>
-                            <thead>
-                                <tr>
-                                    <th style={{ color: '#014c91', border: '1px solid #ddd' }}>Quantity</th>
-                                    <th style={{ color: '#014c91', border: '1px solid #ddd' }}>Unit</th>
-                                    <th style={{ color: '#014c91', border: '1px solid #ddd' }}>Articles</th>
-                                    <th style={{ color: '#014c91', border: '1px solid #ddd' }}>Unit Price</th>
-                                    <th style={{ color: '#014c91', border: '1px solid #ddd' }}>Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {quotation.map((quotation, index) => (
-                                    <tr key={index} style={{ borderRadius: '20px', padding: '10px' }}>
-                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.quantity}</td>
-                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.unit}</td>
-                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.article}</td>
-                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>₱ {formatNumber(quotation.srp)}</td>
-                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>₱ {formatNumber(quotation.totalPrice)}</td>
+                            <Table className="mt-2" style={{ borderCollapse: 'collapse', border: '1px solid #ddd' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ color: '#014c91', border: '1px solid #ddd' }}>Quantity</th>
+                                        <th style={{ color: '#014c91', border: '1px solid #ddd' }}>Unit</th>
+                                        <th style={{ color: '#014c91', border: '1px solid #ddd' }}>Articles</th>
+                                        <th style={{ color: '#014c91', border: '1px solid #ddd' }}>Unit Price</th>
+                                        <th style={{ color: '#014c91', border: '1px solid #ddd' }}>Amount</th>
                                     </tr>
-                                ))}
-                                <tr style={{ textAlign: 'center' }}>
-                                    <td colSpan="5" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>--------------------------NF--------------------------</td>
-                                </tr>
-                                <tr>
-                                    <td colSpan="2" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>
-                                        VATable Sales
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan="2" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>
-                                        VAT-Exempt Sales
-                                    </td>
-                                    <td colSpan="2" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px', textAlign: 'right'  }}>
-                                        Total Sales
-                                    </td>
-                                    <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px'}}>
-                                    ₱ {total ? formatNumber(total - (quotation.reduce((sum, q) => q.totalPrice + sum, 0))*.12): '0.00'}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan="2" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>
-                                        Zero Rated Sales
-                                    </td>
-                                    <td colSpan="2" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px', textAlign: 'right'  }}>
-                                        Add: VAT
-                                    </td>
-                                    <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px'}}>
-                                    ₱ {total ? formatNumber(total*.12): '0.00'}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan="2" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>
-                                        VAT Amount
-                                    </td>
-                                    <td colSpan="2" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px', textAlign: 'right'  }}>
-                                        <strong>TOTAL AMOUNT DUE </strong>
-                                    </td>
-                                    <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px'}}>
-                                    ₱ {total ? formatNumber(total): '0.00'}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </Table>
+                                </thead>
+                                <tbody>
+                                    {quotation.map((quotation, index) => (
+                                        <tr key={index} style={{ borderRadius: '20px', padding: '10px' }}>
+                                            <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.quantity}</td>
+                                            <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.unit}</td>
+                                            <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>{quotation.article}</td>
+                                            <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>₱ {formatNumber(quotation.srp)}</td>
+                                            <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>₱ {formatNumber(quotation.totalPrice)}</td>
+                                        </tr>
+                                    ))}
+                                    <tr style={{ textAlign: 'center' }}>
+                                        <td colSpan="5" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>--------------------------NF--------------------------</td>
+                                    </tr>
+                                    <tr>
+                                        <td colSpan="2" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>
+                                            VATable Sales
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colSpan="2" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>
+                                            VAT-Exempt Sales
+                                        </td>
+                                        <td colSpan="2" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px', textAlign: 'right'  }}>
+                                            Total Sales
+                                        </td>
+                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px'}}>
+                                        ₱ {total ? formatNumber(total - (quotation.reduce((sum, q) => q.totalPrice + sum, 0))*.12): '0.00'}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colSpan="2" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>
+                                            Zero Rated Sales
+                                        </td>
+                                        <td colSpan="2" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px', textAlign: 'right'  }}>
+                                            Add: VAT
+                                        </td>
+                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px'}}>
+                                        ₱ {total ? formatNumber(total*.12): '0.00'}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colSpan="2" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px' }}>
+                                            VAT Amount
+                                        </td>
+                                        <td colSpan="2" style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px', textAlign: 'right'  }}>
+                                            <strong>TOTAL AMOUNT DUE </strong>
+                                        </td>
+                                        <td style={{ color: '#014c91', border: '1px solid #ddd', padding: '5px'}}>
+                                        ₱ {total ? formatNumber(total): '0.00'}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </Table>
 
-    
-                    </CardBody>
-                </Card>
+        
+                        </CardBody>
+                    </Card>
 
-                </Col>
-            </Row>
-                <Row className="mt-3">
-                    <Col lg={type !== 'add' ? '4' : '6'}/>
-                    {type !== 'view' ? (
-                        <Col lg="2">
-                            <Link to={`/converttosale?id=${id}${type === 'add' ? `&type=add&sales=${sales}` : ''}`} className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
-                                Proceed to Sale
-                            </Link>
-                        </Col>
-                    ) : <Col lg="2"></Col>}
-                    
-                    {type !== 'add' ? (
-                        <Col lg="2">
-                            <button className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}} onClick={handleBack}>
-                                {type && type === 'view' ? 'Back' : 'Cancel'}
-                            </button>
-                        </Col>
-                    ) : null}
+                    </Col>
                 </Row>
-            
+                    <Row className="mt-3">
+                        <Col lg={type !== 'add' ? '4' : '6'}/>
+                        {type !== 'view' ? (
+                            <Col lg="2">
+                                <Link to={`/converttosale?id=${id}${type === 'add' ? `&type=add&sales=${sales}` : ''}`} className="btn w-100" style={{color: "white", backgroundColor: "#014c91"}}>
+                                    Proceed to Sale
+                                </Link>
+                            </Col>
+                        ) : <Col lg="2"></Col>}
+                        
+                        {type !== 'add' ? (
+                            <Col lg="2">
+                                <button className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}} onClick={handleBack}>
+                                    {type && type === 'view' ? 'Back' : 'Cancel'}
+                                </button>
+                            </Col>
+                        ) : null}
+                    </Row>
+                
 
 
-        </div>
+            </div>
+          }
+          </>
     );
 };
 

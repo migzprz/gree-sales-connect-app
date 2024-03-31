@@ -71,6 +71,7 @@ const SearchWarrantyForm = () => {
     };
 
     let sortedWarranties = [...warrantySearchData];
+
     if (sortOption === 'date-asc') {
         sortedWarranties.sort((a, b) => new Date(a.delivery_date) - new Date(b.delivery_date));
     } else if (sortOption === 'date-desc') {
@@ -80,17 +81,29 @@ const SearchWarrantyForm = () => {
     } else if (sortOption === 'client-desc') {
         sortedWarranties.sort((a, b) => b.client_name.localeCompare(a.client_name));
     } else if (sortOption === 'company-asc') {
-        sortedWarranties.sort((a, b) => a.company_name.localeCompare(b.company_name));
+        sortedWarranties.sort((a, b) => {
+            if (!a.company_name) return -1; // If a's company_name is null, place it before b
+            if (!b.company_name) return 1;  // If b's company_name is null, place it before a
+            return a.company_name.localeCompare(b.company_name);
+        });
     } else if (sortOption === 'company-desc') {
-        sortedWarranties.sort((a, b) => b.company_name.localeCompare(a.company_name));
+        sortedWarranties.sort((a, b) => {
+            if (!b.company_name) return -1; // If b's company_name is null, place it before a
+            if (!a.company_name) return 1;  // If a's company_name is null, place it before b
+            return b.company_name.localeCompare(a.company_name);
+        });
     }
-
+    
     const filteredWarranties = sortedWarranties.filter(warranty => (
-        (warranty.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        warranty.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        warranty.client_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        warranty.site_address.toLowerCase().includes(searchTerm.toLowerCase()) )
+        (
+            warranty.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (warranty.company_name && warranty.company_name.toLowerCase().includes(searchTerm.toLowerCase())) || // Null check for company_name
+            warranty.client_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            warranty.site_address.toLowerCase().includes(searchTerm.toLowerCase())
+        )
     ));
+    
+    
 
      //Date Conversion Function
      function formatDate(dateString) {
