@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Modal, Form,  Dropdown } from 'react-bootstrap';
 import { FaTrash, FaCheck} from 'react-icons/fa';
 import axios from 'axios';
+import useAvailableTechnicians from '../hooks/useAvailableTechnicians';
 
 const CompleteWarrantyServiceModal = ({ service_id, id, type }) => {
     const [showModal, setShowModal] = useState(false);
     const [record, setRecord] = useState({})
 
-    
     const handleShowModal = () => {
         setShowModal(true);
     };
@@ -36,10 +36,21 @@ const CompleteWarrantyServiceModal = ({ service_id, id, type }) => {
         service_id: service_id,
         note: ''
     })
-
     useEffect(() => {
         console.log(formData)
     },[formData])
+
+
+    const [inputDateTime, setInputDateTime] = useState(null)
+    const { technicians, mod } = useAvailableTechnicians(inputDateTime)
+    useEffect(() => {
+        console.log(formData.dateonly, formData.time)
+        if (formData.dateonly && formData.time) {
+            // Both date and time are present, update inputDateTime
+            const newInputDateTime = formData.dateonly + "T" + formData.time;
+            setInputDateTime(newInputDateTime);
+        }
+    }, [formData.dateonly, formData.time])
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -222,9 +233,11 @@ const CompleteWarrantyServiceModal = ({ service_id, id, type }) => {
                                                 <Form.Label>Assigned Technician</Form.Label>
                                                 <Form.Control as="select" name="technician_id" value={formData.technician_id} onChange={handleChange} required>
                                                     <option value=""> Select </option>
-                                                    <option value="1"> Zara </option>
-                                                    <option value="2"> Split Type </option>
+                                                    {technicians.map((tech) => (
+                                                            <option key={tech.technician_id} value={tech.technician_id}>{tech.complete_name}</option>
+                                                    ))}
                                                 </Form.Control>
+                                                {mod ? (<p>Some technicians are unavailable</p>) : null}
                                                 <Form.Control.Feedback type="invalid">
                                                     Please select technician.
                                                 </Form.Control.Feedback>

@@ -277,6 +277,16 @@ module.exports = (query) => {
             res.status(400).json({message: `Error... Failed to cancel ocular... ${error}`})
         }
     })
+
+    router.get('/getUserFromOcular/:id', async (req, res) => {
+        const userQuery =`SELECT o.date_created, CONCAT(l.last_name, ', ', l.first_name) as username
+                            FROM td_oculars o
+                            JOIN md_login l ON o.login_id = l.login_id
+                            WHERE o.ocular_id = ?`
+        const userResponse = await query(userQuery, [req.params.id])
+        res.send(userResponse)                    
+    })
+
     // Determining Quotation Statuses:
     /**
      * Ocular made, not converted to quotation ---- md_quotations.login_id IS NULL

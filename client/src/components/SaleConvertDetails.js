@@ -54,7 +54,6 @@ const SaleConvertDetails = () => {
     const [serviceOnlyState, setServiceOnlyState] = useState(false)
     const [validated, setValidated] = useState(false);
 
-    // const [technicians, setTechnicians] = useState([])
     const [inputDateTimeInstallation, setInputDateTimeInstallation] = useState(null)
     const [inputDateTimeService, setInputDateTimeService] = useState(null)
     const { technicians, mod } = useAvailableTechnicians(inputDateTimeInstallation)
@@ -76,7 +75,6 @@ const SaleConvertDetails = () => {
     const [services, setServices] = useState({})
 
     // extra logic state handlers
-    const [serviceAsInstallation, setServiceAsInstallation] = useState(false)
     const [installationAsDelivery, setInstallationAsDelivery] = useState(false)
     const [serviceAsDelivery, setServiceAsDelivery] = useState(false)
 

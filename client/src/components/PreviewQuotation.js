@@ -20,9 +20,12 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
     const navigate = useNavigate()
     const { id } = useParams();
 
+    
+
     const [searchParams] = useSearchParams()
     const salesId = searchParams.get('sales')
     const isPurchase = Boolean(searchParams.get('purchase'))
+    
 
     const [validated, setValidated] = useState(false);
     const [preview, setPreview] = useState(false);
@@ -34,7 +37,13 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
     useEffect(() => {
         const fetchData = async () => {
           if (id) {
-            const res = (await axios.get(`http://localhost:4000/api/getUser/${id}`)).data
+            let res
+            if (type === 'convertocular') {
+                res = (await axios.get(`http://localhost:4000/api/getUserFromOcular/${id}`)).data
+            } else {
+                res = (await axios.get(`http://localhost:4000/api/getUser/${id}`)).data
+            }
+            
             setUserData(res[0])
           } else {
             setUserData({
