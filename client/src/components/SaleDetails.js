@@ -348,56 +348,56 @@ const SaleDetails= () => {
                                     </Col>
                                 </Row>
 
-                                <Table>
-                                        <thead>
-                                            <tr>
-                                                <th style={{color: '#014c91'}}>Date</th>
-                                                <th style={{color: '#014c91'}}>Quotation</th>
-                                                <th style={{color: '#014c91'}}>Invoice</th>
-                                                <th style={{color: '#014c91'}}>Purchase Order</th>
-                                                <th style={{color: '#014c91'}}>Total Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <React.Fragment>
-                                                {quotations && quotations.map((q) => (
-                                                    <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                                        <td style={{color: '#014c91'}}>{new Date(q.date_created).toLocaleDateString()}</td>
-                                                        <td style={{color: '#014c91'}}>
-                                                            <Link to={`/generatequotation/${q.quotation_id}?type=view`}>
-                                                                <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
-                                                                    {React.createElement(FaMagnifyingGlass, { size: 18, style: { marginRight: '5px' } })}   View
-                                                                </button>
-                                                            </Link>
-                                                        </td>
-                                                        <td style={{color: '#014c91'}}>
-                                                            <Link to={`/generateinvoice?id=${q.quotation_id}&type=view`}>
-                                                                <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
-                                                                    {React.createElement(FaMagnifyingGlass, { size: 18, style: { marginRight: '5px' } })}   View
-                                                                </button>
-                                                            </Link>
-                                                        </td>
-                                                        {/* <td /> */}
-                                                        <td style={{color: '#014c91'}}>
-                                                            <Link to={`/generatequotation/${q.quotation_id}?type=view`}>
-                                                                <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
-                                                                    {React.createElement(FaMagnifyingGlass, { size: 18, style: { marginRight: '5px' } })}   View
-                                                                </button>
-                                                            </Link>
-                                                        </td>
-                                                        <td style={{color: '#014c91'}}>₱{formatNumber(q.totalPrice)}</td>
-                                                    </tr>
-                                                ))}
+                            <Table>
+                                    <thead>
+                                        <tr>
+                                            <th style={{color: '#014c91'}}>Date</th>
+                                            <th style={{color: '#014c91'}}>Quotation</th>
+                                            <th style={{color: '#014c91'}}>Invoice</th>
+                                            <th style={{color: '#014c91'}}>Purchase Order</th>
+                                            <th style={{color: '#014c91'}}>Total Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <React.Fragment>
+                                            {quotations && quotations.map((q) => (
                                                 <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                                    <td style={{color: '#014c91'}}></td>
-                                                    <td style={{color: '#014c91'}}></td>
-                                                    <td style={{color: '#014c91'}}></td>
-                                                    <td style={{color: '#014c91'}}><strong>GRAND TOTAL</strong></td>
-                                                    <td style={{color: '#014c91'}}><strong>₱{formatNumber(quotations.reduce((sum, q) => sum + q.totalPrice, 0))}</strong></td>
+                                                    <td style={{color: '#014c91'}}>{new Date(q.date_created).toLocaleDateString()}</td>
+                                                    <td style={{color: '#014c91'}}>
+                                                        <Link to={`/generatequotation/${q.quotation_id}?type=view`}>
+                                                            <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
+                                                                {React.createElement(FaMagnifyingGlass, { size: 18, style: { marginRight: '5px' } })}   View
+                                                            </button>
+                                                        </Link>
+                                                    </td>
+                                                    <td style={{color: '#014c91'}}>
+                                                        <Link to={`/generateinvoice?id=${q.quotation_id}&type=view`}>
+                                                            <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
+                                                                {React.createElement(FaMagnifyingGlass, { size: 18, style: { marginRight: '5px' } })}   View
+                                                            </button>
+                                                        </Link>
+                                                    </td>
+                                                    {/* <td /> */}
+                                                    <td style={{color: '#014c91'}}>
+                                                        <Link to={`/generatequotation/${q.quotation_id}?type=view&purchase=true`}>
+                                                            <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
+                                                                {React.createElement(FaMagnifyingGlass, { size: 18, style: { marginRight: '5px' } })}   View
+                                                            </button>
+                                                        </Link>
+                                                    </td>
+                                                    <td style={{color: '#014c91'}}>₱{formatNumber(q.totalPrice)}</td>
                                                 </tr>
-                                            </React.Fragment>
-                                        </tbody>
-                                </Table>
+                                            ))}
+                                            <tr style={{ borderRadius: '20px', padding: '10px' }}>
+                                                <td style={{color: '#014c91'}}></td>
+                                                <td style={{color: '#014c91'}}></td>
+                                                <td style={{color: '#014c91'}}></td>
+                                                <td style={{color: '#014c91'}}><strong>GRAND TOTAL</strong></td>
+                                                <td style={{color: '#014c91'}}><strong>₱{formatNumber(quotations.reduce((sum, q) => sum + q.totalPrice, 0))}</strong></td>
+                                            </tr>
+                                        </React.Fragment>
+                                    </tbody>
+                            </Table>
 
                             
 

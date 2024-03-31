@@ -12,16 +12,39 @@ import useAddressString from '../hooks/useAddressString';
 import { Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowBack } from "react-icons/md";
+import { useParams, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
 
 const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
 
     const navigate = useNavigate()
+    const { id } = useParams();
+
+    const [searchParams] = useSearchParams()
+    const salesId = searchParams.get('sales')
+    const isPurchase = Boolean(searchParams.get('purchase'))
 
     const [validated, setValidated] = useState(false);
     const [preview, setPreview] = useState(false);
     const [loader, setLoader] = useState(false);
     const [totalSum, setTotalSum] = useState(null)
     const [checkDl, setCheckDl] = useState(true)
+    const [userData, setUserData] = useState({})
+
+    useEffect(() => {
+        const fetchData = async () => {
+          if (id) {
+            const res = (await axios.get(`http://localhost:4000/api/getUser/${id}`)).data
+            setUserData(res[0])
+          } else {
+            setUserData({
+                username: sessionStorage.getItem('userName'),
+                date_created: new Date().toLocaleDateString()
+            })
+          }
+        }
+        fetchData()
+    }, [])
 
     const downloadPDF = () => {
       const capture1 = document.querySelector('.quotation-file');
@@ -59,7 +82,11 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
     }
 
     const handleBack = () => {
-        navigate(-1)
+        if (salesId) {
+            navigate(`/viewsaledetails?id=${salesId}`)
+        } else {
+            navigate('/viewquotations')
+        }
     }
 
     
@@ -82,6 +109,25 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
         return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
     
+    // display
+
+    const displayClientName = () => {
+        // client.client_name || client.returningClientFirstName ? client.returningClientFirstName + ' ' + client.returningClientLastName : client.firstName + ' ' + client.lastName
+
+        if (client) {
+            if (client?.client_name) {
+                return client.client_name
+            }
+            else if (client?.firstName) {
+                return client.firstName+' '+client.lastName
+            }
+            else if (client?.returningClientFirstName) {
+                return client.returningClientFirstName+' '+client.returningClientLastName
+            }
+        } else {
+            return 'Missing Name'
+        }
+    }
     
     return (
         <>
@@ -93,7 +139,7 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
             <Card className="quotation-file" style={{ width: '8.5in', height: '11in', padding: '0.5in' }}>
             <Row>
                 <Col style={{ textAlign: 'right' }}>
-                    <h1 className="me-2" style={{ fontFamily: 'Cambria', color: '#0070c0', fontSize: '3em', fontWeight: 'bold' }}>PRICE QUOTATION</h1>
+                    <h1 className="me-2" style={{ fontFamily: 'Cambria', color: '#0070c0', fontSize: '3em', fontWeight: 'bold' }}>{isPurchase ? 'PURCHASE ORDER' : 'PRICE QUOTATION'}</h1>
                 </Col>
             </Row>
             <Row style={{ margin: '-0.1in 0' }}>
@@ -112,12 +158,12 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
                             <td style={{ padding: '0', border: 'none' }}/>
                             <td colSpan="4" style={{ padding: '0', border: 'none' }}>(02) 8367 8677 (02) 8367 8677</td>
                             <td style={{ padding: '0', border: 'none', textAlign: 'right' }}><strong>Requested by:</strong></td>
-                            <td style={{ padding: '0', border: 'none', textAlign: 'center'  }}>Ms. Jheng Co</td>
+                            <td style={{ padding: '0', border: 'none', textAlign: 'center'  }}>{userData.username}</td>
                         </tr>
                         <tr>
                             <td colSpan="5" style={{ padding: '0', border: 'none'}}><strong>Office Mobile no.:</strong> 09369573408 , 09688617147</td>
                             <td style={{ padding: '0', border: 'none', textAlign: 'right' }}><strong>Date:</strong></td>
-                            <td style={{ padding: '0', border: 'none', textAlign: 'center'  }}>19-Aug-2023</td>
+                            <td style={{ padding: '0', border: 'none', textAlign: 'center'  }}>{new Date(userData.date_created).toLocaleDateString()}</td>
                         </tr>
                         <tr>
                             <td colSpan="5" style={{ padding: '0', border: 'none'}}><strong>Email:</strong> cfhiairconsolutions@gmail.com</td>
@@ -130,10 +176,10 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
                         {client ? (
                             <>
                                 <tr>
-                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Name: {client.client_name || client.returningClientFirstName ? client.returningClientFirstName + ' ' + client.returningClientLastName : client.firstName + ' ' + client.lastName}</td> 
+                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Name: {displayClientName()}</td> 
                                 </tr>
                                 <tr>
-                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Company Name/Buidling: {client.company_name || client.returningClientCompanyName ? client.returningClientCompanyName : client.companyName}</td> 
+                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Company Name/Buidling: {client.company_name || client.returningClientCompanyName || '--'}</td> 
                                 </tr>
                                 <tr>
                                     <td colSpan="7" style={{ padding: '0', border: 'none'}}>Street Address: {client.site_address ? client.site_address : ''}</td> 
@@ -142,7 +188,7 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
                                     <td colSpan="7" style={{ padding: '0', border: 'none'}}>Delivery Address: {client.site_address ? client.site_address : ''}</td> 
                                 </tr>
                                 <tr>
-                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Phone: {client.contact_number || client.returningClientContactNumber ? client.returningClientContactNumber : client.contactNumber}</td> 
+                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Phone: {client.contact_number || client.returningClientContactNumber}</td> 
                                 </tr>
                             </>
                         ): null}
@@ -465,14 +511,15 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
                 )}
             
             </button>
-            {type === 'view' ? (
-                <>
-                    <button className="mt-4 ms-2 btn w-40" onClick={handleBack} disabled={(loader)}  style={{color: "white", backgroundColor: "#6c757d"}}>
-                        <span>  Go Back </span>
-                    </button>
-                    
-                </>
-            ) : (<Form><Form.Check type='checkbox' id='downloadCheckbox' label='Download Form as PDF?' onClick={handleCheckboxChange} checked={checkDl}/></Form>)}
+            
+            <button className="mt-4 ms-2 btn w-40" onClick={handleBack} disabled={(loader)}  style={{color: "white", backgroundColor: "#6c757d"}}>
+                <span>  {type === 'view' ? 'Go Back' : 'Cancel'} </span>
+            </button>
+             
+
+            {type !== 'view' ? (
+                <Form><Form.Check type='checkbox' id='downloadCheckbox' label='Download Form as PDF?' onClick={handleCheckboxChange} checked={checkDl}/></Form>
+            ) : null}
             
         </>
     );

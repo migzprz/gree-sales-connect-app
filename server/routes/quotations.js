@@ -102,6 +102,12 @@ module.exports = (query) => {
                             WHERE q.quotation_id = ?`
         const termsResponse = await query(termsQuery, [id])
 
+        const userQuery = `SELECT q.date_created, CONCAT(l.last_name, ', ', l.first_name) as username
+                            FROM td_quotations q
+                            JOIN md_login l ON q.login_id = l.login_id
+                            WHERE q.quotation_id = ?`
+        const userResponse = await query(userQuery, [id])
+
         const quotation = [
             ...products,
             ...services,
@@ -114,7 +120,8 @@ module.exports = (query) => {
             total: quotation.reduce((sum, item) => {
                 return sum + item.totalPrice
             }, 0),
-            term: termsResponse
+            term: termsResponse,
+            user: userResponse
         }
 
         console.log(data)
@@ -290,6 +297,15 @@ module.exports = (query) => {
         } catch (error) {
             res.status(400).json({message: `Error... Failed to cancell quotation... ${error}`})
         }
+    })
+
+    router.get('/getUser/:id', async (req, res) => {
+        const userQuery = `SELECT q.date_created, CONCAT(l.last_name, ', ', l.first_name) as username
+                            FROM td_quotations q
+                            JOIN md_login l ON q.login_id = l.login_id
+                            WHERE q.quotation_id = ?`
+        const userResponse = await query(userQuery, [req.params.id])
+        res.send(userResponse)
     })
     return router
 }

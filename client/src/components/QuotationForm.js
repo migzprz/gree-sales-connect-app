@@ -28,7 +28,8 @@ const QuotationForm = () => {
       const fetchData = async () => {
         try {
             const res = (await axios.get(`http://localhost:4000/api/getQuotationDetailsById/${id}`)).data
-            setClientData((res.client)[0])
+            console.log(res)
+            setClientData(res.client[0])
             setOfferData(res.quotation)
             setTermsData(res.term[0])
             setSelectionType('download')
@@ -60,6 +61,7 @@ const QuotationForm = () => {
   const [offerData, setOfferData] = useState({})
   const [clientData, setClientData] = useState({})
   const [termsData, setTermsData] = useState({})
+  
 
   const [selectionType, setSelectionType] = useState('offer'); // Default to offer selection
 
@@ -183,6 +185,7 @@ const QuotationForm = () => {
       fetchData()
     }
   }, [id])
+  
 
   return (
 
