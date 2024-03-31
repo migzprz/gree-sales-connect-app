@@ -281,7 +281,7 @@ const SetOcularForm = () => {
             <Col lg="3">
                  <Form.Group controlId="tin">
                     <Form.Label>Company TIN ID</Form.Label>
-                    <Form.Control type="text" pattern="[0-9]{9,12}" disabled={!isNew} value={formData.returningClientCompanyTin || formData.tin } placeholder="optional" name='tin' onChange={handleChange}/>
+                    <Form.Control type="text" pattern="[0-9-]{9,15}" disabled={!isNew} value={formData.returningClientCompanyTin || formData.tin } placeholder="optional" name='tin' onChange={handleChange}/>
                     <Form.Control.Feedback type="invalid">
                         Please provide a valid TIN
                     </Form.Control.Feedback>

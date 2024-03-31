@@ -353,7 +353,7 @@ const EditOcularModal = ({ id, date, onClose }) => {
                                         <Col lg="3">
                                             <Form.Group controlId="date">
                                                 <Form.Label>Ocular Date</Form.Label>
-                                                <Form.Control type="date" onChange={handleChange} name='date' required/>
+                                                <Form.Control type="date" onChange={handleChange} name='date' />
                                                 <Form.Control.Feedback type="invalid">
                                                     Please choose a valid date.
                                                 </Form.Control.Feedback>
@@ -362,7 +362,7 @@ const EditOcularModal = ({ id, date, onClose }) => {
                                         <Col lg="3">
                                             <Form.Group controlId="time">
                                                 <Form.Label>Ocular Time</Form.Label>
-                                                <Form.Control type="time" onChange={handleChange} name='time'  required/>
+                                                <Form.Control type="time" onChange={handleChange} name='time' required={record.date !== null} />
                                                 <Form.Control.Feedback type="invalid">
                                                     Please choose a valid time.
                                                 </Form.Control.Feedback>
@@ -371,7 +371,7 @@ const EditOcularModal = ({ id, date, onClose }) => {
                                         <Col lg="3">
                                             <Form.Group controlId="technician">
                                                 <Form.Label>Assigned Technician</Form.Label>
-                                                <Form.Control as="select" onChange={handleChange} name='technician_id' required>
+                                                <Form.Control as="select" onChange={handleChange} name='technician_id' required={record.date !== null || record.time !== null}>
                                                     <option value=''>Select</option>
                                                     {technicians.map((tec, index) => (
                                                         <option key={index} value={tec.technician_id}>{tec.complete_name}</option>

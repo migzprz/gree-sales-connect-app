@@ -25,6 +25,7 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
     const [searchParams] = useSearchParams()
     const salesId = searchParams.get('sales')
     const isPurchase = Boolean(searchParams.get('purchase'))
+    const searchParamId = searchParams.get('id')
     
 
     const [validated, setValidated] = useState(false);
@@ -45,6 +46,9 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
             }
             
             setUserData(res[0])
+          } else if (searchParamId) {
+            const res = (await axios.get(`http://localhost:4000/api/getUser/${searchParamId}`)).data
+            setUserData(res[0])
           } else {
             setUserData({
                 username: sessionStorage.getItem('userName'),
@@ -54,6 +58,9 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
         }
         fetchData()
     }, [])
+    useEffect(() => {
+        console.log(userData)
+    }, [userData])
 
     const downloadPDF = () => {
       const capture1 = document.querySelector('.quotation-file');
@@ -94,7 +101,7 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
         if (salesId) {
             navigate(`/viewsaledetails?id=${salesId}`)
         } else {
-            navigate('/viewquotations')
+            navigate(-1)
         }
     }
 
