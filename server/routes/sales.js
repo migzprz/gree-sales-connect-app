@@ -3,8 +3,14 @@ const router = express.Router()
 
 module.exports = (query) => {
 
-    const hasKeys = (obj) => {
-        if (Object.keys(obj).length > 0) {
+    /**
+     * 
+     * @param {Object} obj 
+     * @param {Integer} min number of keys that is still considered empty (delivery and installation by default always have one key for checkbox logic). leave 0 if this does not apply to the object
+     * @returns true if object is not 'empty', false otherwise
+     */
+    const hasKeys = (obj, min) => {
+        if (Object.keys(obj).length > 0+min) {
             return true
         }
         return false
@@ -89,7 +95,7 @@ module.exports = (query) => {
             step++
             
             // STEP 3: delivery
-            if (hasKeys(delivery)) {
+            if (hasKeys(delivery, 1)) {
                 console.log('STEP 3: Attempting to post DELIVERY record...')
                 const deliveryResponse = await postDelivery(delivery, id)
                 console.log('DELIVERY SUCCESSFULL: ', deliveryResponse)
@@ -97,7 +103,7 @@ module.exports = (query) => {
             } else {console.log('No delivery information...skipping'); step++}
 
             // STEP 4: installation
-            if (hasKeys(installation)) {
+            if (hasKeys(installation, 1)) {
                 console.log('STEP 3: Attempting to post INSTALLATION record...')
                 const installationResponse = await postInstallation(installation, id)
                 console.log('INSTALLATION SUCCESSFULL: ', installationResponse)
@@ -105,7 +111,7 @@ module.exports = (query) => {
             } else {console.log('No installation information...skipping'); step++}
 
             // STEP 5: services
-            if (hasKeys(services)) {
+            if (hasKeys(services, 0)) {
                 console.log('STEP 3: Attempting to post SERVICES record...')
                 const servicesResponse = await postServices(services, id)
                 console.log('SERVICES SUCCESSFULL: ', servicesResponse)

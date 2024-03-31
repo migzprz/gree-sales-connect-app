@@ -60,19 +60,25 @@ const SaleConvertDetails = () => {
     const { technicians, mod } = useAvailableTechnicians(inputDateTimeInstallation)
     const { technicians: technicians2, mod: mod2} = useAvailableTechnicians(inputDateTimeService)
 
-
+    // reference values for mode of payment
     const [mop, setMop] = useState([])
+
+    // form data
     const [payment, setPayments] = useState({
         amount: totalPrice
     })
-    const [delivery, setDelivery] = useState({})
+    const [delivery, setDelivery] = useState({
+        isPickup: '0' // default set to delivery
+    })
     const [installation, setInstallation] = useState({
-        installationType: '1'
+        installationType: '1' // default set to one day installation
     })
     const [services, setServices] = useState({})
 
     // extra logic state handlers
     const [serviceAsInstallation, setServiceAsInstallation] = useState(false)
+    const [installationAsDelivery, setInstallationAsDelivery] = useState(false)
+    const [serviceAsDelivery, setServiceAsDelivery] = useState(false)
 
 
     // Technician Availability for Installation
@@ -163,7 +169,13 @@ const SaleConvertDetails = () => {
         try {
             const res = await axios.post(`http://localhost:4000/api/convertToSale/${type === 'add' ? 'add' : 'new'}`, { id, payment, delivery, installation, services, sales, login_id })
             console.log(res)
-            navigate('/viewsales')
+
+            if (type === 'add') {
+                navigate(`/viewsaledetails?id=${sales}`)
+            } else {
+                navigate('/viewsales')
+            }
+
           } catch (error) {
             console.error(error)
           }
@@ -174,24 +186,48 @@ const SaleConvertDetails = () => {
         navigate('/viewquotations')
     }
 
-    const handleCheckClick = () => {
-        const isSame = !serviceAsInstallation
-        setServiceAsInstallation((prev) => !prev)
+    const handleCheckClick = (e) => {
+        const { name } = e.target
+        const isInstallCheck = name === 'installCheck' ? true : false
 
-        if (isSame) {
-            setServices((prev) => ({
-                ...prev, 
-                serviceDate: installation.installationSDate ,
-                serviceTime: installation.installationSTime,
-                serviceTechnician: installation.installationTechnician
-            }))
+        const isSame = isInstallCheck ? !installationAsDelivery : !serviceAsDelivery
+        
+        console.log(name, isInstallCheck, isSame)        
+
+        if (isInstallCheck) {
+            console.log('Setting installation schedule to be the same as the delivery schedule')
+            setInstallationAsDelivery((prev) => !prev)
+            if (isSame) {
+                setInstallation((prev) => ({
+                    ...prev,
+                    installationSDate: delivery.deliveryDate,
+                    installationSTime: delivery.deliveryTime
+                }))
+            } else { // clear delivery date and time from the form 
+                setInstallation((prev) => {
+                    const { deliveryDate, deliveryTime, ...rest} = prev
+                    return rest
+                })
+            }
         } else {
-            setServices((prev) => {
-                const { serviceDate, serviceTime, serviceTechnician, ...rest } = prev;
-                return rest;
-            });
-            
+            console.log('Setting service schedule to be the same as the delivery schedule')
+            setServiceAsDelivery((prev) => !prev)
+            if (isSame) {
+                setServices((prev) => ({
+                    ...prev, 
+                    serviceDate: installation.installationSDate ,
+                    serviceTime: installation.installationSTime,
+                    serviceTechnician: installation.installationTechnician
+                }))
+            } else {
+                setServices((prev) => {
+                    const { serviceDate, serviceTime, serviceTechnician, ...rest } = prev;
+                    return rest;
+                });
+            }
         }
+
+        
 
     }
 
@@ -310,6 +346,7 @@ const SaleConvertDetails = () => {
                                         name="isPickup"
                                         value={0}
                                         onChange={handleChange}
+                                        checked={delivery.isPickup}
                                         required
                                     />
                                     <Form.Check
@@ -383,17 +420,20 @@ const SaleConvertDetails = () => {
                         <Col lg="2">
                             <Form.Group controlId="installstartdate">
                                 <Form.Label>Installation Start Date</Form.Label>
-                                <Form.Control type="date" name='installationSDate' onChange={handleChange} required/>
+                                <Form.Control type="date" name='installationSDate' onChange={handleChange} defaultValue={installation.installationSDate} required/>
                                 <Form.Control.Feedback type="invalid">
                                     Please choose a valid date.
                                 </Form.Control.Feedback>
+                                {delivery && delivery.deliveryDate && delivery.deliveryTime ? (
+                                    <Form.Check type='checkbox' label='Same as delivery?' name='installCheck' checked={installationAsDelivery} onClick={handleCheckClick} />
+                                ) : null }
                             </Form.Group>
                         </Col>
 
                         <Col lg="2">
                             <Form.Group controlId="installstarttime">
                                 <Form.Label>Installation Start Time</Form.Label>
-                                <Form.Control type="time" name='installationSTime' onChange={handleChange} required/>
+                                <Form.Control type="time" name='installationSTime' onChange={handleChange} defaultValue={installation.installationSTime} required/>
                                 <Form.Control.Feedback type="invalid">
                                     Please choose a valid time.
                                 </Form.Control.Feedback>
@@ -473,8 +513,8 @@ const SaleConvertDetails = () => {
                                 <Form.Control.Feedback type="invalid">
                                     Please choose a valid date.
                                 </Form.Control.Feedback>
-                                {installation && installation.installationSDate && installation.installationSTime ? (
-                                    <Form.Check type='checkbox' label='Same as installation?' name='serviceAsInstallation' checked={serviceAsInstallation} onClick={handleCheckClick} />
+                                {delivery && delivery.deliveryDate && delivery.deliveryTime ? (
+                                    <Form.Check type='checkbox' label='Same as delivery?' name='serviceCheck' checked={serviceAsDelivery} onClick={handleCheckClick} />
                                 ) : null }
                             </Form.Group>
                         </Col>
@@ -519,11 +559,13 @@ const SaleConvertDetails = () => {
                     </button>
                 </Col>
 
-                <Col lg="2">
-                    <button onClick={(e) => { e.preventDefault(); handleCancel(); }} className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}}>
-                    Cancel
-                    </button>
-                </Col>
+                {type !== 'add' ? (
+                    <Col lg="2">
+                        <button onClick={(e) => { e.preventDefault(); handleCancel(); }} className="btn w-100" style={{color: "white", backgroundColor: "#6c757d"}}>
+                        Cancel
+                        </button>
+                    </Col>
+                ) : null}
             </Row>
     </Form>
 
