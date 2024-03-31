@@ -38,7 +38,21 @@ const QuotationForm = () => {
         } catch (error) {
             console.log(error)
         }
-    }
+      }
+    fetchData()
+    } else if (type === 'edit') {
+      const fetchData = async () => {
+        try {
+            const res = (await axios.get(`http://localhost:4000/api/getQuotationDetailsById/${quoId}`)).data
+            console.log(res)
+            setClientData(res.client[0])
+            setTermsData(res.term[0])
+
+            setLoading1(false)
+        } catch (error) {
+            console.log(error)
+        }
+      }
     fetchData()
     }
   }, [type])
@@ -197,7 +211,7 @@ const QuotationForm = () => {
 
           {selectionType === 'offer' && <OfferSelection offerList={offer} onOfferSubmission={handleOfferSubmission} type={type} id={quoId} />}
           {selectionType === 'client' && <ClientSelection onClientSubmission={handleClientSubmission}/>}
-          {selectionType === 'terms' && <TermsAndConditions onTermsSubmission={handleGetTermsData}/>}
+          {selectionType === 'terms' && <TermsAndConditions onTermsSubmission={handleGetTermsData} termsData={termsData}/>}
           {selectionType === 'download' && <PreviewQuotation offers={offerData} terms={termsData} client={clientData} POST={handleSubmit} type={type}/>}
 
         </div> 

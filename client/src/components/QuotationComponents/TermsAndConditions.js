@@ -3,47 +3,47 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FaSave } from 'react-icons/fa';
 import { Row, Col, Form } from 'react-bootstrap';
 
-const TermsAndConditions = ({ onTermsSubmission }) => {
+const TermsAndConditions = ({ onTermsSubmission, termsData }) => {
     const [validated, setValidated] = useState(false);
     const [terms, setTerms] = useState({
         A: 
-        `First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables`,
+        termsData.A || `First 10 feet of copper tubing, rubber insulation, Breaker, PVC drain pipe and other consumables`,
         B1:
-        `One (1) year from the date of start-up on units with factory defects.`,
+        termsData.B1 || `One (1) year from the date of start-up on units with factory defects.`,
         B2:
-        `Five (5) years warranty on the Compressor`,
+        termsData.B2 || `Five (5) years warranty on the Compressor`,
         B3:
-        `No warranty claims unless units are fully paid by the client.`,
+        termsData.B3 || `No warranty claims unless units are fully paid by the client.`,
         C1: 
-        `Warranty: Warranty for workmanship within a period of three (3) months.`,
+        termsData.C1 || `Warranty: Warranty for workmanship within a period of three (3) months.`,
         C2: 
-        `Work Schedule: To be arranged after receipt of down-payment.`,
+        termsData.C2 || `Work Schedule: To be arranged after receipt of down-payment.`,
         D1: 
-        `i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.`,
+        termsData.D1 || `i. Electrical power lines of sufficient capacity and appropriate phase and voltage terminating to a main disconnect switch.`,
         D2: 
-        `ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and`,
+        termsData.D2 || `ii. Construction of equipment platform, foundation of support and enclosure where necessary including all civil works required such as provision for opening through walls, floor, ceiling, patching and repainting of same after installation thereof; and`,
         D3: 
-        `iii. Plans, Permits and other licenses.`,
+        termsData.D3 || `iii. Plans, Permits and other licenses.`,
         D4: 
-        `In Excess of 10 feet piping to be charged:`,
+        termsData.D4 || `In Excess of 10 feet piping to be charged:`,
         D5: 
-        `350`,
+        termsData.D5 || `350`,
         D6: 
-        `php per feet on the 1.0hp-1.5hp Wall Mounted Type`,
+        termsData.D6 || `php per feet on the 1.0hp-1.5hp Wall Mounted Type`,
         D7: 
-        `400`,
+        termsData.D7 || `400`,
         D8: 
-        `php per feet for 2.0hp-2.5hp Wall Mounted Type`,
+        termsData.D8 || `php per feet for 2.0hp-2.5hp Wall Mounted Type`,
         D9: 
-        `500`,
+        termsData.D9 || `500`,
         D10: 
-        `php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type`,
+        termsData.D10 || `php per feet for 3.0hp-4.0hp Wall Mounted Type. 4.0hp Floor Mounted Type`,
         D11: 
-        `550`,
+        termsData.D11 || `550`,
         D12: 
-        `php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.`,
+        termsData.D12 || `php per feet for 4.0hp Cassette Type. 7.0hp Cassette Type.`,
         E: 
-        `*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well`,
+        termsData.E || `*These prices are subject to change without prior notice. If a unit runs out of stock, the price of this unit may change as well`,
     });
 
     const handleTermsChange = (event) => {
