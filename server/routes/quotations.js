@@ -40,7 +40,7 @@ module.exports = (query) => {
                                     GROUP BY
                                         quotation_id
                                 ) qr ON q.quotation_id = qr.quotation_id 
-                                WHERE q.sales_id IS NULL
+                                WHERE q.sales_id IS NULL AND is_cancelled = 0
                                 ORDER BY q.is_cancelled ASC;`, [])
 
         res.send(data)

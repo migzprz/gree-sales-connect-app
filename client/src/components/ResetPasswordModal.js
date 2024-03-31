@@ -3,7 +3,7 @@ import { Row, Col, Button, Modal, Form,  InputGroup, Dropdown } from 'react-boot
 import { FaSave, FaPlus} from 'react-icons/fa';
 import axios from 'axios'
 
-const ResetPasswordModal = ({type, id, onClose}) => {
+const ResetPasswordModal = ({type, id}) => {
     const [showModal, setShowModal] = useState(false);
 
     const handleShowModal = () => {
@@ -16,7 +16,6 @@ const ResetPasswordModal = ({type, id, onClose}) => {
         setEditData({
         password: '',
         confirm: ''});
-        onClose();
     };
 
     const [record, setRecord] = useState({})
