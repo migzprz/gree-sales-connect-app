@@ -9,10 +9,10 @@ import axios from 'axios'
 import AddTechnicianModal from './AddTechnicianModal';
 import EditTechnicianModal from './EditTechnicianModal';
 import UpdateTechnicianStatusModal from './UpdateTechnicianStatusModal';
-
+import LoadingScreen from './LoadingScreen';
 
 const TechniciansList = () => {
-
+    const [loading, setLoading] = useState(true);
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [employeeData, setEmployeeData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -25,6 +25,8 @@ const TechniciansList = () => {
             try {
                 const response = await axios.get('http://localhost:4000/api/getAllTechnicians/')
                 setEmployeeData(response.data)
+
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching data: ', error)
             }
@@ -113,140 +115,145 @@ const TechniciansList = () => {
       
 
     return (
-        <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
-            <h1>Manage Technicians</h1>
-            <h5>View and manage technicians</h5>
-            <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
+        <>
+            {loading ? 
+                <LoadingScreen/> :
+                <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91'}}>
+                    <h1>Manage Technicians</h1>
+                    <h5>View and manage technicians</h5>
+                    <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
 
 
-            {/*Navigation Forms*/ }
-            <Row>
-                {/*Search Bar*/ }
-                <Col lg="4">
-                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
-                                                                    backgroundColor: "#014c91", borderRadius: "10px", 
-                                                                    overflow: "hidden"}}>
-                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>
-                            <div style={{padding: "5px", color: 'white'}}>
-                                {React.createElement(FaSearch, { size: 20 })}
+                    {/*Navigation Forms*/ }
+                    <Row>
+                        {/*Search Bar*/ }
+                        <Col lg="4">
+                            <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
+                                                                            backgroundColor: "#014c91", borderRadius: "10px", 
+                                                                            overflow: "hidden"}}>
+                                <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>
+                                    <div style={{padding: "5px", color: 'white'}}>
+                                        {React.createElement(FaSearch, { size: 20 })}
+                                    </div>
+                                </div>
+                                <input type="search" className="form-control" placeholder="Search" value={searchTerm} onChange={handleSearch}/>
                             </div>
-                        </div>
-                        <input type="search" className="form-control" placeholder="Search" value={searchTerm} onChange={handleSearch}/>
-                    </div>
-                </Col>
-                {/*Sorting Mechanism*/ }
-                <Col lg="4">
-                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
-                                                                    backgroundColor: "#014c91", borderRadius: "10px", 
-                                                                    overflow: "hidden"}}>
-                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>
-                            <div style={{padding: "5px", color: 'white'}}>
-                                {React.createElement(FaSort, { size: 20 })}
-                            </div>
-                        </div>
-                        <select className="form-select" value={sortOption} onChange={handleSort}>
-                            <option value="name-asc">Employee Name (A-Z)</option>
-                            <option value="name-desc">Employee Name (Z-A)</option>
-                        </select>
-                    </div>
-                </Col>
-                {/*Filtering Mechanism*/ }
-                <Col lg="4">
-                    <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
-                                                                    backgroundColor: "#014c91", borderRadius: "10px",
-                                                                    overflow: "hidden"}}>
-                        <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
-                            <div style={{padding: "5px", color: 'white'}}>
-                                {React.createElement(FaFilter, { size: 20 })}
-                            </div>  
-                        </div>
-                        <select className="form-select" value={filterOption} onChange={(e) => {setFilterOption(e.target.value); setCurrentPage(1);}}>
-                            <option value="">All Status</option>
-                            <option value="1">Active</option>
-                            <option value="0">Deactivated</option>
-                        </select>
-                    </div>
-                </Col>
-            </Row>
-
-        
-            {filteredEmployees.length > 0 ? (
-            <Card style={{ borderRadius: '20px', marginTop: '20px' }}>
-                <CardBody>
-                    <Table>
-                         <thead>
-                            <tr>
-                                <th style={{color: '#014c91'}}>Name</th>
-                                <th style={{color: '#014c91'}}>Email</th>
-                                <th style={{color: '#014c91'}}>Contact Number</th>
-                                <th style={{color: '#014c91'}}>Date Added</th>
-                                <th style={{color: '#014c91'}}>Status</th>
-                                <th style={{color: '#014c91'}}></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentItems.map((user, index) => (
-                                <React.Fragment key={user.id}>
-                                    <tr style={{ borderRadius: '20px', padding: '10px' }}>
-                                        <td style={{color: '#014c91'}}>{user.name}</td>
-                                        <td style={{color: '#014c91'}}>{user.email}</td>
-                                        <td style={{color: '#014c91'}}>{user.contact_number}</td>
-                                        <td style={{color: '#014c91'}}>{formatDate(user.date_added)}</td>
-                                        <td style={{ color: user.is_active === 1 ? 'green' : 'red' }}>
-                                            {user.is_active === 1 ? 'Active' : 'Deactivated'}
-                                        </td>
-
-                                        <td style={{ color: '#014c91' }}>
-                                        <div style={{ position: 'relative' }}>
-                                            <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
-                                                <FaEllipsisH size={20} />
-                                                </div>
-                                                <Dropdown show={index === activeDropdown} align="start">
-                                    
-                                                {renderDropdown(index, user.technician_id)}
-                                                </Dropdown>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </React.Fragment>
-                            ))}
-                        </tbody>
-                    </Table>
-
-                    <Row className="mt-3">
-                        <Col>
-                            <AddTechnicianModal/>
                         </Col>
-                        <Col className="d-flex justify-content-end">
-                            {totalPages > 1 && (
-                                <Pagination>
-                                    {[...Array(totalPages)].map((_, index) => (
-                                        <Pagination.Item key={index + 1} active={currentPage === index + 1} onClick={() => handlePageChange(index + 1)}>
-                                            {index + 1}
-                                        </Pagination.Item>
-                                    ))}
-                                </Pagination>
-                            )}
+                        {/*Sorting Mechanism*/ }
+                        <Col lg="4">
+                            <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex", 
+                                                                            backgroundColor: "#014c91", borderRadius: "10px", 
+                                                                            overflow: "hidden"}}>
+                                <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>
+                                    <div style={{padding: "5px", color: 'white'}}>
+                                        {React.createElement(FaSort, { size: 20 })}
+                                    </div>
+                                </div>
+                                <select className="form-select" value={sortOption} onChange={handleSort}>
+                                    <option value="name-asc">Employee Name (A-Z)</option>
+                                    <option value="name-desc">Employee Name (Z-A)</option>
+                                </select>
+                            </div>
+                        </Col>
+                        {/*Filtering Mechanism*/ }
+                        <Col lg="4">
+                            <div className="mb-2 mt-3 input-group" style={{ maxWidth: "100%", display: "flex",
+                                                                            backgroundColor: "#014c91", borderRadius: "10px",
+                                                                            overflow: "hidden"}}>
+                                <div style={{backgroundColor: "#014c91", width: "30px", height: "100%"}}>   
+                                    <div style={{padding: "5px", color: 'white'}}>
+                                        {React.createElement(FaFilter, { size: 20 })}
+                                    </div>  
+                                </div>
+                                <select className="form-select" value={filterOption} onChange={(e) => {setFilterOption(e.target.value); setCurrentPage(1);}}>
+                                    <option value="">All Status</option>
+                                    <option value="1">Active</option>
+                                    <option value="0">Deactivated</option>
+                                </select>
+                            </div>
                         </Col>
                     </Row>
 
-                </CardBody>
-            </Card>
-            ):(
-                <Card style={{ borderRadius: '20px', marginTop: '20px', textAlign: 'center' }}>
-                    <CardBody style={{ padding:'100px', color: '#014c91'}}>
-                        <h1 className="mt-3"> <FaSearch size={50} className="me-2" />No Technicians Found  </h1>
-                        <Row className="mt-3">
-                            <Col>
-                                <AddTechnicianModal/>
-                            </Col>
-                        </Row>
-                    </CardBody>
-                </Card>
-            )}
+                
+                    {filteredEmployees.length > 0 ? (
+                    <Card style={{ borderRadius: '20px', marginTop: '20px' }}>
+                        <CardBody>
+                            <Table>
+                                <thead>
+                                    <tr>
+                                        <th style={{color: '#014c91'}}>Name</th>
+                                        <th style={{color: '#014c91'}}>Email</th>
+                                        <th style={{color: '#014c91'}}>Contact Number</th>
+                                        <th style={{color: '#014c91'}}>Date Added</th>
+                                        <th style={{color: '#014c91'}}>Status</th>
+                                        <th style={{color: '#014c91'}}></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {currentItems.map((user, index) => (
+                                        <React.Fragment key={user.id}>
+                                            <tr style={{ borderRadius: '20px', padding: '10px' }}>
+                                                <td style={{color: '#014c91'}}>{user.name}</td>
+                                                <td style={{color: '#014c91'}}>{user.email}</td>
+                                                <td style={{color: '#014c91'}}>{user.contact_number}</td>
+                                                <td style={{color: '#014c91'}}>{formatDate(user.date_added)}</td>
+                                                <td style={{ color: user.is_active === 1 ? 'green' : 'red' }}>
+                                                    {user.is_active === 1 ? 'Active' : 'Deactivated'}
+                                                </td>
+
+                                                <td style={{ color: '#014c91' }}>
+                                                <div style={{ position: 'relative' }}>
+                                                    <div style={{cursor: 'pointer'}} onClick={() => handleEllipsisClick(index)}>
+                                                        <FaEllipsisH size={20} />
+                                                        </div>
+                                                        <Dropdown show={index === activeDropdown} align="start">
+                                            
+                                                        {renderDropdown(index, user.technician_id)}
+                                                        </Dropdown>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </React.Fragment>
+                                    ))}
+                                </tbody>
+                            </Table>
+
+                            <Row className="mt-3">
+                                <Col>
+                                    <AddTechnicianModal/>
+                                </Col>
+                                <Col className="d-flex justify-content-end">
+                                    {totalPages > 1 && (
+                                        <Pagination>
+                                            {[...Array(totalPages)].map((_, index) => (
+                                                <Pagination.Item key={index + 1} active={currentPage === index + 1} onClick={() => handlePageChange(index + 1)}>
+                                                    {index + 1}
+                                                </Pagination.Item>
+                                            ))}
+                                        </Pagination>
+                                    )}
+                                </Col>
+                            </Row>
+
+                        </CardBody>
+                    </Card>
+                    ):(
+                        <Card style={{ borderRadius: '20px', marginTop: '20px', textAlign: 'center' }}>
+                            <CardBody style={{ padding:'100px', color: '#014c91'}}>
+                                <h1 className="mt-3"> <FaSearch size={50} className="me-2" />No Technicians Found  </h1>
+                                <Row className="mt-3">
+                                    <Col>
+                                        <AddTechnicianModal/>
+                                    </Col>
+                                </Row>
+                            </CardBody>
+                        </Card>
+                    )}
 
 
-        </div>
+                </div>
+            }
+        </>
     );
 };
 
