@@ -709,8 +709,8 @@ module.exports = (query) => {
         }
 
         // testing return
-        res.send([date_raw, date_raw.length, dateSorted, dateSorted.length, date_list, date_list.length, validDateCheck, inputDate, editDateTime, low])
-        // res.send(validDateCheck)
+        // res.send([date_raw, date_raw.length, dateSorted, dateSorted.length, date_list, date_list.length, validDateCheck, inputDate, editDateTime, low])
+        res.send(validDateCheck)
     })
 
 
