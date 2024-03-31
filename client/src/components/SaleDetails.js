@@ -18,6 +18,7 @@ const SaleDetails= () => {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const id = searchParams.get('id')
+    
 
     const [detail, setDetail] = useState([])
     const [deliveries, setDeliveries] = useState([])
@@ -370,7 +371,7 @@ const SaleDetails= () => {
                                                     </td>
                                                     {/* <td /> */}
                                                     <td style={{color: '#014c91'}}>
-                                                        <Link to={`/generatequotation/${q.quotation_id}?type=view`}>
+                                                        <Link to={`/generatequotation/${q.quotation_id}?type=view&purchase=true`}>
                                                             <button className="btn w-40" style={{color: "white", backgroundColor: "#014c91"}}>
                                                                 {React.createElement(FaMagnifyingGlass, { size: 18, style: { marginRight: '5px' } })}   View
                                                             </button>

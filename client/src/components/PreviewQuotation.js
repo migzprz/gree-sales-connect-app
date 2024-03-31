@@ -22,6 +22,7 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
 
     const [searchParams] = useSearchParams()
     const salesId = searchParams.get('sales')
+    const isPurchase = Boolean(searchParams.get('purchase'))
 
     const [validated, setValidated] = useState(false);
     const [preview, setPreview] = useState(false);
@@ -138,7 +139,7 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
             <Card className="quotation-file" style={{ width: '8.5in', height: '11in', padding: '0.5in' }}>
             <Row>
                 <Col style={{ textAlign: 'right' }}>
-                    <h1 className="me-2" style={{ fontFamily: 'Cambria', color: '#0070c0', fontSize: '3em', fontWeight: 'bold' }}>PRICE QUOTATION</h1>
+                    <h1 className="me-2" style={{ fontFamily: 'Cambria', color: '#0070c0', fontSize: '3em', fontWeight: 'bold' }}>{isPurchase ? 'PURCHASE ORDER' : 'PRICE QUOTATION'}</h1>
                 </Col>
             </Row>
             <Row style={{ margin: '-0.1in 0' }}>
