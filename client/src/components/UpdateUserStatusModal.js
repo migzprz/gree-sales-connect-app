@@ -10,7 +10,7 @@ const UpdateUserStatusModal = ({ id }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:4000/api/getUser/${id}`)
+                const response = await axios.get(`http://localhost:4000/api/getSystemUser/${id}`)
                 console.log(response.data)
                 setRecord(response.data[0])
             } catch (error) {

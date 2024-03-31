@@ -249,7 +249,7 @@ CREATE TABLE `md_login` (
   `date_added` datetime DEFAULT NULL,
   `is_active` int DEFAULT NULL,
   PRIMARY KEY (`login_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -258,7 +258,7 @@ CREATE TABLE `md_login` (
 
 LOCK TABLES `md_login` WRITE;
 /*!40000 ALTER TABLE `md_login` DISABLE KEYS */;
-INSERT INTO `md_login` VALUES (1,'Raymond','Matthew','Intervalo','123','Salesperson','raymond',1,1,1,1,'2024-03-02 16:07:54',1),(2,'Miguel','Josh','Perez','123','Executive','miguel',0,1,0,1,'2024-03-02 16:07:54',1),(3,'Wilfredo','','Argana','123','Salesperson','wilfredo',0,1,1,1,'2024-03-02 16:07:54',0),(4,'Jackson',NULL,'Wang','123','Salesperson','jwang',1,1,0,0,'2024-03-02 16:07:54',1),(5,'Michael',NULL,'Jackson','123','Executive','mjheehee',1,1,0,0,'2024-03-05 07:02:06',1),(6,'Michael',NULL,'John','123','Salesperson','mjohnn',0,1,0,1,'2024-03-31 10:50:47',1);
+INSERT INTO `md_login` VALUES (1,'Raymond','Matthew','Intervalo','123','Salesperson','raymond',1,1,1,1,'2024-03-02 16:07:54',1),(2,'Miguel','Josh','Perez','12','Executive','miguel',0,1,0,1,'2024-03-02 16:07:54',1),(3,'Wilfredo','','Argana','123','System Administrator','wilfredo',0,1,1,1,'2024-03-02 16:07:54',1),(4,'Jackson',NULL,'Wang','123','Salesperson','jwang',1,1,0,0,'2024-03-02 16:07:54',1),(5,'Michael',NULL,'Jackson','123','Executive','mjheehee',1,1,0,0,'2024-03-05 07:02:06',1),(6,'Michael',NULL,'John','123','Salesperson','mjohnn',0,1,0,1,'2024-03-31 10:50:47',1),(7,'Jerrick',NULL,'Santos','123','Aftersales Staff','jsantos',1,0,0,0,'2024-03-31 18:10:14',1);
 /*!40000 ALTER TABLE `md_login` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -743,7 +743,7 @@ CREATE TABLE `td_expenses` (
   `login_id` int NOT NULL,
   PRIMARY KEY (`expense_id`),
   KEY `fk_td_expenses_md_login_idx` (`login_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -752,7 +752,7 @@ CREATE TABLE `td_expenses` (
 
 LOCK TABLES `td_expenses` WRITE;
 /*!40000 ALTER TABLE `td_expenses` DISABLE KEYS */;
-INSERT INTO `td_expenses` VALUES (6,'2024-03-31 00:00:00',1),(7,'2024-03-31 00:00:00',1),(8,'2024-03-31 00:00:00',1);
+INSERT INTO `td_expenses` VALUES (9,'2024-03-30 16:00:00',1),(10,'2024-02-28 16:00:00',1),(11,'2024-01-30 16:00:00',1);
 /*!40000 ALTER TABLE `td_expenses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -835,7 +835,7 @@ CREATE TABLE `td_operating_expense` (
   PRIMARY KEY (`op_expense_id`),
   KEY `fk_td_subexpenses_list_td_expenses1_idx` (`expense_id`),
   CONSTRAINT `fk_td_subexpenses_list_td_expenses1` FOREIGN KEY (`expense_id`) REFERENCES `td_expenses` (`expense_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -844,7 +844,7 @@ CREATE TABLE `td_operating_expense` (
 
 LOCK TABLES `td_operating_expense` WRITE;
 /*!40000 ALTER TABLE `td_operating_expense` DISABLE KEYS */;
-INSERT INTO `td_operating_expense` VALUES (6,6,'Cost of Goods Sold','',200000,'2024-01-11 00:00:00'),(7,6,'Rent','',15000,'2024-01-03 00:00:00'),(8,6,'Salaries','',68000,'2024-01-03 00:00:00'),(9,7,'Cost of Goods Sold','',239000,'2024-02-05 00:00:00'),(10,7,'Office Supplies','',125000,'2024-02-14 00:00:00'),(11,7,'Rent','',25000,'2024-02-21 00:00:00'),(12,8,'Cost of Goods Sold','',250000,'2024-03-06 00:00:00'),(13,8,'Rent','',36500,'2024-04-10 00:00:00'),(14,8,'Salaries','',90000,'2024-04-18 00:00:00');
+INSERT INTO `td_operating_expense` VALUES (15,9,'Cost of Goods Sold','',150000,'2024-03-06 00:00:00'),(16,9,'Rent','',36500,'2024-04-10 00:00:00'),(17,9,'Salaries','',90000,'2024-04-18 00:00:00'),(18,10,'Cost of Goods Sold','',139000,'2024-02-05 00:00:00'),(19,10,'Office Supplies','',105000,'2024-02-14 00:00:00'),(20,10,'Rent','',25000,'2024-02-21 00:00:00'),(21,11,'Cost of Goods Sold','',50000,'2024-01-11 00:00:00'),(22,11,'Rent','',15000,'2024-01-03 00:00:00'),(23,11,'Salaries','',68000,'2024-01-03 00:00:00');
 /*!40000 ALTER TABLE `td_operating_expense` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -942,7 +942,7 @@ CREATE TABLE `td_warranty` (
 
 LOCK TABLES `td_warranty` WRITE;
 /*!40000 ALTER TABLE `td_warranty` DISABLE KEYS */;
-INSERT INTO `td_warranty` VALUES (13,'2024-04-01 00:57:30',1,51,0),(14,'2024-04-01 00:58:13',1,48,0),(15,'2024-04-01 00:59:00',1,67,0),(16,'2024-04-01 00:59:40',1,67,0);
+INSERT INTO `td_warranty` VALUES (13,'2024-01-10 00:57:30',1,51,0),(14,'2024-02-01 00:58:13',1,48,0),(15,'2024-03-01 00:59:00',1,67,0),(16,'2024-03-21 00:59:40',1,67,0);
 /*!40000 ALTER TABLE `td_warranty` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1063,4 +1063,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-01  1:21:27
+-- Dump completed on 2024-04-01  2:13:15

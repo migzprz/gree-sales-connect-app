@@ -355,7 +355,6 @@ const ClaimWarrantyForm= () => {
                                                                         <option value="Water Leaks"> Water Leaks</option>
                                                                         <option value="Strange Noises"> Strange Noises </option>
                                                                         <option value="Fan Malfunctions"> Fan Malfunctions </option>
-                                                                        <option value="Strange Noises"> Strange Noises </option>
                                                                         <option value="Others"> Others </option>
                                                                     </Form.Control>
                                                                     <Form.Control.Feedback type="invalid">

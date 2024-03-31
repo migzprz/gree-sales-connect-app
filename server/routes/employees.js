@@ -125,7 +125,7 @@ module.exports = (query) => {
 
     })
 
-    router.get('/getUser/:id', async (req, res) => {
+    router.get('/getSystemUser/:id', async (req, res) => {
         try {
             const { id } = req.params
             const q =  `SELECT 
