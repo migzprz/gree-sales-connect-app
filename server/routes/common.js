@@ -596,11 +596,12 @@ module.exports = (query) => {
         const editDateTime = req.query.editDateTime
         const excludedDateTime = editDateTime ? new Date(editDateTime) : null
 
+        console.log("INPUT: ", inputDate, editDateTime)
+
         if (excludedDateTime) { console.log('Editing Record, Existing Datetime Discovered ', excludedDateTime) }
 
         const getHourDiff = (date1, date2) => {
-
-            console.log(date1, date2)
+            //console.log(date1, date2)
             if (!date1 || !date2) {
                 return true
             }
@@ -656,24 +657,36 @@ module.exports = (query) => {
 
         // insert each query outputs into a set, and return as array
         const response_array = [or, qssr, qir, wir, wsr]
-        const date_set = new Set()
-        
 
-        // Add all responses into a set, removing duplicates that could interfere with the condition checker
+
+        const date_raw = []
+        // Add all responses into a list
         response_array.forEach(res => {
             res.forEach(item => {
-                date_set.add(new Date(item.date))
+                const date = new Date(item.date)
+                date_raw.push(date)
             })
         })
 
-        // Convert back into an array
-        const date_list = Array.from(date_set)
+        // Transform into a set, removing duplicates
+        const filterUniqueDates = (date_raw) => {
+            const lookup = new Set()
+            return date_raw.filter(date => {
+                const serialised = date.getTime()
+                if (lookup.has(serialised)) {
+                    return false
+                } else {
+                    lookup.add(serialised)
+                    return true
+                }
+            })
+        }
 
-        // Sort array
-        date_list.sort((a, b) => new Date(a) - new Date(b))
+        const dateNoDupe = filterUniqueDates(date_raw)
+        const dateSorted = dateNoDupe.sort((a, b) => new Date(a) - new Date(b))
 
-        // Filter array to remove exlucded datetime
-        date_list.filter(item => item !== excludedDateTime)
+        // Filter array to remove excluded datetime
+        const date_list = dateSorted.filter(item => new Date(item).getTime() !== new Date(excludedDateTime).getTime())
 
         // modified insertion sort to find index where input would be inserted
         let low = 0;
@@ -696,8 +709,8 @@ module.exports = (query) => {
         }
 
         // testing return
-        // res.send([date_list,validDateCheck, inputDate, low])
-        res.send(validDateCheck)
+        res.send([date_raw, date_raw.length, dateSorted, dateSorted.length, date_list, date_list.length, validDateCheck, inputDate, editDateTime, low])
+        // res.send(validDateCheck)
     })
 
 
