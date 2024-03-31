@@ -26,7 +26,8 @@ const QuotationForm = () => {
       const fetchData = async () => {
         try {
             const res = (await axios.get(`http://localhost:4000/api/getQuotationDetailsById/${id}`)).data
-            setClientData((res.client)[0])
+            console.log(res)
+            setClientData(res.client[0])
             setOfferData(res.quotation)
             setTermsData(res.term[0])
             setSelectionType('download')
@@ -171,6 +172,7 @@ const QuotationForm = () => {
       fetchData()
     }
   }, [id])
+  
 
   return (
     <div style={{ width: '100%', padding: '20px', background: '#E5EDF4', color: '#014c91' }}>

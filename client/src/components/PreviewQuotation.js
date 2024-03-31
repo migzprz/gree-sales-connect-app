@@ -43,7 +43,7 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
           }
         }
         fetchData()
-      }, [])
+    }, [])
 
     const downloadPDF = () => {
       const capture1 = document.querySelector('.quotation-file');
@@ -108,6 +108,25 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
         return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
     
+    // display
+
+    const displayClientName = () => {
+        // client.client_name || client.returningClientFirstName ? client.returningClientFirstName + ' ' + client.returningClientLastName : client.firstName + ' ' + client.lastName
+
+        if (client) {
+            if (client?.client_name) {
+                return client.client_name
+            }
+            else if (client?.firstName) {
+                return client.firstName+' '+client.lastName
+            }
+            else if (client?.returningClientFirstName) {
+                return client.returningClientFirstName+' '+client.returningClientLastName
+            }
+        } else {
+            return 'Missing Name'
+        }
+    }
     
     return (
         <>
@@ -156,10 +175,10 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
                         {client ? (
                             <>
                                 <tr>
-                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Name: {client.client_name || client.returningClientFirstName ? client.returningClientFirstName + ' ' + client.returningClientLastName : client.firstName + ' ' + client.lastName}</td> 
+                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Name: {displayClientName()}</td> 
                                 </tr>
                                 <tr>
-                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Company Name/Buidling: {client.company_name || client.returningClientCompanyName ? client.returningClientCompanyName : client.companyName}</td> 
+                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Company Name/Buidling: {client.company_name || client.returningClientCompanyName || '--'}</td> 
                                 </tr>
                                 <tr>
                                     <td colSpan="7" style={{ padding: '0', border: 'none'}}>Street Address: {client.site_address ? client.site_address : ''}</td> 
@@ -168,7 +187,7 @@ const PreviewQuotation = ({ client, offers, terms, POST, type }) => {
                                     <td colSpan="7" style={{ padding: '0', border: 'none'}}>Delivery Address: {client.site_address ? client.site_address : ''}</td> 
                                 </tr>
                                 <tr>
-                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Phone: {client.contact_number || client.returningClientContactNumber ? client.returningClientContactNumber : client.contactNumber}</td> 
+                                    <td colSpan="7" style={{ padding: '0', border: 'none'}}>Phone: {client.contact_number || client.returningClientContactNumber}</td> 
                                 </tr>
                             </>
                         ): null}
