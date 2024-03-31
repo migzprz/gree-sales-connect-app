@@ -47,7 +47,7 @@ module.exports = (query) => {
 
     const postPayment = async (data, id) => {
 
-        const refno = data.refno || null
+        const refno = data.refNo || null
 
         const paymentQuery = 'INSERT INTO md_sales_payment (sales_id, mop_id, is_installment, amount, refNo, date_created) VALUES (?, ?, ?, ?, ?, NOW())'
         const response = await query(paymentQuery, [id, data.mop_id, data.isInstallment, data.amount, refno])
