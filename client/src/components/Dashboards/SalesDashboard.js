@@ -19,8 +19,9 @@ const SalesDashboard = () => {
         const [revenueTotal, setRevenueTotal] = useState([]);
 
 
-        const [yearFilter, setYearFilter] = useState(2024);
+        const [yearFilter, setYearFilter] = useState(2023);
         const [monthFilter, setMonthFilter] = useState(0);
+
         
         // fetch and mount ocular data to useState
         useEffect(() => {
@@ -197,8 +198,8 @@ const SalesDashboard = () => {
             console.log(quotationTotal)
         },[quotationTotal])
         useEffect(() => {
-            console.log(revenueTotal)
-        },[revenueTotal])
+            console.log(yearFilter)
+        },[yearFilter])
 
 
     const [ocularLinesVisibility, setOcularLinesVisibility] = useState({ocular: true});
@@ -225,7 +226,7 @@ const SalesDashboard = () => {
                                     {React.createElement(FaFilter, { size: 20 })}
                                 </div>  
                             </div>
-                            <select className="form-select" value={yearFilter} onChange={(e) => setYearFilter(e.target.value)}>
+                            <select className="form-select" value={yearFilter} onChange={(e) => setYearFilter(parseInt(e.target.value))}>
                                 {yearOptions.map((year) => (
                                     <option value={year}>{year}</option>
                                 ))}

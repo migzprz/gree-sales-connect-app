@@ -174,7 +174,7 @@ const AfterSalesDashboard = () => {
                                     {React.createElement(FaFilter, { size: 20 })}
                                 </div>  
                             </div>
-                            <select className="form-select" value={yearFilter} onChange={(e) => setYearFilter(e.target.value)}>
+                            <select className="form-select" value={yearFilter} onChange={(e) => setYearFilter(parseInt(e.target.value))}>
                                 {yearOptions.map((year) => (
                                     <option value={year}>{year}</option>
                                 ))}

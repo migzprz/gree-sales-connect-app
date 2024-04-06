@@ -65,16 +65,17 @@ const ClientsList = () => {
     
 
     const filteredClients = sortedClients.filter(client => (
-        client.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        client.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        client.tin.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        client.contact_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        client.email.toLowerCase().includes(searchTerm.toLowerCase())
+        (client.client_name && client.client_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (client.company_name && client.company_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (client.tin && client.tin.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (client.contact_number && client.contact_number.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (client.email && client.email.toLowerCase().includes(searchTerm.toLowerCase()))
     ));
+    
 
     //Pagination Functionality
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10); // Change this number as needed
+    const [itemsPerPage, setItemsPerPage] = useState(15); // Change this number as needed
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredClients.slice(indexOfFirstItem, indexOfLastItem);
