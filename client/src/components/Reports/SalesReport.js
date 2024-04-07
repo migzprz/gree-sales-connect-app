@@ -66,7 +66,7 @@ const SalesReport = () => {
                     growthWithSign = 'No Percentage to Display';
                 } else {
                     const growthLimited = Math.min(Math.abs(growth), 100000);
-                    growthWithSign = (growth > 0 ? `+${growthLimited}` : `${growthLimited}`) + '%';
+                    growthWithSign = (growth > 0 ? `+${growthLimited}` : `-${growthLimited}`) + '%';
                 }
 
                 // Store total sales, sales growth, and period days in state
