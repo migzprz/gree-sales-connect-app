@@ -94,7 +94,7 @@ const SalesReport = () => {
 
     useEffect(() => {
         const splitDataIntoPages = async () => {
-            const itemsPerPage = 12;
+            const itemsPerPage = 16;
             const totalPages = Math.ceil(productData.length / itemsPerPage);
             const pagesArray = Array.from({ length: totalPages }, (_, index) => {
                 const startIndex = index * itemsPerPage;

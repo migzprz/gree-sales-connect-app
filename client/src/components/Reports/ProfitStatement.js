@@ -44,7 +44,7 @@ const ProfitStatement = () => {
 
     useEffect(() => {
         const splitDataIntoPages = async () => {
-            const itemsPerPage = 15;
+            const itemsPerPage = 20;
             const totalPages = Math.ceil(productData.length / itemsPerPage);
             const pagesArray = Array.from({ length: totalPages }, (_, index) => {
                 const startIndex = index * itemsPerPage;
