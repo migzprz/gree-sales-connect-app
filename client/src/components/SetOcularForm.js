@@ -351,19 +351,20 @@ const SetOcularForm = () => {
                  </Form.Group>
             </Col>
             <Col lg="2">
-                <Form.Group controlId="city">
-                    <Form.Label>City</Form.Label>
-                    <Form.Control disabled={!formData.addr_province_id} as="select" onChange={handleChange} name='addr_municipality_id'  required>
-                        <option value=""> Select </option>
-                        {filteredCity.map((cit) => (
-                            <option key={cit.municipality_id} value={cit.municipality_id}>{cit.name}</option>
-                        ))}
-                    </Form.Control>
-                    <Form.Control.Feedback type="invalid">
-                        Please choose a city.
-                    </Form.Control.Feedback>
-                 </Form.Group>
-            </Col>
+    <Form.Group controlId="city">
+        <Form.Label>City</Form.Label>
+        <Form.Control disabled={!formData.addr_province_id} as="select" onChange={handleChange} name='addr_municipality_id' required>
+            <option value="">Select</option>
+            {filteredCity.map((cit) => (
+                <option key={cit.municipality_id} value={cit.municipality_id}>{cit.name}</option>
+            ))}
+        </Form.Control>
+        <Form.Control.Feedback type="invalid">
+            Please choose a city.
+        </Form.Control.Feedback>
+    </Form.Group>
+</Col>
+
             <Col lg="2">
                 <Form.Group controlId="barangay">
                     <Form.Label>Barangay</Form.Label>
