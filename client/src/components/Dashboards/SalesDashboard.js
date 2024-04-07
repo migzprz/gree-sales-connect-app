@@ -19,7 +19,7 @@ const SalesDashboard = () => {
         const [revenueTotal, setRevenueTotal] = useState([]);
 
 
-        const [yearFilter, setYearFilter] = useState(2023);
+        const [yearFilter, setYearFilter] = useState(2024);
         const [monthFilter, setMonthFilter] = useState(0);
 
         
