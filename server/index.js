@@ -48,12 +48,32 @@ const Sales = require("./routes/sales");
 const Aftersales = require("./routes/aftersales");
 const AuthRoute = require("./routes/authRoute");
 
+const allowedOrigins = [
+	"http://localhost:3000",
+	"http://localhost:4000",
+	"https://gree-sales-connect-app-1.onrender.com",
+];
+
 app.use(
 	cors({
-		origin: process.env.ROOT_URL,
+		origin: function (origin, callback) {
+			// allow requests with no origin (like Postman or server-to-server)
+			if (!origin) return callback(null, true);
+
+			if (allowedOrigins.includes(origin)) {
+				return callback(null, true);
+			}
+
+			return callback(new Error("Not allowed by CORS"));
+		},
 		credentials: true,
+		methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+		allowedHeaders: ["Content-Type", "Authorization"],
 	}),
 );
+
+// handle preflight requests
+app.options("*", cors());
 
 function createDBPool() {
 	// TODO: add condition checker to select between different role pools for table level security

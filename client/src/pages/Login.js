@@ -16,10 +16,13 @@ const LoginScreen = () => {
 		event.preventDefault();
 
 		try {
-			const response = await axios.post("http://localhost:4000/api/login", {
-				username,
-				password,
-			});
+			const response = await axios.post(
+				`${process.env.REACT_APP_ROOT_URL}/api/login`,
+				{
+					username,
+					password,
+				},
+			);
 			if (response.data.message === "Login successful") {
 				const {
 					sales_access,
@@ -43,7 +46,7 @@ const LoginScreen = () => {
 			}
 		} catch (error) {
 			console.error("Login failed:", error.message);
-			alert("Login Failed");
+			alert("Failed Login");
 		}
 	};
 

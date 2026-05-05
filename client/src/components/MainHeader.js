@@ -1,60 +1,75 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaUser, FaBell } from 'react-icons/fa';
-import axios from 'axios';
-import ResetPasswordModal from './ResetPasswordModal';
-import {Dropdown} from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaUser, FaBell } from "react-icons/fa";
+import axios from "axios";
+import ResetPasswordModal from "./ResetPasswordModal";
+import { Dropdown } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const MainHeader = () => {
+	const [showDropdown, setShowDropdown] = useState(false);
 
-    const [showDropdown, setShowDropdown] = useState(false);
+	const navigate = useNavigate();
+	const name = sessionStorage.getItem("userName");
+	const handleDropdownToggle = () => {
+		setShowDropdown(!showDropdown);
+	};
 
-    const navigate = useNavigate();
-    const name = sessionStorage.getItem('userName')
-    const handleDropdownToggle = () => {
-        setShowDropdown(!showDropdown);
-    };
+	const handleLogout = () => {
+		const res = axios.get(`${process.env.REACT_APP_ROOT_URL}/api/logout/`);
+		sessionStorage.clear();
+		navigate("/"); // Navigate to the login page after logout
+	};
 
-    const handleLogout = () => {
-        const res = axios.get('http://localhost:4000/api/logout/')
-        sessionStorage.clear()
-        navigate('/'); // Navigate to the login page after logout   
-        
-    };
+	const renderDropdown = (index, id) => {
+		return (
+			<Dropdown.Menu
+				style={{ position: "absolute", right: "0", left: "auto", top: "20px" }}
+			>
+				<ResetPasswordModal type={"edit"} id={sessionStorage.getItem("login_id")} />
+				<Dropdown.Item onClick={handleLogout}>Log Out</Dropdown.Item>
+			</Dropdown.Menu>
+		);
+	};
 
-    const renderDropdown = (index, id) => {
-          return (
-            <Dropdown.Menu style={{ position: 'absolute', right: '0', left: 'auto', top: '20px' }}>
-              <ResetPasswordModal type={"edit"} id={sessionStorage.getItem('login_id')}/>
-              <Dropdown.Item onClick={handleLogout}>Log Out</Dropdown.Item>
-            </Dropdown.Menu>
-          );
-      };
-
-
-    return (
-        <div style={{ backgroundColor: '#014c91', padding: '10px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ fontSize: '28px', fontWeight: 'bold' }}>GreeSales Connect</div>
-            <div style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
-                <Link to="/notifications" style={{ textDecoration: 'none', color: 'white' }}>
-                    <FaBell size={20} style={{ marginRight: '20px', cursor: 'pointer' }} />
-                </Link>
-            <div style={{display: 'flex', cursor: 'pointer'}} onClick={handleDropdownToggle}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <FaUser size={20} style={{ marginRight: '5px' }} /> {name ?? 'Error Missing Name'}
-                    <div style={{ marginRight: '10px' }}></div>
-                </div>
-                <div style={{cursor: 'pointer'}} onClick={() => renderDropdown}>&#9662;</div>
-                <Dropdown show={showDropdown} align="start">
-                    {renderDropdown()}
-                </Dropdown>
-            </div>
-                
-
-            </div>
-        </div>
-    );
+	return (
+		<div
+			style={{
+				backgroundColor: "#014c91",
+				padding: "10px",
+				color: "white",
+				display: "flex",
+				justifyContent: "space-between",
+				alignItems: "center",
+			}}
+		>
+			<div style={{ fontSize: "28px", fontWeight: "bold" }}>GreeSales Connect</div>
+			<div style={{ display: "flex", alignItems: "center", position: "relative" }}>
+				<Link
+					to="/notifications"
+					style={{ textDecoration: "none", color: "white" }}
+				>
+					<FaBell size={20} style={{ marginRight: "20px", cursor: "pointer" }} />
+				</Link>
+				<div
+					style={{ display: "flex", cursor: "pointer" }}
+					onClick={handleDropdownToggle}
+				>
+					<div style={{ display: "flex", alignItems: "center" }}>
+						<FaUser size={20} style={{ marginRight: "5px" }} />{" "}
+						{name ?? "Error Missing Name"}
+						<div style={{ marginRight: "10px" }}></div>
+					</div>
+					<div style={{ cursor: "pointer" }} onClick={() => renderDropdown}>
+						&#9662;
+					</div>
+					<Dropdown show={showDropdown} align="start">
+						{renderDropdown()}
+					</Dropdown>
+				</div>
+			</div>
+		</div>
+	);
 };
 
 export default MainHeader;
