@@ -52,6 +52,7 @@ const allowedOrigins = [
 	"http://localhost:3000",
 	"http://localhost:4000",
 	"https://gree-sales-connect-app-1.onrender.com",
+	"https://gree-sales-connect-app-cva5.vercel.app",
 ];
 
 app.use(
